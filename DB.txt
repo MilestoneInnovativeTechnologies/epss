@@ -1,0 +1,7 @@
+    DB.insert('test',{name:'Firose'},function(){
+        DB.update('test',{ name:'Firose' },{ name:"Firose Hussain" },function(){
+            DB.get('test',{ name:'Firose Hussain'},function(){
+                console.log(this.result)
+            });
+        })
+    });
