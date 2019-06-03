@@ -11,7 +11,7 @@ export default {
     [add_configuration_to_server_queue](state, { config,success }) {  state.queue.push(_.assign(config,state.config,{ success })); },
     [start_process_queue](state) { state.processing = state.queue.shift(); state.success = state.processing.success; delete state.processing.success },
     [initiate_processing_transfer](state) { state.transfer = true; },
-    [finalize_processing_transfer](state) { state.processing = {}; state.transfer = false; },
+    [finalize_processing_transfer](state) { delete state.processing; state.transfer = false; },
     [finalize_failed_transfer](state) { state.queue_failed.push(_.assign({ config: state.processing }, { success: state.success }));  state.transfer = false; state.processing = {}; },
     [populate_axios_url_data](state,{ data,uuid }){
         state.client = uuid; data = toKeyedData(data);

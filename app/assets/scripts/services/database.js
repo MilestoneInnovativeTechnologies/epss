@@ -28,7 +28,7 @@ class Database {
 
     table(tbl) {
         if(!tbl) return this.tbl;
-        this.tbl = tbl; log('Table set to: ' + tbl);
+        this.tbl = tbl;
         return this;
     }
 
@@ -73,24 +73,20 @@ class Database {
     }
 
     getAll(callback,args){
-        log('Getting All');
         let query = `SELECT * FROM ${this.tbl}`;
         return this.getAllQuery(query,callback,args);
     }
     getWithID(id,callback,args){
-        log('Getting with ID');
         let query = `SELECT * FROM ${this.tbl} WHERE id = ?`;
         return this.database.get(query,[id],(error,result) => {
             this.postQuery.call(this,query,error,result,callback,args);
         });
     }
     getIn(ids,callback,args){
-        log('Getting In');
         let query = `SELECT * FROM ${this.tbl} WHERE id IN (${ ids.join(',') })`;
         return this.getAllQuery(query,callback,args);
     }
     getObjArray(array,callback,args){
-        log('Getting Obj Array');
         let where = this.objArrayToCondition(array);
         let query = `SELECT * FROM ${this.tbl} WHERE ${where}`;
         return this.getAllQuery(query,callback,args);
@@ -166,15 +162,12 @@ class Database {
     postQuery(query,error,result,callback,args){
         this.error = !!error; this.success = !error;
         if (error) {
-            log('Query execution error..');
-            log('Query: ' + query);
+            log('Query error, ' + this.tbl);
             this.result = error;
         } else {
-            log('Query execution success..');
-            log('Query: ' + query);
+            log('Query success, ' + this.tbl);
             this.result = result;
         }
-        log('Result/s: ' + (_.isArray(result) ? result.length : JSON.stringify(result)));
         if(callback) callback.apply(this,args);
     }
 
@@ -192,7 +185,8 @@ class Database {
 
 function log(text) {
     if (TNS_ENV === 'production') return;
-    console.log('DB Service: ', text);
+    console.log('SQlite: ', text);
 }
+
 
 export const DB = new Database();

@@ -1,5 +1,5 @@
 export default {
-    app_tables: {},
+    tables: {},
     queue: {},
     queue_index: [],
     app_sync_start_after: 5,

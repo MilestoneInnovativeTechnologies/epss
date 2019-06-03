@@ -15,12 +15,17 @@ export const set_connectivity_availability = 'setConnectivityAvailable';
 
 
 //Sync
-export const add_new_app_table = 'newAppTable';
+export const add_new_table_for_sync = 'newTable';
 export const add_to_app_sync_queue = 'addToAppQueue';
 export const processing_queue = 'processQueue';
 export const set_sync_base_url = 'setBaseUrl';
 export const finish_processing_queue = 'finishProcessingSync';
-export const update_last_sync_time = 'setSyncTime';
 export const set_repeat_failed_timeout = 'setRepeatFailedTimeout';
+export const update_table_timing = 'updateTableTime';
+
+//User
+export const set_user_email = 'setEmail';
+export const set_user_password = 'setPassword';
+export const set_user_pin = 'setPin';
 
 export const MUTATE = 'DEMO';

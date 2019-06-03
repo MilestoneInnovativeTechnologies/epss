@@ -1,21 +1,21 @@
 import {
-    add_new_app_table,
+    add_new_table_for_sync,
     add_to_app_sync_queue,
     processing_queue,
     set_sync_base_url,
     finish_processing_queue,
-    update_last_sync_time, set_repeat_failed_timeout
+    set_repeat_failed_timeout, update_table_timing,
 } from '../../mutation-types';
 import { gap_between_sync_queue_seconds } from '../../constants';
 
 export default {
-    [add_new_app_table](state, { table,up,down }) {
-        Object.assign(state.app_tables,_.zipObject([table],[{ up:_.toSafeInteger(parseInt(up)*60),down:_.toSafeInteger(parseInt(down)*3600) }]));
+    [add_new_table_for_sync](state, { table,up,down,type }) {
+        Object.assign(state.tables,_.zipObject([table],[{ up:_.toSafeInteger(parseInt(up)*60),down:_.toSafeInteger(parseInt(down)*3600),type }]));
     },
-    [add_to_app_sync_queue](state, { table,at }) {
+    [add_to_app_sync_queue](state, { table,at,type }) {
         let token = getNextPossibleQueueTokenAfter(at,state.queue_index);
         state.queue_index.push(token); state.queue_index.sort();
-        Object.assign(state.queue,_.fromPairs([[token,{ table,type:'APP' }]]))
+        Object.assign(state.queue,_.fromPairs([[token,{ table,type }]]))
     },
     [processing_queue](state, { item,index }) {
         state.processing = item; delete state.queue[index];
@@ -28,11 +28,11 @@ export default {
     [finish_processing_queue](state) {
         state.processing = {}; clearTimeout(state.repeat_failed_timeout);
     },
-    [update_last_sync_time](state,{ table,time }) {
-        Object.assign(state.time,_.fromPairs([[table,time]]))
-    },
     [set_repeat_failed_timeout](state,tm) {
         state.set_repeat_failed_timeout = tm;
+    },
+    [update_table_timing](state,{ table,type,time }) {
+        Object.assign(state.time,_.zipObject([table],[_.zipObject([type],[time])]));
     },
 };
 

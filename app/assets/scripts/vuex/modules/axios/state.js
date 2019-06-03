@@ -1,5 +1,5 @@
 export default {
-    connection: false,
+    connection: true,
     queue: [],
     processing: {},
     status: '',

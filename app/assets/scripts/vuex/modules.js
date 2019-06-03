@@ -4,4 +4,5 @@ export default {
     'Organization': require('./modules/organization/index').default,
     'Database': require('./modules/database/index').default,
     'Sync': require('./modules/sync/index').default,
+    'User': require('./modules/user/index').default,
 }

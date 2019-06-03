@@ -1,43 +1,29 @@
 <!--suppress ALL -->
 <template>
     <Page>
-        <ActionBar>
-            <GridLayout width="100%" columns="auto">
-                <Label style="" class="fsb fs22" text="ePlus Smart Sale" col="0"/>
-            </GridLayout>
-        </ActionBar>
-        <GridLayout width="100%" rows="*,50">
-            <StackLayout row="0">
-                <GridLayout v-show="!!name" width="100%" rows="50,6,auto,6">
-                    <StackLayout row="0"></StackLayout>
-                    <StackLayout row="1" class="" style="background: linear-gradient(to top, #E1E1E1, #FFFFFF); width: 100%;"></StackLayout>
-                    <StackLayout row="2" class="p-y-20">
-                        <Image :src="image" height="128" />
-                        <Label :text="name" class="text-center cp m-y-15 fsb fs22" style="width: 100%" />
-                        <Label :text="brief" textWrap="true" class="font-weight-bold text-center font-italic fsi t-12" style="width: 70%" />
-                    </StackLayout>
-                    <StackLayout row="4" class="" style="background: linear-gradient(to bottom, #E1E1E1, #FFFFFF); width: 100%;"></StackLayout>
-                </GridLayout>
-            </StackLayout>
-            <Label class="message" style="width: 90%; margin-left: 5%; font-size: 20;" :text="pick || msg" row="1" />
+        <CustomActionBar title="ePlus Smart Sale"></CustomActionBar>
+        <GridLayout width="100%" rows="auto,*,50">
+            <Organization row="0"></Organization>
+            <Login row="1"></Login>
+            <Label row="2" textWrap="true" class="t-12 fsi font-italic text-center" style="width: 90%;" :text="pick" />
         </GridLayout>
-
     </Page>
 </template>
 
 <script>
     import { mapGetters,mapState } from 'vuex';
+    import CustomActionBar from "./CustomActionBar";
+    import Organization from "./Organization";
+    import Login from "./Login";
     export default {
         name: 'App',
-        data(){ return {
-            msg: 'ePlus Smart Sale'
-        }},
+        components:{ Organization,Login,CustomActionBar },
         computed: {
             ...mapGetters('Log', ['pick']),
             ...mapState('Organization', ['image','name','brief','uuid']),
-            ...mapState('Axios', ['client','queue','last_response']),
-            ...mapState('Axios', { axiosQueue: 'queue',axiosProcessing: 'processing',axiosConnection: 'connection' }),
-            ...mapState('Sync', ['app_tables','time']),
+            ...mapState('Axios', ['client','last_response']),
+            ...mapState('Axios', { axiosQueue: 'queue',axiosProcessing: 'processing',axiosConnection: 'connection',axiosTransfer: 'transfer' }),
+            ...mapState('Sync', ['tables','time']),
             ...mapState('Sync', { syncQueueIndex:'queue_index',syncQueueProcessing:'processing',syncQueue:'queue' }),
         }
     }

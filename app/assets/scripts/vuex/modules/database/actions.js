@@ -1,21 +1,24 @@
 import { databse_fetch_url,table_information_db_table_name } from './../../constants';
+import { add_new_table_for_sync } from './../../mutation-types';
 
-export function Setup({ dispatch,rootGetters }){
+export function Setup({ dispatch }){
     log('Initializing Database fetch');
-    DB.get('organization',null,function(dispatch,rootGetters){
-        dispatch('Organization/lightUpApp',{ data:this.result,uuid:rootGetters['Organization/client'] },{ root:true });
-        dispatch('get',{ url:databse_fetch_url,success:'Database/create' },{ root:true })
-    },dispatch,rootGetters);
+    dispatch('get',{ url:databse_fetch_url,success:'Database/create' },{ root:true })
 }
 
-export function create({ dispatch }, data) {
+export function create({ dispatch,commit }, data) {
     DB.create(table_information_db_table_name,'table,fields,type,up,down',function(data, dispatch){
         if(this.error) return log(`Error in creating ${table_information_db_table_name} db table`,this.result);
-        log('Deleting client from server'); dispatch('Sync/deleteClient',null,{ root:true });
-        log('Initializing database table creates',data);
-        _.forEach(data,(Ary,Table) => { DB.create(Table,Ary[0],function(table,fields,type,down,up,dispatch){
-            DB.insert(table_information_db_table_name,{ table,fields,type,down,up },function(table, dispatch){
-            },table,dispatch);
-        },Table,Ary[0],Ary[1],Ary[2],Ary[3],dispatch); });
-    },data,dispatch);
+        _.forEach(data,(Ary,Table) => {
+            log('Creating Table: ' + Table);
+            DB.create(Table,Ary[0],function(table,fields,type,down,up,dispatch,commit){
+                log('Created Table: ' + table); log('Inserting Table Information for, ' + table);
+                DB.insert(table_information_db_table_name,{ table,fields,type,down,up },function(table,type,dispatch){
+                    if(type === 'APP') dispatch('Sync/downloadTableRecords',table,{ root:true });
+                    },table,type,dispatch);
+                commit('Sync/' + add_new_table_for_sync,{ table,up,down,type },{ root:true })
+                },Table,Ary[0],Ary[1],Ary[2],Ary[3],dispatch,commit);
+
+        });
+        },data,dispatch,commit);
 }
