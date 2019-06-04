@@ -5,5 +5,7 @@ export default {
     pin: null,
     time_out: null,
     api_token: null,
-    reference: null
+    reference: null,
+    message: null,
+    validating: false
 }

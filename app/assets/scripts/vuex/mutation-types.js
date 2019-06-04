@@ -29,5 +29,8 @@ export const set_user_email = 'setEmail';
 export const set_user_password = 'setPassword';
 export const set_user_pin = 'setPin';
 export const update_login_details = 'updateLoginDetails';
+export const init_login_validation = 'initLogin';
+export const login_validation_failed = 'loginFailed';
+export const clear_login_message = 'clearLoginMessage';
 
 export const MUTATE = 'DEMO';
