@@ -28,12 +28,6 @@ export function post({ dispatch,commit,state },{ url,params,success }) {
     log('Queued post, '+url);
 }
 
-export function api(context,{ url,params,success }) {
-    let config = { url,params,method:'post' };
-    commit(add_configuration_to_server_queue, { config,success });
-    log('Queued post, '+url);
-}
-
 export function processQueue({ state,getters,dispatch }) {
     if(!state.connection || state.transfer || getters.queue_count === 0 || !_.isEmpty(state.processing)){
         clearTimeout(timeOutVariable);
@@ -64,3 +58,16 @@ export function proceedProcessing({ commit,dispatch,state }) {
         setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds,dispatch);
     })
 }
+
+export const api = {
+    root: true,
+    handler({ state,getters,dispatch },{ item,params,success }){
+        params = _.isEmpty(params) ? state.api_config : _.defaultsDeep(params,state.api_config);
+        let url = getters.url_api(item);
+        axios.post(url,params).then(({ data }) => {
+            console.log(data);
+            if (_.isFunction(success)) return success.call(success,data);
+            if(!_.isEmpty(success)) dispatch(success,data,{ root: true });
+        });
+    }
+};
