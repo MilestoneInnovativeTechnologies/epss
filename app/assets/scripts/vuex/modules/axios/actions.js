@@ -16,26 +16,34 @@ export function init({ dispatch }) {
     dispatch('processQueue');
 }
 
-export function get({ dispatch,commit,state },{ url,params,success }) {
-    let config = { url,params,method:'get' };
+export function queue({ dispatch,commit },{ config,success }) {
     commit(add_configuration_to_server_queue, { config,success });
+    dispatch('processQueue');
+}
+
+export function get({ dispatch },{ url,params,success }) {
+    let config = { url,params,method:'get' };
+    dispatch('queue',{ config,success });
     log('Queued get, '+url);
 }
 
-export function post({ dispatch,commit,state },{ url,params,success }) {
+export function post({ dispatch },{ url,params,success }) {
     let config = { url,params,method:'post' };
-    commit(add_configuration_to_server_queue, { config,success });
+    dispatch('queue',{ config,success });
     log('Queued post, '+url);
 }
 
 export function processQueue({ state,getters,dispatch }) {
-    if(!state.connection || state.transfer || getters.queue_count === 0 || !_.isEmpty(state.processing)){
+    if(state.connection && !state.transfer && getters.queue_count > 0 && _.isEmpty(state.processing))
+        return dispatch('initProcessQueue');
+    if(getters.queue_count > 0) {
         clearTimeout(timeOutVariable);
-        timeOutVariable = setTimeout(function(dispatch){
-            log('Request queue recheck, '+new Date().getTime());
+        timeOutVariable = setTimeout(function (dispatch) {
+            log('Request queue recheck, ' + new Date().getTime());
             dispatch('processQueue')
-        },queueCheckSeconds * 1000,dispatch);
-    } else dispatch('initProcessQueue');
+        }, queueCheckSeconds * 1000, dispatch);
+    }
+
 }
 
 export function initProcessQueue({ commit,dispatch,state }) {
