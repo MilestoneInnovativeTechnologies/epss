@@ -4,4 +4,6 @@ export default {
     password: null,
     pin: null,
     time_out: null,
+    api_token: null,
+    reference: null
 }

@@ -17,6 +17,7 @@
         name: 'Login',
         data: () => _.zipObject([],[]),
         computed:{
+            ...mapState(['id','api_token','reference']),
             email:{ get(){ return this.$store.state['User'].email },  set(val){ this.$store.commit('User/' + set_user_email,val) } },
             password:{ get(){ return this.$store.state['User'].password },  set(val){ this.$store.commit('User/' + set_user_password,val) } },
         },

@@ -64,10 +64,9 @@ export const api = {
     handler({ state,getters,dispatch },{ item,params,success }){
         params = _.isEmpty(params) ? state.api_config : _.defaultsDeep(params,state.api_config);
         let url = getters.url_api(item);
-        axios.post(url,params).then(({ data }) => {
-            console.log(data);
-            if (_.isFunction(success)) return success.call(success,data);
-            if(!_.isEmpty(success)) dispatch(success,data,{ root: true });
+        axios.post(url,params).then((response) => {
+            if (_.isFunction(success)) return success.call(response,response.data);
+            if(!_.isEmpty(success)) dispatch(success,response.data,{ root: true });
         });
     }
 };

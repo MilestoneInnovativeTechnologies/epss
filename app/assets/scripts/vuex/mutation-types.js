@@ -12,6 +12,7 @@ export const populate_axios_url_data = 'setAxiosUrlData';
 
 //Axios
 export const set_connectivity_availability = 'setConnectivityAvailable';
+export const update_axios_user_details  = 'setUserDetails';
 
 
 //Sync
@@ -27,5 +28,6 @@ export const update_table_timing = 'updateTableTime';
 export const set_user_email = 'setEmail';
 export const set_user_password = 'setPassword';
 export const set_user_pin = 'setPin';
+export const update_login_details = 'updateLoginDetails';
 
 export const MUTATE = 'DEMO';

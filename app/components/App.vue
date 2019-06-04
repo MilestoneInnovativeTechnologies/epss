@@ -22,7 +22,7 @@
             ...mapGetters('Log', ['pick']),
             ...mapState('Organization', ['image','name','brief','uuid']),
             ...mapState('Axios', ['client','last_response']),
-            ...mapState('Axios', { axiosQueue: 'queue',axiosProcessing: 'processing',axiosConnection: 'connection',axiosTransfer: 'transfer' }),
+            ...mapState('Axios', { axiosQueue: 'queue',axiosProcessing: 'processing',axiosConnection: 'connection',axiosTransfer: 'transfer',apiToken:(state)=>state.api_config.params.token,apiUser:(state)=>state.api_config.params._user }),
             ...mapState('Sync', ['tables','time']),
             ...mapState('Sync', { syncQueueIndex:'queue_index',syncQueueProcessing:'processing',syncQueue:'queue' }),
         }
