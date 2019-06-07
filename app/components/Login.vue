@@ -4,9 +4,10 @@
         <AbsoluteLayout>
             <StackLayout width="100%">
                 <Label text="LOGIN" class="font-weight-bold text-center t-20" />
-                <TextField v-model="email" hint="Email" class="cp fsi" @returnPress="focusPassword()" />
-                <TextField v-model="password" hint="Password"  @returnPress="login()" class="cp fsi" secure="true" ref="password" />
-                <Button text="Login" width="50%" :isEnabled="!validating" @tap="login()" class="btn btn-primary btn-active bcp" />
+                <TextField v-model="email" hint="Email" class="cp fsi" @returnPress="focusPassword" />
+                <TextField v-model="password" hint="Password"  @returnPress="login" class="cp fsi" secure="true" ref="password" />
+                <Button text="Login" width="50%" :isEnabled="!validating" @tap="login" class="btn btn-primary btn-active bcp" />
+                <Button text="Home" width="50%" @tap="home" class="btn btn-primary btn-active bcp" />
             </StackLayout>
             <StackLayout width="100%" height="175">
                 <ActivityIndicator :busy="validating" class="m-t-30"></ActivityIndicator>
@@ -20,6 +21,7 @@
     import { createNamespacedHelpers } from 'vuex';
     const { mapGetters,mapActions,mapState,mapMutations } = createNamespacedHelpers('User');
     const nspermission = require('nativescript-permissions');
+    import Home from './Home'
     export default {
         name: 'Login',
         data: () => _.zipObject([],[]),
@@ -32,6 +34,10 @@
             ...mapActions(['login']),
             focusPassword(){ this.$refs.password.nativeView.focus() },
             ...mapMutations([clear_login_message]),
+            home(){
+                this.$navigateTo(Home);
+                log('Home clikcj');
+            }
         },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Login Error', message:val, okButtonText:'Ok' }).then(()=>this[clear_login_message]()) }
