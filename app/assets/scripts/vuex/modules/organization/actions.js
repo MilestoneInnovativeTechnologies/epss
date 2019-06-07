@@ -37,7 +37,7 @@ export function setupOrganization({ dispatch }){
 }
 
 export function setup({ dispatch },data) {
-    dispatch('setupOrganizationDatabase',data)
+    return _.isEmpty(data) ? log('Device not registered: ' + device.uuid) : dispatch('setupOrganizationDatabase',data);
 }
 
 export function setupOrganizationDatabase({ state,commit,dispatch },data) {
