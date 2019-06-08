@@ -3,7 +3,7 @@
     <StackLayout width="75%" class="m-t-20">
         <AbsoluteLayout>
             <StackLayout width="100%">
-                <Label text="LOGIN" class="font-weight-bold text-center t-20" />
+                <Label text="LOGIN" class="font-weight-bold text-center t-20 c-black" />
                 <TextField v-model="email" hint="Email" class="cp fsi" @returnPress="focusPassword" />
                 <TextField v-model="password" hint="Password"  @returnPress="login" class="cp fsi" secure="true" ref="password" />
                 <Button text="Login" width="50%" :isEnabled="!validating" @tap="login" class="btn btn-primary btn-active bcp" />
@@ -36,7 +36,6 @@
             ...mapMutations([clear_login_message]),
             home(){
                 this.$navigateTo(Home);
-                log('Home clikcj');
             }
         },
         watch: {

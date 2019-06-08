@@ -1,12 +1,14 @@
 <!--suppress ALL -->
 <template>
     <Page>
-        <CustomActionBar title="ePlus Smart Sale"></CustomActionBar>
-        <GridLayout width="100%" rows="auto,*,50">
-            <Organization row="0"></Organization>
-            <Login row="1"></Login>
-            <Label row="2" textWrap="true" class="t-12 fsi font-italic text-center" style="width: 90%;" :text="pick" />
-        </GridLayout>
+        <ScrollView>
+            <CustomActionBar title="ePlus Smart Sale"></CustomActionBar>
+            <GridLayout width="100%" rows="auto,*,50">
+                <Organization row="0"></Organization>
+                <Login row="1"></Login>
+                <Label row="2" textWrap="true" class="t-12 fsi font-italic text-center" style="width: 90%;" :text="pick" />
+            </GridLayout>
+        </ScrollView>
     </Page>
 </template>
 

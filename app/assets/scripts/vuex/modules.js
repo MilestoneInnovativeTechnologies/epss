@@ -5,4 +5,5 @@ export default {
     'Database': require('./modules/database/index').default,
     'Sync': require('./modules/sync/index').default,
     'User': require('./modules/user/index').default,
+    'Menu': require('./modules/menu/index').default,
 }
