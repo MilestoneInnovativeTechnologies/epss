@@ -9,6 +9,7 @@ export default {
     url_api: '',
     url_sync: '',
     success: '',
+    fail: '',
     sync_config: { url:'',method:'post' },
     api_config: { method:'post',params:{ _user:'',token:'' } },
     last_response: { },

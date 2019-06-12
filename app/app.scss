@@ -4,6 +4,11 @@
 @import '~nativescript-theme-core/scss/orange';
 
 // Override variables here
+$orange: #FFA656 !default;
+$ab-color: $black;
+
+// Accent
+//$accent: $black;
 
 @import '~nativescript-theme-core/scss/index';
 

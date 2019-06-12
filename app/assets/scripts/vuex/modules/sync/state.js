@@ -8,4 +8,7 @@ export default {
     url: '',
     time: {},
     repeat_failed_timeout: 0,
+    time_out: 0,
+    user: '',
+    client: ''
 }

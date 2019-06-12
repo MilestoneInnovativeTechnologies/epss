@@ -1,3 +1,4 @@
+export function haveQueue({ queue_index }){ return queue_index.length !== 0 }
 export function haveQueueEarlierThan({ queue_index }){ return (time) => time >= _.head(queue_index); }
 export function canStartProcessingQueue({ processing }){ return _.isEmpty(processing); }
 export function getFirstQueueItem({ queue_index,queue }){

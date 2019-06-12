@@ -1,5 +1,5 @@
 import Vue from 'nativescript-vue'
-import App from './components/App'
+import Land from './components/Land'
 
 global._ = require('lodash');
 global.DB = require('./assets/scripts/services/database').DB;
@@ -18,7 +18,7 @@ global.log = function(text,...texts){ store.commit('Log/addQueue',text); if(TNS_
 import {TNSFontIcon, fonticon} from 'nativescript-fonticon';
 TNSFontIcon.debug = true;
 TNSFontIcon.paths = {
-    'fa': './assets/styles/fa.css'
+    'mi': './assets/styles/mi.css'
 };
 TNSFontIcon.loadCss();
 Vue.filter('fonticon', fonticon);
@@ -33,5 +33,5 @@ global.VueApp = new Vue({
             let init = Module + 'init'; if(vuex._actions[init]) vuex.dispatch(init).then(null);
         })
     },
-    render: h => h('frame', [h(App)])
+    render: h => h('frame', [h(Land)])
 }).$start();

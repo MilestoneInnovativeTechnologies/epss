@@ -16,22 +16,28 @@ export function init({ dispatch }) {
     dispatch('processQueue');
 }
 
-export function queue({ dispatch,commit },{ config,success }) {
-    commit(add_configuration_to_server_queue, { config,success });
+export function queue({ dispatch,commit },{ config,success,fail }) {
+    commit(add_configuration_to_server_queue, { config,success,fail });
     dispatch('processQueue');
 }
 
-export function get({ dispatch },{ url,params,success }) {
-    let config = { url,params,method:'get' };
-    dispatch('queue',{ config,success });
-    log('Queued get, '+url);
-}
+export const get = {
+    root:true,
+    handler({ dispatch },{ url,params,success,fail }) {
+        let config = { url,params,method:'get' };
+        dispatch('queue',{ config,success,fail });
+        log('Queued get, '+url);
+    }
+};
 
-export function post({ dispatch },{ url,params,success }) {
-    let config = { url,params,method:'post' };
-    dispatch('queue',{ config,success });
-    log('Queued post, '+url);
-}
+export const post = {
+    root:true,
+    handler({ dispatch },{ url,params,success,fail }) {
+        let config = { url,params,method:'post' };
+        dispatch('queue',{ config,success,fail });
+        log('Queued post, '+url);
+    }
+};
 
 export function processQueue({ state,getters,dispatch }) {
     if(state.connection && !state.transfer && getters.queue_count > 0 && _.isEmpty(state.processing))
@@ -59,11 +65,12 @@ export function proceedProcessing({ commit,dispatch,state }) {
         log('Response..., ' + state.processing.url); state.last_response = response;
         if(!_.isEmpty(state.success)) dispatch(state.success,response.data,{ root: true });
         commit(finalize_processing_transfer);
-        setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds,dispatch);
+        setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
     }).catch(() => {
         log('Failed.., ' + state.processing.url);
+        if(!_.isEmpty(state.fail)) dispatch(state.fail,null,{ root: true });
         commit(finalize_failed_transfer);
-        setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds,dispatch);
+        setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
     })
 }
 

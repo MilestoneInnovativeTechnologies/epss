@@ -4,11 +4,18 @@ import {
     add_to_app_sync_queue,
     processing_queue,
     finish_processing_queue,
-    update_table_timing
+    update_table_timing, set_new_sync_time_out
 } from './../../mutation-types';
 
-export function init({ dispatch }) {
-    dispatch('doSyncProcess');
+export function init({ dispatch,commit }) {
+    DB.get(table_information_db_table_name,null,function (commit,dispatch) {
+        _.forEach(this.result,function (tblObj) {
+            commit(add_new_table_for_sync,tblObj);
+            let at = now() + _.toSafeInteger(_.min([tblObj.up,tblObj.down])) + 11;
+            commit(add_to_app_sync_queue,{ table:tblObj.table,type:tblObj.type,at });
+        });
+        dispatch('doSyncProcess')
+    },commit,dispatch)
 }
 
 export function deleteClient({ dispatch,state,rootGetters }) {
@@ -18,14 +25,15 @@ export function deleteClient({ dispatch,state,rootGetters }) {
     dispatch('post',{ url,params },{ root:true });
 }
 
-export function downloadTableRecords({ commit,state,dispatch },table){
-    return DB.get(table_information_db_table_name,{ table },function(commit,state,dispatch){
+export function downloadTableRecords({ commit,dispatch },table){
+    return DB.get(table_information_db_table_name,{ table },function(commit,dispatch){
         _.forEach(this.result,(tblObj) => {
             commit(add_new_table_for_sync,tblObj);
-            let at = now() + state.app_sync_start_after;
-            commit(add_to_app_sync_queue,{ table:tblObj.table,type:tblObj.type,at });
+            dispatch('requeueSync',tblObj.table);
+            // let at = now() + state.app_sync_start_after;
+            // commit(add_to_app_sync_queue,{ table:tblObj.table,type:tblObj.type,at });
         })
-    },commit,state,dispatch)
+    },commit,dispatch)
 }
 
 // export function AppSyncPrepare({ commit,state }){
@@ -39,10 +47,20 @@ export function downloadTableRecords({ commit,state,dispatch },table){
 // }
 
 export function doSyncProcess({ getters,dispatch,commit }){
-    if(!getters.haveQueueEarlierThan(now()) || !getters.canStartProcessingQueue) return setTimeout(function(dispatch){ dispatch('doSyncProcess'); },sync_recheck_timeout_seconds*1000,dispatch);
-    log('Start processing a queue item');
-    commit(processing_queue,getters.getFirstQueueItem);
-    dispatch('doStartSyncProcessing')
+    if(!getters.haveQueue) return ; let cTime = now();
+    if (getters.haveQueueEarlierThan(cTime)){
+        if (getters.canStartProcessingQueue) {
+            log('Start processing a queue item');
+            commit(processing_queue,getters.getFirstQueueItem);
+            dispatch('doStartSyncProcessing')
+        } else {
+            commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess'); },sync_recheck_timeout_seconds*1000,dispatch));
+        }
+    } else {
+        let nTime = _.toSafeInteger(getters.getFirstQueueItem.index);
+        let rTime = nTime - cTime;
+        commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess'); },rTime*1000,dispatch));
+    }
 }
 
 export function doStartSyncProcessing({ state,dispatch }){
@@ -56,24 +74,35 @@ export function prepareSyncTable_APP({ dispatch,getters },table){
     let params = { format: 'json',  type: 'data' },
         url = getters.getTableSyncUrl(table);
     log('Sync request delivered for, '+table);
-    dispatch('post',{ url,params,success:'Sync/syncDataReceived_App' },{ root:true });
+    dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
 }
 
-export function prepareSyncTable_APPUSER({ dispatch,getters },table){
-    let params = { format: 'json',  type: 'data', created_at:'2000-01-01 00:00:01' },
+export function prepareSyncTable_APPUSER({ dispatch,getters,state },table){
+    let params = { format: 'json',  type: 'data', _user:state.user, _client:state.client },
         url = getters.getTableSyncUrl(table);
-    dispatch('post',{ url,params,success:'Sync/syncDataReceived_App' },{ root:true });
+    dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
 }
 
-export function prepareSyncTable_USER(context,table){
-
+export function prepareSyncTable_USER({ dispatch,getters,state },table){
+    let params = { format: 'json',  type: 'data', _user:state.user, _client:state.client },
+        url = getters.getTableSyncUrl(table);
+    dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
 }
 
-export function syncDataReceived_App({ commit,dispatch },data){
-    log('Syncing data received');
+export function syncDataReceived({ commit,dispatch,state },data){
+    let table = state.processing.table;
+    log('Syncing data received for, ' + table);
     if(!_.isEmpty(data)) dispatch('processSyncReceivedData',data);
-    log('Finishing process queue'); commit(finish_processing_queue);
-    setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds*1000,dispatch)
+    log('Finishing process queue, ' + table); commit(finish_processing_queue);
+    commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
+    dispatch('requeueSync',table);
+}
+export function syncDataFail({ commit,dispatch,state },data){
+    let table = state.processing.table;
+    log('Syncing failed for, ' + table);
+    log('Finishing process queue, ' + table); commit(finish_processing_queue);
+    commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
+    dispatch('requeueSync',table);
 }
 
 export function processSyncReceivedData({ commit,dispatch },data) {
@@ -85,9 +114,9 @@ export function processSyncReceivedData({ commit,dispatch },data) {
 }
 
 export function requeueSync({ state,commit },table) {
-    let { type,up,down } = _.pick(state.table[table],['type','up','down']);
-    if(type === 'APP' || type === 'APPUSER') commit(add_to_app_sync_queue,{ table,type,at:now()+down });
-    if(type === 'USER') commit(add_to_app_sync_queue,{ table,type,at:now()+up });
+    let { type,up,down } = _.pick(state.tables[table],['type','up','down']);
+    let at = now() + ((type === 'APP' || type === 'APPUSER') ? _.toSafeInteger(down) : _.toSafeInteger(up));
+    commit(add_to_app_sync_queue,{ table,type,at });
 }
 
 export function updateRecords({ commit }, {table, records}) {

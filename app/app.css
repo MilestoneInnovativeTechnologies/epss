@@ -1,6 +1,5 @@
 
-.fa { font-family: FontAwesome, fontawesome-webfont; }
-.ion { font-family: Ionicons, ionicons; }
+.mi { font-family: "Material Icons", MaterialIcons; }
 .fsb { font-family: "Fira Sans Bold", FiraSans-Bold; }
 .fsi { font-family: "Fira Sans Italic", FiraSans-Italic; }
 .fsr { font-family: "Fira Sans Regular", FiraSans-Regular; }
@@ -15,6 +14,11 @@
 .fs18 { font-size: 18 }
 .fs20 { font-size: 20 }
 .fs22 { font-size: 22 }
+.fs25 { font-size: 25 }
+.fs25 { font-size: 25 }
+.fs28 { font-size: 28 }
+.fs32 { font-size: 32 }
+.fs35 { font-size: 35 }
 
 .cp { color: #FFA656; }
 .bcp { background-color: #FFA656; }

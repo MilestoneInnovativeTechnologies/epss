@@ -17,7 +17,7 @@ export function create({ dispatch,commit }, data) {
                     if(type === 'APP') dispatch('Sync/downloadTableRecords',table,{ root:true });
                     },table,type,dispatch);
                 commit('Sync/' + add_new_table_for_sync,{ table,up,down,type },{ root:true })
-                },Table,Ary[0],Ary[1],Ary[2],Ary[3],dispatch,commit);
+                },Table,Ary[0],Ary[1],_.toSafeInteger(parseInt(Ary[2])*3600),_.toSafeInteger(parseInt(Ary[3])*60),dispatch,commit);
 
         });
         },data,dispatch,commit);

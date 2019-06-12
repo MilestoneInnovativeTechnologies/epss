@@ -23,6 +23,8 @@ export const set_sync_base_url = 'setBaseUrl';
 export const finish_processing_queue = 'finishProcessingSync';
 export const set_repeat_failed_timeout = 'setRepeatFailedTimeout';
 export const update_table_timing = 'updateTableTime';
+export const set_new_sync_time_out = 'setTimeOut';
+export const update_sync_user_details = 'setUserDetails';
 
 //User
 export const set_user_email = 'setEmail';
