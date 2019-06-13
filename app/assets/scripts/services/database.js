@@ -61,6 +61,17 @@ class Database {
         })
     }
 
+    delete(tbl,condition,callback,...args){
+        this.table(tbl); let query = `DELETE FROM ${this.tbl}`;
+        if(_.isNil(condition)) return this.query(query,callback,...args);
+        if(_.isString(condition) || _.isNumber(condition)) return this.query(`${query} where id = '${condition}'`,callback,...args);
+        if(_.isArray(condition)){
+            if(this.isSimpleArray(condition)) return this.query(`${query} WHERE id IN (${condition.join(',')})`,callback,...args);
+            return this.query(`${query} WHERE ${this.objArrayToCondition(condition)}`,callback,...args);
+        }
+        return this.query(`${query} WHERE ${this.objArrayToCondition([condition])}`,callback,...args);
+    }
+
     get(tbl,condition,callback,...args){
         this.table(tbl);
         if(_.isNil(condition)) return this.getAll(callback,args);
