@@ -33,7 +33,16 @@ export const get = {
 export const post = {
     root:true,
     handler({ dispatch },{ url,params,success,fail }) {
-        let config = { url,params,method:'post' };
+        let config = { url,data:params,method:'post' };
+        dispatch('queue',{ config,success,fail });
+        log('Queued post, '+url);
+    }
+};
+
+export const file = {
+    root:true,
+    handler({ dispatch },{ url,params,success,fail }) {
+        let config = _.merge(FD.config(url),{ data:params });
         dispatch('queue',{ config,success,fail });
         log('Queued post, '+url);
     }

@@ -4,7 +4,10 @@ import {
     processing_queue,
     set_sync_base_url,
     finish_processing_queue,
-    set_repeat_failed_timeout, update_table_timing, set_new_sync_time_out, update_sync_user_details,
+    set_repeat_failed_timeout,
+    update_table_timing,
+    set_new_sync_time_out,
+    update_sync_user_details,
 } from '../../mutation-types';
 import { gap_between_sync_queue_seconds } from '../../constants';
 
