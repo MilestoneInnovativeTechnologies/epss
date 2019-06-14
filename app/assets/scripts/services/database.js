@@ -4,15 +4,15 @@ const { path, knownFolders } = require('tns-core-modules/file-system');
 class Database {
     constructor() {
         this.variables();
-        if (!Sqlite.exists(this.dbFile)) log('No DB Found, Creating one');
+        if (!Sqlite.exists(this.dbFile)) sLog('No DB Found, Creating one');
         (new Sqlite(this.dbFile))
             .then((db) => {
                 db.resultType(Sqlite.RESULTSASOBJECT);
                 db.valueType(Sqlite.VALUESARESTRING);
                 this.database = db;
-                log('DB Connection Success');
+                sLog('DB Connection Success');
             })
-            .catch(e => log('DB Connection Failed..' + e));
+            .catch(e => sLog('DB Connection Failed..' + e));
     }
 
     variables() {
@@ -24,6 +24,7 @@ class Database {
         this.success = true;
         this.root = path.join(knownFolders.documents().path, 'database');
         this.dbFile = path.join(this.root, this.fileName + '.db');
+        this.executedQuery = [];
     }
 
     table(tbl) {
@@ -56,6 +57,7 @@ class Database {
     }
 
     query(query, callback, ...args) {
+        this.exeQuery(query);
         return this.database.execSQL(query, (error, result) => {
             this.postQuery.call(this,query,error,result,callback,args);
         })
@@ -85,6 +87,7 @@ class Database {
     }
     getWithID(id,callback,args){
         let query = `SELECT * FROM ${this.tbl} WHERE id = ?`;
+        this.exeQuery(query);
         return this.database.get(query,[id],(error,result) => {
             this.postQuery.call(this,query,error,result,callback,args);
         });
@@ -100,12 +103,14 @@ class Database {
     }
 
     getAllQuery(query,callback,args){
+        this.exeQuery(query);
         return this.database.all(query,(error,rows) => {
             this.postQuery.call(this,query,error,rows,callback,args);
         })
     }
     getAllQueryParams(query,params,callback,args){
         params = _.isArray(params) ? params : [params];
+        this.exeQuery(query);
         return this.database.all(query,params,(error,rows) => {
             this.postQuery.call(this,query,error,rows,callback,args);
         })
@@ -169,16 +174,16 @@ class Database {
     postQuery(query,error,result,callback,args){
         this.error = !!error; this.success = !error;
         if (error) {
-            log('Query error, ' + this.tbl);
+            sLog('Query error, ' + this.tbl);
             this.result = error;
         } else {
-            log('Query success, ' + this.tbl);
+            sLog('Query success, ' + this.tbl);
             this.result = result;
         }
         if(callback) callback.apply(this,args);
     }
 
-    drop(tbl) { return this.query(`DROP TABLE IF EXISTS "${tbl}"`); }
+    drop(tbl) { this.table(tbl); return this.query(`DROP TABLE IF EXISTS "${tbl}"`); }
     create(tbl, fields, callback, ...args) { this.drop(tbl); return this.query(this.create_Q(tbl, fields),callback,...args); }
     create_idField() { return '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'; }
     create_CAField() { return this.create_I('created_at'); }
@@ -188,11 +193,17 @@ class Database {
     create_FS(fields) { return _.map(_.split(fields, ','), (field) => {return this.create_T(field);}) }
     create_AFS(fields) { return _.concat(this.create_idField(), this.create_FS(fields), this.create_CAField(), this.create_UAField()); }
     create_Q(tbl, fields) { return `CREATE TABLE "${tbl}" ( ${this.create_AFS(fields).join(', ')} )`; }
+
+    exeQuery(query){
+        this.executedQuery.unshift(query);
+        this.executedQuery.splice(50);
+    }
+    log(){ return this.executedQuery }
 }
 
-function log(text) {
+function sLog(text) {
     if (TNS_ENV === 'production') return;
-    console.log('SQlite: ', text);
+    console.log('SQlite: '+ text);
 }
 
 
