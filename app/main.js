@@ -3,6 +3,7 @@ import Land from './components/Land'
 
 global._ = require('lodash');
 global.DB = require('./assets/scripts/services/database').DB;
+global.FD = require('./assets/scripts/services/formdata').FD;
 
 import "./app.scss";
 import "./app.css";
@@ -16,7 +17,7 @@ import store from './assets/scripts/vuex/store';
 global.log = function(text,...texts){ store.commit('Log/addQueue',text); if(TNS_ENV !== 'production') console.log(text,...texts); };
 
 import {TNSFontIcon, fonticon} from 'nativescript-fonticon';
-TNSFontIcon.debug = true;
+// TNSFontIcon.debug = true;
 TNSFontIcon.paths = {
     'mi': './assets/styles/mi.css'
 };
