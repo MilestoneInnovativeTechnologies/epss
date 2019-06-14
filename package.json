@@ -51,6 +51,8 @@
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
-    "emulator": "F:\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_V1S -netdelay none -netspeed full -gpu off"
+    "emulator": "F:\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_V1S -netdelay none -netspeed full -gpu off",
+    "devtool": "vue-devtools",
+    "android": "tns run android --bundle"
   }
 }
