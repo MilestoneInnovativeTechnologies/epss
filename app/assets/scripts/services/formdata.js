@@ -2,7 +2,7 @@ function getActivityUploadConfig(){ return { url,type:'post',enctype:'multipart/
 
 class AppFormData {
     constructor() {}
-    init(){ this.vFormData = new FormData(); }
+    init(){ this.vFormData = new FormData(); return this; }
     file(data,name){
         this.vFormData.append('file',new Blob([JSON.stringify(data)],{ type:'application/json' }),[(name || 'table'),'json'].join('.'));
         return this;
