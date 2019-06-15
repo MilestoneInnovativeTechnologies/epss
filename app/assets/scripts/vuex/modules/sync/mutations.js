@@ -13,9 +13,15 @@ import { gap_between_sync_queue_seconds } from '../../constants';
 
 export default {
     [add_new_table_for_sync](state, { table,up,down,type }) {
-        Object.assign(state.tables,_.zipObject([table],[{ up:_.toSafeInteger(parseInt(up)),down:_.toSafeInteger(parseInt(down)),type }]));
+        if(!_.has(state.tables,table))
+            Object.assign(state.tables,_.zipObject([table],[{ up:_.toSafeInteger(parseInt(up)),down:_.toSafeInteger(parseInt(down)),type }]));
     },
     [add_to_app_sync_queue](state, { table,at,type }) {
+        let cTime = _.toSafeInteger(_.findKey(state.queue,['table',table]));
+        if (cTime) { if (cTime <= _.toSafeInteger(at)) return;
+            state.queue_index = _.without(state.queue_index,cTime);
+            delete state.queue[cTime];
+        }
         let token = getNextPossibleQueueTokenAfter(at,state.queue_index);
         state.queue_index.push(token); state.queue_index.sort();
         Object.assign(state.queue,_.fromPairs([[token,{ table,type }]]))

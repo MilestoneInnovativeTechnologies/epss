@@ -11,7 +11,7 @@ export default {
     success: '',
     fail: '',
     sync_config: { url:'',method:'post' },
-    api_config: { method:'post',params:{ _user:'',token:'' } },
+    api_config: { method:'post',params:{ token:'' },data:{ _user:'' } },
     last_response: { },
     queue_failed: [ ],
     client: ''

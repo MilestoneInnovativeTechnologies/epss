@@ -86,9 +86,9 @@ export function proceedProcessing({ commit,dispatch,state }) {
 export const api = {
     root: true,
     handler({ state,getters,dispatch },{ item,params,success }){
-        params = _.isEmpty(params) ? state.api_config : _.defaultsDeep(params,state.api_config);
-        let url = getters.url_api(item);
-        axios.post(url,params).then((response) => {
+        let config = _.isEmpty(params) ? state.api_config : _.defaultsDeep({ data:params },state.api_config);
+        config.url = getters.url_api(item);
+        axios.request(config).then((response) => {
             if (_.isFunction(success)) return success.call(response,response.data);
             if(!_.isEmpty(success)) dispatch(success,response.data,{ root: true });
         });

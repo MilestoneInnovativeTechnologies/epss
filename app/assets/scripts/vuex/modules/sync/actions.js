@@ -1,6 +1,6 @@
 import {
     table_information_db_table_name, sync_recheck_timeout_seconds,
-    app_user_create_date_for_fetch, setup_sync_table_after, init_sync_table_after
+    app_user_create_date_for_fetch, setup_sync_table_after, init_sync_table_after, init_sync_user_table_after
 } from './../../constants';
 import {
     add_new_table_for_sync, add_to_app_sync_queue,
@@ -8,22 +8,31 @@ import {
     update_table_timing, set_new_sync_time_out
 } from './../../mutation-types';
 
-export function init({ dispatch,commit }) {
-    DB.get(table_information_db_table_name,null,function (commit,dispatch) {
-        if(this.error) return;
-        _.forEach(this.result,function (tblObj) {
-            commit(add_new_table_for_sync,tblObj);
-            dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_table_after });
-        });
-        dispatch('doSyncProcess');
-    },commit,dispatch)
-}
-
 export function deleteClient({ dispatch,state,rootGetters }) {
     let client = rootGetters['Organization/client'],
         url = state.url.replace(client+'/','delete'),
         params = { client };
     dispatch('post',{ url,params },{ root:true });
+}
+
+export function init({ dispatch,commit,state }) {
+    DB.get(table_information_db_table_name,null,function (commit,dispatch,state) {
+        if(this.error) return;
+        _.forEach(this.result,function (tblObj) {
+            if (tblObj.type === 'APP' || !!(state.user)){
+                commit(add_new_table_for_sync,tblObj);
+                dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_table_after });
+            }
+        });
+    },commit,dispatch,state)
+}
+export function initUserTables({ dispatch,commit,state }) {
+    DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,state) {
+        _.forEach(this.result,function (tblObj) {
+            commit(add_new_table_for_sync,tblObj);
+            dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
+        });
+    },commit,dispatch,state)
 }
 
 export function downloadTableRecords({ commit,dispatch },table){
@@ -67,14 +76,14 @@ export function prepareSyncTable_APP({ dispatch,getters },table){
 }
 
 export function prepareSyncTable_APPUSER({ dispatch,getters,state },table){
-    if (_.isEmpty(state.user)) return dispatch('syncDataReceived_APPUSER',[]);
+    if (!(state.user)) return dispatch('syncDataReceived_APPUSER',[]);
     let params = { format: 'json',  type: 'data', _user:state.user, client:state.client, created:app_user_create_date_for_fetch },
         url = getters.getTableSyncUrl(table);
     dispatch('post',{ url,params,success:'Sync/syncDataReceived_APPUSER',fail:'Sync/syncDataFail' },{ root:true });
 }
 
 export function prepareSyncTable_USER({ dispatch,getters,state,commit },table){
-    if (_.isEmpty(state.user)) return dispatch('syncDataReceived',[]);
+    if (!(state.user)) return dispatch('syncDataReceived',[]);
     let params = { format: 'json',  type: 'data', _user:state.user, client:state.client },
         url = getters.getTableSyncUrl(table), times = state.time,
         sync = _.toSafeInteger(_.get(times,`${table}.sync`,0)), create = _.toSafeInteger(_.get(times,`${table}.create`,0)), update = _.toSafeInteger(_.get(times,`${table}.update`,0));

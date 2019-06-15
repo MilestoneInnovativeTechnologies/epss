@@ -10,9 +10,10 @@ export function login({ state,commit,dispatch }){
     dispatch('api',{ item:'login', params: { email,password }, success: 'User/LoginReceived'},{ root:true })
 }
 
-export function LoginReceived({ commit,state },data) {
+export function LoginReceived({ commit,dispatch },data) {
     if(_.isEmpty(data)) return commit(login_validation_failed);
     commit(update_login_details,data);
     commit('Axios/' + update_axios_user_details,data,{ root:true });
     commit('Sync/' + update_sync_user_details,data,{ root:true });
+    dispatch('Sync/initUserTables',null,{ root:true });
 }

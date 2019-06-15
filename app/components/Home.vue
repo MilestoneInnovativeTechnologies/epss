@@ -21,7 +21,7 @@
             ...mapGetters('Menu', ['menus']),
         },
         data(){ return {
-            tbls:['area_users','areas','fiscalyearmaster','functiondetails','pricelist_header','pricelist','product_transaction_natures','product_transaction_types','productgroups','products','sales_order','sales_order_items','settings','stores','store_product_transactions','transactions','transaction_details','stock_transfer','user_settings','user_store_area','users'],
+            tbls:['area_users','areas'  ,'fiscalyearmaster','functiondetails','pricelist_header','pricelist','product_transaction_natures','product_transaction_types','productgroups','products','sales_order','sales_order_items','settings','stores','store_product_transactions','transactions','transaction_details','stock_transfer','user_settings','user_store_area','users'],
             stbl:0,
             recs:[]
         }},

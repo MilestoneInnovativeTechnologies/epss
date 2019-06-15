@@ -20,7 +20,7 @@ export default {
         state.sync_config.url = [data.url_interact,'sync',uuid].join('/');
     },
     [update_axios_user_details](state,{ id,api_token }){
-        state.api_config.params._user = id; state.api_config.params.token = api_token;
+        state.api_config.data._user = id; state.api_config.params.token = api_token;
     }
 };
 
