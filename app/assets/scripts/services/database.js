@@ -118,11 +118,11 @@ class Database {
 
     dataToInsert(data){
         data = _.isArray(data) ? data : [data];
-        let names = ['"created_at"','"updated_at"']; let values = [];
+        let names = ['`created_at`','`updated_at`']; let values = [];
         _.forEach(data,(record) => {
             let time = parseInt(new Date().getTime()/1000);
             let value = [time,time];
-            _.forEach(record,(val,key) => { key = `"${key}"`;
+            _.forEach(record,(val,key) => { key = `\`${key}\``;
                 let idx = _.indexOf(names,key); if(idx === -1) idx = names.push(key)-1;
                 _.set(value,idx,`"${val}"`)
             });
@@ -133,18 +133,18 @@ class Database {
 
     dataToUpdate(data) {
         let time = parseInt(new Date().getTime()/1000);
-        let sets = [`updated_at = ${time}`];
+        let sets = [`\`updated_at\` = ${time}`];
         _.forEach(data, (val, key) => {
-            sets.push(`${key} = "${val}"`)
+            sets.push(`\`${key}\` = "${val}"`)
         });
         return sets.join(',');
     }
 
     isSimpleArray(array){ return _.every(array,(element) => (_.isNumber(element) || _.isString(element)) ); }
     objToCondition({ field,value,operator,precedent }){
-        operator = operator || '=';// value = _.isNaN(value) ? value : _.toNumber(value);
+        operator = operator || '=';
         precedent = (precedent === true) ? 'AND' : (precedent || '');
-        return [precedent,`"${field}"`,operator,_.isNumber(value)?value:`"${value}"`].join(' ');
+        return [precedent,`\`${field}\``,operator,_.isNumber(value)?value:`"${value}"`].join(' ');
     }
     toCorrectObj(obj,operator,precedent){
         let objArray = [];
