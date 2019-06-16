@@ -30,6 +30,7 @@ export function init({ dispatch,commit,state }) {
 export function initUserTables({ dispatch,commit,state }) {
     DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,state) {
         _.forEach(this.result,function (tblObj) {
+            if(tblObj.type !== 'APPUSER') return;
             dispatch('addNewSyncTable',tblObj);
             dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
         });
