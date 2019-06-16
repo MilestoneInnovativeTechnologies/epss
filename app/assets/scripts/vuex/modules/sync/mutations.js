@@ -9,12 +9,12 @@ import {
     set_new_sync_time_out,
     update_sync_user_details,
 } from '../../mutation-types';
-import { gap_between_sync_queue_seconds } from '../../constants';
+import {gap_between_sync_queue_seconds, table_information_db_table_name} from '../../constants';
 
 export default {
     [add_new_table_for_sync](state, { table,up,down,type }) {
         if(!_.has(state.tables,table))
-            Object.assign(state.tables,_.zipObject([table],[{ up:_.toSafeInteger(parseInt(up)),down:_.toSafeInteger(parseInt(down)),type }]));
+            Object.assign(state.tables,_.zipObject([table],[{ up:_.toSafeInteger(up),down:_.toSafeInteger(down),type }]));
     },
     [add_to_app_sync_queue](state, { table,at,type }) {
         let cTime = _.toSafeInteger(_.findKey(state.queue,['table',table]));
@@ -44,6 +44,7 @@ export default {
     },
     [update_table_timing](state,{ table,type,time }) {
         Object.assign(state.time,_.zipObject([table],[_.zipObject([type],[time])]));
+        DB.update(table_information_db_table_name,{ table },_.zipObject([type],[time]));
     },
     [set_new_sync_time_out](state,timeout) {
         clearTimeout(state.time_out); state.time_out = timeout;

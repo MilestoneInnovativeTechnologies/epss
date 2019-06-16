@@ -7,7 +7,7 @@ export function Setup({ dispatch }){
 }
 
 export function create({ dispatch,commit }, data) {
-    DB.create(table_information_db_table_name,'table,fields,type,up,down',function(data, dispatch){
+    DB.create(table_information_db_table_name,'table,fields,type,up,down,sync,update,create',function(data, dispatch){
         if(this.error) return log(`Error in creating ${table_information_db_table_name} db table`,this.result);
         _.forEach(data,(Ary,Table) => {
             log('Creating Table: ' + Table);

@@ -1,3 +1,10 @@
+//Root
+export const add_module = 'addModule';
+export const bind_table_module = 'bindTableModule';
+
+//Module Common
+export const mutate_sync_data = 'mutateSyncData';
+
 export const add_message_to_log_queue = 'addQueue';
 
 export const set_device_uuid = 'set_uuid';

@@ -1,4 +1,5 @@
 export default {
-    name: 'root state',
-    abc: 'String ABC'
+    modules: [],
+    module_tables: {},
+    table_modules: {},
 };

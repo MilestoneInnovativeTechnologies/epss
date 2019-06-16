@@ -20,7 +20,7 @@ export function init({ dispatch,commit,state }) {
         if(this.error) return;
         _.forEach(this.result,function (tblObj) {
             if (tblObj.type === 'APP' || !!(state.user)){
-                commit(add_new_table_for_sync,tblObj);
+                dispatch('addNewSyncTable',tblObj);
                 dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_table_after });
             }
         });
@@ -29,7 +29,7 @@ export function init({ dispatch,commit,state }) {
 export function initUserTables({ dispatch,commit,state }) {
     DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,state) {
         _.forEach(this.result,function (tblObj) {
-            commit(add_new_table_for_sync,tblObj);
+            dispatch('addNewSyncTable',tblObj);
             dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
         });
     },commit,dispatch,state)
@@ -38,10 +38,15 @@ export function initUserTables({ dispatch,commit,state }) {
 export function downloadTableRecords({ commit,dispatch },table){
     return DB.get(table_information_db_table_name,{ table },function(commit,dispatch){
         _.forEach(this.result,(tblObj) => {
-            commit(add_new_table_for_sync,tblObj);
-            dispatch('requeueSyncImmediate',{ table:tblObj.table, after:setup_sync_table_after });
+            dispatch('addNewSyncTable',tblObj);
+            dispatch('requeueSyncImmediate',{ table:tblObj.table,after:setup_sync_table_after });
         })
     },commit,dispatch)
+}
+
+export function addNewSyncTable({ dispatch,commit },tblObj){
+    commit(add_new_table_for_sync,tblObj);
+    dispatch('redrawModules',tblObj.table,{ root:true });
 }
 
 export function doSyncProcess({ getters,dispatch,commit }){
@@ -89,9 +94,8 @@ export function prepareSyncTable_USER({ dispatch,getters,state,commit },table){
         sync = _.toSafeInteger(_.get(times,`${table}.sync`,0)), create = _.toSafeInteger(_.get(times,`${table}.create`,0)), update = _.toSafeInteger(_.get(times,`${table}.update`,0));
     if (sync < create || sync <= update){
         Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
-            activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
+            activity = _.filter(activity); if (true || _.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
             let data = FD.init().file(activity,table).params(params).get();
-            console.log('Prepared activity for '+table); console.log(activity);
             dispatch('file',{ url,params:data,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true })
         });
     } else {
@@ -117,7 +121,7 @@ export function syncDataReceived_APPUSER({ commit,dispatch,state },data){
     dispatch('requeueSync',table);
 }
 
-export function syncDataFail({ commit,dispatch,state },data){
+export function syncDataFail({ commit,dispatch,state }){
     let table = state.processing.table;
     log('Syncing failed for, ' + table);
     log('Finishing process queue, ' + table); commit(finish_processing_queue);
@@ -129,7 +133,7 @@ export function processSyncReceivedData({ commit,dispatch },data) {
     _.forEach(data,(activity) => {
         let table = activity.table, mode = activity.mode, type = mode + 'Records',
             payload = { type, table, records:activity.data };
-        dispatch(payload);
+        dispatch(payload); dispatch('redrawModules',table,{ root:true });
     })
 }
 
@@ -167,7 +171,7 @@ function now(){ return _.toSafeInteger(new Date().getTime()/1000); }
 
 function getTableRecordsForUpdate(table,sync){
     return new Promise(function(resolve, reject){
-        DB.get(table,[{ updated_at:sync,operator:'>=' },{ created_at:sync,operator:'=<' }],function (resolve){
+        DB.get(table,[{ updated_at:sync,operator:'>=' },{ created_at:sync,operator:'<=' }],function (resolve){
             if (!this.result.length) return resolve(null);
             resolve({ table:this.table(),primary_key:['id'],mode:'update',data:this.result });
         },resolve)

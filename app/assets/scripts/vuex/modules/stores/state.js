@@ -1,5 +1,5 @@
 import state from './../../../mixins/databindstate'
 export default {
-    _table:['areas','user_store_area'],
+    _table:['stores','user_store_area'],
     ...state,
 }
