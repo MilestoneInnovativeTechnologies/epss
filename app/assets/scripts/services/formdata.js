@@ -1,22 +1,28 @@
+const { knownFolders } = require('tns-core-modules/file-system');
+
 class AppFormData {
-    constructor() { console.log('FD Constr'); }
-    init(){ this.vFormData = new FormData(); console.log('FD init'); return this; }
-    file(data,name){
-        console.log('FD File');
-        this.vFormData.append('file',new Blob([JSON.stringify(data)],{ type:'application/json' }),[(name || 'table'),'json'].join('.'));
-        console.log('FD file after');
-        return this;
-    }
-    params(data){
+    constructor() { this.root = knownFolders.temp().getFolder('activity'); console.log('FD Constructor'); }
+    init(data,callback,...args){
+        this.vParams = []; this.callback = callback; this.args = args;
         console.log('FD params');
-        _.forEach(data,(val,fld) => { this.vFormData.append(fld,val); });
+        _.forEach(data,(value,name) => this.vParams.push({ name,value }));
         console.log('FD params after');
         return this;
     }
-    get(){ console.log('FD get'); return this.vFormData; }
-    config(url){
+    file(data,name){
+        console.log('FD File');
+        name = name || 'table'; let file = this.root.getFile(name + '.json');
+        file.writeText(JSON.stringify(data)).then(() => {
+            console.log('File write success',file.path);
+            this.vParams.push({ name:'file',filename:file.path,mimeType:'application/json' });
+            this.callback.apply(this,this.args)
+        }).catch((err) => { console.log('File write error',err) });
+        console.log('FD file after');
+        return this;
+    }
+    request(url){
         console.log('FD config');
-        return { url,type:'post',enctype:'multipart/form-data',processData:false,contentType:false }
+        return { url,method:'POST', headers: { "Content-Type": "application/octet-stream" },description:'Activity Upload' }
     }
 }
 
