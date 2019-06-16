@@ -1,8 +1,8 @@
 <!--suppress ALL -->
 <template>
     <App title="User Name">
-        <InfoWithIcon width="90%" heading="Stores" icon="store_mall_directory" :contents="['Store 1 Name','Store 2 Name']"></InfoWithIcon>
-        <InfoWithIcon width="90%" heading="Areas" icon="map" :contents="['Area 1 Name','Area 2 Name']"></InfoWithIcon>
+        <UserStores width="90%"></UserStores>
+        <UserAreas width="90%"></UserAreas>
         <Button @tap="ftb" text="Fet tables" />
         <ListPicker :items="tbls" v-model="stbl" />
         <Button @tap="ftbd" text="Fet dets" />
@@ -10,20 +10,25 @@
             <TextTitleSub class="m-t-12 m-b-8 m-l-2">{{ caption }}</TextTitleSub>
             <GridMenuRow :menus="items"></GridMenuRow>
         </template>
+        <Button @tap="dbg" text="DB Log" />
     </App>
 </template>
 
 <script>
     import { mapGetters,mapState } from 'vuex'
+    import UserStores from "./widgets/UserStores";
+    import UserAreas from "./widgets/UserAreas";
     export default {
         name: "Home",
+        components: {UserAreas, UserStores},
         computed: {
             ...mapGetters('Menu', ['menus']),
         },
         data(){ return {
             tbls:['area_users','areas'  ,'fiscalyearmaster','functiondetails','pricelist_header','pricelist','product_transaction_natures','product_transaction_types','productgroups','products','sales_order','sales_order_items','settings','stores','store_product_transactions','transactions','transaction_details','stock_transfer','user_settings','user_store_area','users'],
             stbl:0,
-            recs:[]
+            recs:[],
+            dbl:[],
         }},
         methods: {
             ftb(){
@@ -39,6 +44,9 @@
                     console.log('has ' + this.result.length + ' records');
                     console.log(_.head(this.result));
                 },vm)
+            },
+            dbg(){
+                this.dbl = DB.log();
             }
         },
         created() {
