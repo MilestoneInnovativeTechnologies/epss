@@ -19,7 +19,6 @@
     import {table_information_db_table_name} from "../assets/scripts/vuex/constants";
     export default {
         name: "Home",
-        components: {UserAreas, UserStores},
         computed: {
             ...mapGetters('Menu', ['menus']),
         },
