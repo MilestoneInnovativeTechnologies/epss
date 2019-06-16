@@ -14,10 +14,10 @@ export default {
         ...dbBind.actions,
         ...actions,
     },
-    state:() => { return {
-        ...dbBind.getState(),
+    state:{
+        _data:{},
         ...state,
-    } },
+    },
     getters: {
         ...dbBind.getters,
         ...getters,

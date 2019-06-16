@@ -30,7 +30,7 @@ export function init({ dispatch,commit,state }) {
 export function initUserTables({ dispatch,commit,state }) {
     DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,state) {
         _.forEach(this.result,function (tblObj) {
-            if(tblObj.type !== 'APPUSER') return;
+            // if(tblObj.type !== 'APPUSER') return;
             dispatch('addNewSyncTable',tblObj);
             dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
         });
@@ -96,9 +96,10 @@ export function prepareSyncTable_USER({ dispatch,getters,state,commit },table){
         sync = _.toSafeInteger(_.get(times,`${table}.sync`,0)), create = _.toSafeInteger(_.get(times,`${table}.create`,0)), update = _.toSafeInteger(_.get(times,`${table}.update`,0));
     if (sync < create || sync <= update){
         Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
-            activity = _.filter(activity); if (true || _.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
-            let data = FD.init().file(activity,table).params(params).get();
-            dispatch('file',{ url,params:data,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true })
+            activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
+            FD.init(params,function(dispatch,url){
+                dispatch('file',{ url,params:this.vParams,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true })
+            },dispatch,url).file(activity,table);
         });
     } else {
         dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
@@ -131,7 +132,7 @@ export function syncDataFail({ commit,dispatch,state }){
     dispatch('requeueSync',table);
 }
 
-export function processSyncReceivedData({ commit,dispatch },data) {
+export function processSyncReceivedData({ dispatch },data) {
     _.forEach(data,(activity) => {
         let table = activity.table, mode = activity.mode, type = mode + 'Records',
             payload = { type, table, records:activity.data };

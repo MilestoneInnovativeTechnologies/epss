@@ -1,3 +1,3 @@
-export function data(state) {
-    return state.data;
+export function credentials({ email,password }) {
+    return { email,password };
 }

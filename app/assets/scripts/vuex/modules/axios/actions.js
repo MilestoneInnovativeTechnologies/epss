@@ -1,4 +1,7 @@
 import axios from 'axios';
+const backHttp = require("nativescript-background-http");
+const session = backHttp.session("activity-upload");
+
 // const connectivity = require("tns-core-modules/connectivity");
 import { getConnectionType,connectionType,startMonitoring } from "tns-core-modules/connectivity";
 
@@ -42,7 +45,7 @@ export const post = {
 export const file = {
     root:true,
     handler({ dispatch },{ url,params,success,fail }) {
-        let config = _.merge(FD.config(url),{ data:params });
+        let config = { params, request:FD.request(url) };
         dispatch('queue',{ config,success,fail });
         log('Queued post, '+url);
     }
@@ -69,18 +72,40 @@ export function initProcessQueue({ commit,dispatch,state }) {
 
 export function proceedProcessing({ commit,dispatch,state }) {
     commit(initiate_processing_transfer);
+    return _.has(state.processing,'url') ? dispatch('doAxiosRequest') : dispatch('doBackHttpRequest');
+}
+
+export function doAxiosRequest({ state,dispatch }) {
     log('Requesting.., ' + state.processing.url);
     axios.request(state.processing).then((response) => {
-        log('Response..., ' + state.processing.url); state.last_response = response;
-        if(!_.isEmpty(state.success)) dispatch(state.success,response.data,{ root: true });
-        commit(finalize_processing_transfer);
-        setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
-    }).catch(() => {
-        log('Failed.., ' + state.processing.url);
-        if(!_.isEmpty(state.fail)) dispatch(state.fail,null,{ root: true });
-        commit(finalize_failed_transfer);
-        setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
+        dispatch('doHandleRequestResponse',response);
+    }).catch(() => dispatch('doHandleFailedResponse'))
+}
+
+export function doBackHttpRequest({ state,dispatch }) {
+    let processing = state.processing;
+    let task = session.multipartUpload(processing.params,processing.request);
+    task.on("responded", function(e){
+        let response = { data: _.isEmpty(_.trim(e.data)) ? [] : JSON.parse(e.data), responseCode:e.responseCode, task:e.task };
+        dispatch('doHandleRequestResponse',response);
+    });
+    task.on("error", function (e) {
+        dispatch('doHandleFailedResponse')
     })
+}
+
+export function doHandleRequestResponse({ state,dispatch,commit }, response) {
+    log('Response..., ' + (state.processing.url || state.processing.request.url)); state.last_response = response;
+    if(!_.isEmpty(state.success)) dispatch(state.success,response.data,{ root: true });
+    commit(finalize_processing_transfer);
+    setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
+}
+
+export function doHandleFailedResponse({ state,dispatch,commit }) {
+    log('Failed.., ' + (state.processing.url || state.processing.request.url));
+    if(!_.isEmpty(state.fail)) dispatch(state.fail,null,{ root: true });
+    commit(finalize_failed_transfer);
+    setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
 }
 
 export const api = {
