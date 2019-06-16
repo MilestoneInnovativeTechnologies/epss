@@ -14,6 +14,7 @@
     "@vue/devtools": "^5.1.0",
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
+    "nativescript-background-http": "^3.4.1",
     "nativescript-fonticon": "^2.0.0",
     "nativescript-permissions": "^1.3.6",
     "nativescript-socketio": "^3.2.1",
