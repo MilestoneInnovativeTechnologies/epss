@@ -44,6 +44,7 @@ export default {
         state.set_repeat_failed_timeout = tm;
     },
     [update_table_timing](state,{ table,type,time }) {
+        time = time || now();
         Object.assign(state.time,_.zipObject([table],[_.zipObject([type],[time])]));
         DB.update(table_information_db_table_name,{ table },_.zipObject([type],[time]));
     },
@@ -63,3 +64,5 @@ function getNextPossibleQueueTokenAfter(token,queue){
     if(_.isEmpty(intersects)) return token;
     return getNextPossibleQueueTokenAfter(token+(adjacent),queue);
 }
+
+function now(){ return _.toSafeInteger(new Date().getTime()/1000); }
