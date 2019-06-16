@@ -20,8 +20,9 @@ export function init({ dispatch,commit,state }) {
         if(this.error) return;
         _.forEach(this.result,function (tblObj) {
             if (tblObj.type === 'APP' || !!(state.user)){
+                let after = _.toSafeInteger(tblObj.next) - now(); after = ((after < 1) ? 0 : after) + init_sync_table_after;
                 dispatch('addNewSyncTable',tblObj);
-                dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_table_after });
+                dispatch('requeueSyncImmediate',{ table:tblObj.table,after });
             }
         });
     },commit,dispatch,state)

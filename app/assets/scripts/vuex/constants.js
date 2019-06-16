@@ -1,6 +1,9 @@
 export const organization_fetch_url = 'http://milestoneit.net/api/ss/device';
 export const database_fetch_url = 'http://milestoneit.net/api/ss/setup';
+
+//database
 export const table_information_db_table_name = 'table_information';
+export const table_information_db_table_fields = 'table,fields,type,up,down,sync,next,update,create';
 
 //sync
 export const setup_sync_table_after = 4;

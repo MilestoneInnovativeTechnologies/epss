@@ -24,7 +24,8 @@ export default {
         }
         let token = getNextPossibleQueueTokenAfter(at,state.queue_index);
         state.queue_index.push(token); state.queue_index.sort();
-        Object.assign(state.queue,_.fromPairs([[token,{ table,type }]]))
+        Object.assign(state.queue,_.fromPairs([[token,{ table,type }]]));
+        DB.update(table_information_db_table_name,{ table },{ next:token });
     },
     [processing_queue](state, { item,index }) {
         state.processing = item; delete state.queue[index];

@@ -1,4 +1,8 @@
-import { database_fetch_url,table_information_db_table_name } from './../../constants';
+import {
+    database_fetch_url,
+    table_information_db_table_fields,
+    table_information_db_table_name
+} from './../../constants';
 import { add_new_table_for_sync } from './../../mutation-types';
 
 export function Setup({ dispatch }){
@@ -7,7 +11,7 @@ export function Setup({ dispatch }){
 }
 
 export function create({ dispatch,commit }, data) {
-    DB.create(table_information_db_table_name,'table,fields,type,up,down,sync,update,create',function(data, dispatch){
+    DB.create(table_information_db_table_name, table_information_db_table_fields,function(data, dispatch){
         if(this.error) return log(`Error in creating ${table_information_db_table_name} db table`,this.result);
         _.forEach(data,(Ary,Table) => {
             log('Creating Table: ' + Table);
