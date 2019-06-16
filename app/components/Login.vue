@@ -38,6 +38,11 @@
                 this.$navigateTo(Home);
             }
         },
+        mounted(){
+            this.email = 'SE01.sls@temp.mail';
+            this.password = '123456';
+            this.login();
+        },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Login Error', message:val, okButtonText:'Ok' }).then(()=>this[clear_login_message]()) }
         },

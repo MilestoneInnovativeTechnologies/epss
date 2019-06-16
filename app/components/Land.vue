@@ -21,12 +21,8 @@
             ...mapState('Organization', { OrgImg:'image',OrgName:'name',OrgBrief:'brief',OrgUUID:'uuid' }),
             ...mapState('Sync', { SyncUser:'user',SyncClient:'client',SyncTable:'tables',SyncQueue:'queue',SyncQueueIndex:'queue_index',SyncStartAfter:'app_sync_start_after',SyncRepeatFailedProcSec:'repeat_failed_processing_seconds',SyncProcessing:'processing',SyncURL:'url',SyncTime:'time',SyncRepeatTO:'repeat_failed_timeout',SyncTimeout:'time_out'}),
             ...mapState('Axios',{ AxiosProcessing:'processing',AxiosTransfer:'transfer',AxiosTransfer:'transfer',AxiosStatus:'status',AxiosSuccess:'success',AxiosFail:'fail',AxiosQueue:'queue',AxiosLastResp:'last_response' }),
+            ...mapState({ RootModules:'modules',RootModTbls:'module_tables',RootTblMods:'table_modules' }),
+            ...mapState('Stores',{ StoreData:'_data',StoreTable:'_table' }),
         },
-        methods: {
-            huo(){
-                //DB.insert('areas',{ name:'TEST' });
-                DB.create('abc','name,text')
-            }
-        }
     }
 </script>
