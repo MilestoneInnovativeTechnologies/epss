@@ -23,7 +23,7 @@
             ...mapState('Axios',{ AxiosProcessing:'processing',AxiosTransfer:'transfer',AxiosTransfer:'transfer',AxiosStatus:'status',AxiosSuccess:'success',AxiosFail:'fail',AxiosQueue:'queue',AxiosLastResp:'last_response' }),
             ...mapState({ RootModules:'modules',RootModTbls:'module_tables',RootTblMods:'table_modules' }),
             ...mapState('Stores',{ StoreData:'_data',StoreTable:'_table' }),
-            ...mapState('Areas',{ StoreData:'_data',StoreTable:'_table' }),
+            ...mapState('Areas',{ AreaData:'_data',AreaTable:'_table' }),
         },
     }
 </script>
