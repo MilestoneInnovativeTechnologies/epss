@@ -16,8 +16,7 @@
 
 <script>
     import { mapGetters,mapState } from 'vuex'
-    import UserStores from "./widgets/UserStores";
-    import UserAreas from "./widgets/UserAreas";
+    import {table_information_db_table_name} from "../assets/scripts/vuex/constants";
     export default {
         name: "Home",
         components: {UserAreas, UserStores},
@@ -25,7 +24,7 @@
             ...mapGetters('Menu', ['menus']),
         },
         data(){ return {
-            tbls:['area_users','areas'  ,'fiscalyearmaster','functiondetails','pricelist_header','pricelist','product_transaction_natures','product_transaction_types','productgroups','products','sales_order','sales_order_items','settings','stores','store_product_transactions','transactions','transaction_details','stock_transfer','user_settings','user_store_area','users'],
+            tbls:[table_information_db_table_name,'area_users','areas'  ,'fiscalyearmaster','functiondetails','pricelist_header','pricelist','product_transaction_natures','product_transaction_types','productgroups','products','sales_order','sales_order_items','settings','stores','store_product_transactions','transactions','transaction_details','stock_transfer','user_settings','user_store_area','users'],
             stbl:0,
             recs:[],
             dbl:[],
