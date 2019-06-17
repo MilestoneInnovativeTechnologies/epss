@@ -1,3 +1,4 @@
+@import "./assets/styles/applist.css";
 
 .mi { font-family: "Material Icons", MaterialIcons; }
 .fsb { font-family: "Fira Sans Bold", FiraSans-Bold; }
@@ -20,5 +21,6 @@
 .fs32 { font-size: 32 }
 .fs35 { font-size: 35 }
 
+.text-underline { text-decoration: underline; }
 .cp { color: #FFA656; }
 .bcp { background-color: #FFA656; }

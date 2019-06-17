@@ -1,0 +1,40 @@
+.applist-thead {
+    border-bottom-color: #FFA656;
+    border-bottom-width: 2;
+}
+.applist-thead-row {
+    vertical-align: middle;
+    background-color: #F5F5F5;
+    color: black;
+}
+.applist-thead-column {
+    vertical-align: middle;
+}
+.applist-column-no {
+    font-weight: bold;
+    background-color: #F5F5F5;
+    text-align: center;
+    vertical-align: middle;
+    margin-right: 5;
+    width: 80;
+}
+.applist-column-action {
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 5;
+    width: 80;
+}
+.applist-tbody {
+    background-color: #FFFFFF;
+    color: black;
+    border-bottom-color: #FFA656;
+    border-bottom-width: 1;
+}
+.applist-tbody-row {
+    border-bottom-color: #FFA656;
+    border-bottom-width: 1;
+}
+.applist-tbody-column {
+    padding: 5 2;
+}
