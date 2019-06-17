@@ -22,10 +22,8 @@
 </template>
 
 <script>
-    import TextHighlight from "../../typography/TextHighlight";
     export default {
         name: "AppList",
-        components: {TextHighlight},
         props: {
             headRowHeight: { type:[Number,String],default:50 },
             layout: { type:Object,default:{ Name:'name' } },
