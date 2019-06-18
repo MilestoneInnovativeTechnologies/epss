@@ -14,8 +14,8 @@
     export default {
         name: "AppListBodyColumnSubRow",
         props: {
-            item: { type:Object,default:{ name:'Smart Sale' } },
-            layout: { type:Object,default:{ Name:'name' } },
+            item: { type:Object,default:()=>{ return { name:'Smart Sale' }} },
+            layout: { type:Object,default:() => { return { Name:'name' }} },
         },
         mixins: [getContentComponentOptions,AppListLinkNavigate],
         computed: {

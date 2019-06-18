@@ -9,7 +9,7 @@
     export default {
         name: "AppListHeadColumns",
         props: {
-            headColumns: { type:Array,default:['Name'] }
+            headColumns: { type:Array,default:()=>['Name'] }
         },
         computed: {
             unique(){ return new Date().getTime() },

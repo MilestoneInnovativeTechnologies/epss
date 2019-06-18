@@ -2,12 +2,16 @@
 <template>
     <App title="DEBUG">
         <Button text="Write file..." @tap="writeFile" />
+        <AppList :limit="limit"></AppList>
     </App>
 </template>
 
 <script>
     export default {
         name: "Debug",
+        data(){ return {
+            limit:1,
+        }},
         methods: {
             writeFile(){
                 let FDStatus = FD.init({ name:'File',type:'Upload' },function(a,b){

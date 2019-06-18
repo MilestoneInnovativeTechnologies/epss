@@ -12,9 +12,9 @@
     export default {
         name: "AppListBodyColumns",
         props: {
-            item: { type:Object,default:{ name:'ePlus' } },
+            item: { type:Object,default:()=>{ return { name:'ePlus' } } },
             headColumnCount: { type:Number,default:1 },
-            layout: { type:Object,default:{ Name:'name' } },
+            layout: { type:Object,default:()=> { return { Name:'name' } } },
         },
         mixins: [getContentComponentOptions,AppListLinkNavigate],
         computed:{

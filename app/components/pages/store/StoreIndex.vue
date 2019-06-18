@@ -1,8 +1,7 @@
 <!--suppress ALL -->
 <template>
     <App title="Stores">
-        <Label height="50"> YoYo </Label>
-        <AppList :data="stores" detail="store/StoreDetail" :props="['id','created_at']" :layout="{ ID:'id',Name:'name',Created:'created_at',UPDATED:'updated_at' }" :links="{ updated_at:['store/StoreDetail','id','updated_at'] }"></AppList>
+        <AppList :source="stores" detail="store/StoreDetail" class="m-t-10"></AppList>
     </App>
 </template>
 
@@ -11,8 +10,8 @@
     export default {
         name: "StoreIndex",
         computed: {
-            ...mapGetters('Stores',['_dataById']),
-            stores(){ return this._dataById('stores'); }
+            ...mapGetters('Stores',['_tableData']),
+            stores(){ return this._tableData('stores') }
         }
     }
 </script>

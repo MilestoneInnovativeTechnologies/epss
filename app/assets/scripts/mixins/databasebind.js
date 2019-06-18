@@ -31,8 +31,14 @@ export default {
         }
     },
     getters: {
-        _dataById({ _data,_table }){
-            return (table) => _.keyBy(_data[table ? table : (_.isArray(_table)?_.head(_table):_table)],'id');
-        }
+        __properTable({ _table }){
+            return (table) => table || (_.isArray(_table) ? _table[0] : _table)
+        },
+        _tableData({ _data }){
+            return (table) => _data[table];
+        },
+        _dataById(state,{ __properTable,_tableData }){
+            return (table,id) => _.keyBy(_tableData(__properTable(table)),(id || 'id'))
+        },
     }
 }

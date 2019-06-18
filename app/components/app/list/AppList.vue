@@ -26,33 +26,41 @@
         name: "AppList",
         props: {
             headRowHeight: { type:[Number,String],default:50 },
-            layout: { type:Object,default:{ Name:'name' } },
+            layout: { type:Object,default:()=>{ return { Name:'name' }} },
             maxHeadContents: { type:Number,default:3 },
-            data:{ type:[Array,Object],deault:[{ name:'ePlus' },{ name:'Smart Sale' }] },
+            source:{ type:[Array,Object],default:() => [{ name:'ePlus' },{ name:'Smart Sale' }] },
             detail: { type:String,default:'' },
             props: { type:[String,Array],default:'id' },
-            links: { type:Object,default:{} },
-            limit: { type:Number,default:0 },
+            links: { type:Object,default:()=>{return {}} },
+            limit: { type:[Number,String],default:10 },
         },
         data(){ return {
             display:0,
+            dataItems:[],
+            dataLimit:0,
         } },
         computed: {
             unique(){ return new Date().getTime() },
             key(){ return (rowNo) => ['applist',this.unique,'body','row',rowNo].join('-') },
-            limited(){ return (this.limit !== 0 && _.toArray(this.data).length > this.limit) },
+            limited(){ return (this.dataLimit !== 0 && this.dataItems.length > this.display) },
             rows(){ return [this.headRowHeight,'auto',this.limited ? 'auto' : 0].join(',') },
             headColumnCount(){ let headsLength = _.keys(this.layout).length; return (headsLength <= this.maxHeadContents) ? headsLength : this.maxHeadContents-1 },
             headColumns(){ return _.take(_.keys(this.layout),this.headColumnCount); },
             hasAction(){ return !_.isEmpty(this.detail); },
-            items(){ return this.limited ? _.take(_.toArray(this.data),this.display): _.toArray(this.data) }
+            items(){ return this.limited ? _.take(this.dataItems,this.display): this.dataItems }
         },
         methods: {
+            setItems(data){ this.dataItems = _.isArray(data) ? data : _.toArray(data) },
+            setLimit(limit){ this.dataLimit = _.toSafeInteger(limit); },
             linkProps(item){ return this.hasAction ? _.pick(item,this.props) : {} },
-            loadMore(){ this.display += _.toSafeInteger(this.limit) }
+            loadMore(){ this.display += _.toSafeInteger(this.dataLimit) }
         },
         created() {
-            this.display = this.limit === 0 ? _.toArray(this.data).length : this.limit;
+            this.display = this.dataLimit === 0 ? this.dataItems.length : this.dataLimit;
+        },
+        watch: {
+            source:{ deep:true,immediate:true,handler:'setItems' },
+            limit:{ immediate:true,handler:'setLimit' },
         }
     }
 </script>
