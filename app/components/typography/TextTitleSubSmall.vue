@@ -1,10 +1,10 @@
 <template>
-    <Label class="fsb font-weight-bold c-black" :text="mText" />
+    <TextBold class="c-black fs15 text-uppercase" :text="mText" />
 </template>
 
 <script>
     export default {
-        name: "TextBold",
+        name: "TextTitleSubSmall",
         mixins: [require('./../../assets/scripts/mixins/typography').default],
     }
 </script>
