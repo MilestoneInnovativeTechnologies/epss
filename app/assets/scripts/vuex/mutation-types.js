@@ -2,6 +2,8 @@
 export const add_module = 'addModule';
 export const bind_table_module = 'bindTableModule';
 
+//Helper
+
 //Module Common
 export const mutate_sync_data = 'mutateSyncData';
 
