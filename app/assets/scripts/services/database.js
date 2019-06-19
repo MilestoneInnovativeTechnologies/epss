@@ -29,7 +29,7 @@ class Database {
 
     table(tbl) {
         if(!tbl) return this.tbl;
-        this.tbl = tbl;
+        this.tbl = tbl; this.error = false;
         return this;
     }
 
