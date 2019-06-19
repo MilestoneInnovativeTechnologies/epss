@@ -17,7 +17,7 @@ export function deleteClient({ dispatch,state,rootGetters }) {
 
 export function init({ dispatch,commit,state }) {
     DB.get(table_information_db_table_name,null,function (commit,dispatch,state) {
-        if(this.error) return;
+        if(this.error) return log('Error getting app table information to sync');
         _.forEach(this.result,function (tblObj) {
             if (tblObj.type === 'APP' || !!(state.user)){
                 let after = _.toSafeInteger(tblObj.next) - now(); after = ((after < 1) ? 0 : after) + init_sync_table_after;
@@ -27,23 +27,19 @@ export function init({ dispatch,commit,state }) {
         });
     },commit,dispatch,state)
 }
-export function initUserTables({ dispatch,commit,state }) {
-    DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,state) {
+export function initUserTables({ dispatch,commit }) {
+    DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch) {
+        if(this.error) return log('Error getting user table information to sync');
         _.forEach(this.result,function (tblObj) {
-            // if(tblObj.type !== 'APPUSER') return;
             dispatch('addNewSyncTable',tblObj);
             dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
         });
-    },commit,dispatch,state)
+    },commit,dispatch)
 }
 
-export function downloadTableRecords({ commit,dispatch },table){
-    return DB.get(table_information_db_table_name,{ table },function(commit,dispatch){
-        _.forEach(this.result,(tblObj) => {
-            dispatch('addNewSyncTable',tblObj);
-            dispatch('requeueSyncImmediate',{ table:tblObj.table,after:setup_sync_table_after });
-        })
-    },commit,dispatch)
+export function downloadTableRecords({ commit,dispatch },tblObj){
+    dispatch('addNewSyncTable',tblObj);
+    dispatch('requeueSyncImmediate',{ table:tblObj.table,after:setup_sync_table_after });
 }
 
 export function addNewSyncTable({ dispatch,commit },tblObj){
@@ -96,7 +92,7 @@ export function prepareSyncTable_USER({ dispatch,getters,state,commit },table){
         sync = _.toSafeInteger(_.get(times,`${table}.sync`,0)), create = _.toSafeInteger(_.get(times,`${table}.create`,0)), update = _.toSafeInteger(_.get(times,`${table}.update`,0));
     if (sync < create || sync <= update){
         Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
-            activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
+            activity = _.filter(activity); if (true || _.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
             FD.init(params,function(dispatch,url){
                 dispatch('file',{ url,params:this.vParams,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true })
             },dispatch,url).file(activity,table);
@@ -143,11 +139,13 @@ export function processSyncReceivedData({ dispatch },data) {
 export function requeueSync({ state,dispatch },table) {
     let { type,up,down } = _.pick(state.tables[table],['type','up','down']);
     let after = ((type === 'APP' || type === 'APPUSER') ? _.toSafeInteger(down) : _.toSafeInteger(up));
+    console.log('Calling immediate from resync');
     dispatch('requeueSyncImmediate',{ table,type,after });
 }
 
 export function requeueSyncImmediate({ state,commit,dispatch },{ table,after,type }) {
     let at = now() + _.toSafeInteger(after); type = type || _.get(state.tables,[table,'type']);
+    log(now() + ' :rsi: '+table+', at: '+at);
     commit(add_to_app_sync_queue,{ table,type,at }); dispatch('doSyncProcess');
 }
 
