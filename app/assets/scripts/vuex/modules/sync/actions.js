@@ -145,7 +145,6 @@ export function requeueSync({ state,dispatch },table) {
 
 export function requeueSyncImmediate({ state,commit,dispatch },{ table,after,type }) {
     let at = now() + _.toSafeInteger(after); type = type || _.get(state.tables,[table,'type']);
-    log(now() + ' :rsi: '+table+', at: '+at);
     commit(add_to_app_sync_queue,{ table,type,at }); dispatch('doSyncProcess');
 }
 
