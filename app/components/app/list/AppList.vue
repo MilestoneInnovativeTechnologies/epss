@@ -42,13 +42,14 @@
             display:0,
             dataItems:[],
             dataLimit:0,
+            dataDecent:5,
         } },
         computed: {
             unique(){ return new Date().getTime() },
             key(){ return (rowNo) => ['applist',this.unique,'body','row',rowNo].join('-') },
             limited(){ return (this.dataLimit !== 0 && this.dataItems.length > this.display) },
             rows(){ return [!this.title ? 0 : 'auto',this.headRowHeight,'auto',this.limited ? 'auto' : 0].join(',') },
-            headColumnCount(){ let headsLength = _.keys(this.layout).length; return (headsLength <= this.maxHeadContents) ? headsLength : this.maxHeadContents-1 },
+            headColumnCount(){ let headsLength = _.keys(this.layout).length; return (headsLength <= this.maxHeadContents) ? headsLength : ( this.maxHeadContents - _.toSafeInteger(headsLength <= this.dataDecent)) },
             headColumns(){ return _.take(_.keys(this.layout),this.headColumnCount); },
             hasAction(){ return !_.isEmpty(this.detail); },
             items(){ return this.limited ? _.take(this.dataItems,this.display): this.dataItems }
