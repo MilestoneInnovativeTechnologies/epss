@@ -13,7 +13,7 @@ import {gap_between_sync_queue_seconds, table_information_db_table_name} from '.
 
 export default {
     [add_new_table_for_sync](state, { table,up,down,type,sync,create,update }) {
-        if(!_.has(state.tables,table)){
+        if(table && !_.has(state.tables,table)) {
             state.tables = Object.assign({},state.tables,_.zipObject([table],[{ up:_.toSafeInteger(up),down:_.toSafeInteger(down),type }]));
             state.time = Object.assign({},state.time,_.zipObject(['sync','update','create'],_.map([sync,update,create],_.toSafeInteger)));
         }
@@ -47,7 +47,7 @@ export default {
     },
     [update_table_timing](state,{ table,type,time }) {
         time = time || now();
-        Object.assign(state.time,_.zipObject([table],[_.zipObject([type],[time])]));
+        _.set(state.time,[table,type],time);
         DB.update(table_information_db_table_name,{ table },_.zipObject([type],[time]));
     },
     [set_new_sync_time_out](state,timeout) {
