@@ -1,29 +1,34 @@
 const { knownFolders } = require('tns-core-modules/file-system');
 
 class AppFormData {
-    constructor() { this.root = knownFolders.temp().getFolder('activity'); console.log('FD Constructor'); }
+    constructor() { this.root = knownFolders.temp().getFolder('activity'); sLog('FD Constructor'); }
     init(data,callback,...args){
         this.vParams = []; this.callback = callback; this.args = args;
-        console.log('FD params');
+        sLog('FD params');
         _.forEach(data,(value,name) => this.vParams.push({ name,value }));
-        console.log('FD params after');
+        sLog('FD params after');
         return this;
     }
     file(data,name){
-        console.log('FD File');
+        sLog('FD File');
         name = name || 'table'; let file = this.root.getFile(name + '.json');
         file.writeText(JSON.stringify(data)).then(() => {
-            console.log('File write success',file.path);
+            sLog('File write success',file.path);
             this.vParams.push({ name:'file',filename:file.path,mimeType:'application/json' });
             this.callback.apply(this,this.args)
-        }).catch((err) => { console.log('File write error',err) });
-        console.log('FD file after');
+        }).catch((err) => { sLog('File write error',err) });
+        sLog('FD file after');
         return this;
     }
     request(url){
-        console.log('FD config');
+        sLog('FD config');
         return { url,method:'POST', headers: { "Content-Type": "application/octet-stream" },description:'Activity Upload' }
     }
+}
+
+function sLog(text) {
+    if (TNS_ENV === 'production') return;
+    console.log('FormData: '+ text);
 }
 
 export const FD = new AppFormData();
