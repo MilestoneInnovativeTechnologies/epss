@@ -139,7 +139,6 @@ export function processSyncReceivedData({ dispatch },data) {
 export function requeueSync({ state,dispatch },table) {
     let { type,up,down } = _.pick(state.tables[table],['type','up','down']);
     let after = ((type === 'APP' || type === 'APPUSER') ? _.toSafeInteger(down) : _.toSafeInteger(up));
-    console.log('Calling immediate from resync');
     dispatch('requeueSyncImmediate',{ table,type,after });
 }
 
