@@ -1,3 +1,3 @@
-export function data(state) {
-    return state.data;
+export function NameId(state,{ _tableDataByIdName }) {
+    return  _.invert(_tableDataByIdName('product_transaction_types'))
 }
