@@ -3,7 +3,7 @@
     <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
         <CustomActionBar :title="title"></CustomActionBar>
         <ScrollView>
-            <StackLayout width="95%">
+            <StackLayout width="95%" class="m-t-10">
                 <slot></slot>
             </StackLayout>
         </ScrollView>
