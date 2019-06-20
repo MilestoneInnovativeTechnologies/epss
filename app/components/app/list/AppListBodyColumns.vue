@@ -1,6 +1,6 @@
 <template>
     <GridLayout class="applist-tbody-columns" :rows="rows" :columns="columns">
-        <TextRegular v-for="(path,colNo) in mainLayoutPaths" row="0" :col="colNo" class="applist-tbody-column" :class="linkClass(path)" @tap.native="navigate(path)" :textWrap="mainLayoutPaths.length === 1" :key="key(colNo)">{{ content(path) }}</TextRegular>
+        <TextRegular v-for="(path,colNo) in mainLayoutPaths" row="0" :col="colNo" class="applist-tbody-column" :class="_linkClass(path)" @tap.native="_linkNavigate(path)" :textWrap="mainLayoutPaths.length === 1" :key="key(colNo)">{{ content(path) }}</TextRegular>
         <AppListBodyColumnSubRow v-if="hasSubRow" row="1" col="0" :colSpan="headColumnCount" :item="item" :layout="subLayout" :links="links"></AppListBodyColumnSubRow>
     </GridLayout>
 </template>

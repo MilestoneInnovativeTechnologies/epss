@@ -1,28 +1,31 @@
+import {AppListDetailProps} from "./applistdetailprops";
+
 export const AppListLinkNavigate = {
+    mixins:[AppListDetailProps],
     props: {
         links: { type:Object,default:{} },
     },
     data(){ return {
-        linkClasses: ['cp','text-underline']
+        mixinLinkClasses: ['cp','text-underline'],
     } },
     methods: {
-        linkObj(path){ return _.get(this.links,path) },
-        hasLink(path){ return (!_.isEmpty(this.links) && !_.isEmpty(this.linkObj(path))) },
-        linkClass(path){ return this.hasLink(path) ? this.linkClasses : [] },
-        pathLink(path){
-            let linkObj = this.linkObj(path); if(!linkObj) return null;
+        _linkObj(path){ return _.get(this.links,path) },
+        _linkHas(path){ return (!_.isEmpty(this.links) && !_.isEmpty(this._linkObj(path))) },
+        _linkClass(path){ return this._linkHas(path) ? this.mixinLinkClasses : [] },
+        _linkDetail(path){
+            let linkObj = this._linkObj(path); if(!linkObj) return null;
             return _.isArray(linkObj) ? _.head(linkObj) : linkObj;
         },
-        pathProps(path){
-            let linkObj = this.linkObj(path); if(!linkObj || !_.isArray(linkObj)) return {};
-            return _.pick(this.item,_.tail(linkObj));
+        _linkProps(path){
+            let linkObj = this._linkObj(path); if(!linkObj || !_.isArray(linkObj) || _.isEmpty(_.tail(linkObj))) return {};
+            let propObj = this._getPropObjectOfNonEmpty(_.flattenDeep(_.tail(linkObj)));
+            return this.linkProps(this.item,propObj)
         },
-        navigate(path){
-            let pathLink = this.pathLink(path);
-            if(!this.hasLink(path) || !pathLink || _.isEmpty(pathLink)) return;
-            let comp = require('./../../../components/pages/' + this.pathLink(path) + '.vue').default;
-            let props = { props: this.pathProps(path) };
+        _linkNavigate(path){
+            if(!this._linkHas(path)) return;
+            let comp = require('./../../../components/pages/' + (this._linkDetail(path)) + '.vue').default;
+            let props = { props: this._linkProps(path) };
             this.$navigateTo(comp,props);
-        }
+        },
     }
 };
