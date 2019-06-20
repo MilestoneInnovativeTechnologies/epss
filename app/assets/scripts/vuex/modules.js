@@ -14,4 +14,7 @@ export default {
     'Transaction': require('./modules/transactions/index').default,
     'Users': require('./modules/users/index').default,
     'Customer': require('./modules/customer/index').default,
+    'Sales': require('./modules/sales/index').default,
+    'SalesOrder': require('./modules/salesorders/index').default,
+    'SPT': require('./modules/spt/index').default,
 }

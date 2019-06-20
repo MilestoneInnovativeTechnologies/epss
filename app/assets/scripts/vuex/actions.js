@@ -4,6 +4,9 @@ export function redrawModules({state, commit}, table) {
     if (!_.has(state.table_modules, table)) return;
     DB.get(table, null, function (modules, commit) {
         if (this.error) return;
+        // let firstModule = _.head(modules);
+        // let mutation = firstModule + '/' + mutate_sync_data;
+        // commit(mutation, {table: this.table(), data: this.result}, {root: true});
         _.forEach(modules, (module) => {
             let mutation = module + '/' + mutate_sync_data;
             commit(mutation, {table: this.table(), data: this.result}, {root: true});

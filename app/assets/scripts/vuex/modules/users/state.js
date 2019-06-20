@@ -1,3 +1,3 @@
 export default {
-    _table: ['users']
+    dbTables: ['users']
 }

@@ -1,3 +1,3 @@
 export default {
-    _table: ['product_transaction_natures'],
+    dbTables: ['product_transaction_natures'],
 }

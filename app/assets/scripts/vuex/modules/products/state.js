@@ -1,3 +1,3 @@
 export default {
-    _table:['products','pricelist','productgroups'],
+    dbTables:['products','pricelist','productgroups'],
 }

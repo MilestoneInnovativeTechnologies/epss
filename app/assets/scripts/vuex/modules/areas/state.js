@@ -1,3 +1,3 @@
 export default {
-    _table:['areas','user_store_area'],
+    dbTables:['areas','area_users'],
 }

@@ -10,8 +10,7 @@
     export default {
         name: "StoreIndex",
         computed: {
-            ...mapGetters('Stores',['_tableData']),
-            stores(){ return this._tableData('stores') }
+            ...mapGetters('Stores',['stores']),
         }
     }
 </script>

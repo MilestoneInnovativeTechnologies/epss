@@ -34,7 +34,7 @@
         methods: {
             fQL(){ let qLog = DB.log(); this.qLogSource = _.map(qLog,(qry) => { return { qry } }) },
             fTI(){ DB.get(table_information_db_table_name,null,function (vm) { vm.tblInfoSource = this.result; },this) },
-            gTD(){ DB.get(this.tables[this.selectedTableIndex],null,function(vm){ vm.selectedTableData = this.result },this) },
+            gTD(){ DB.get(this.tables[this.selectedTableIndex],null,function(vm){ vm.selectedTableData.splice(0); Array.prototype.push.apply(vm.selectedTableData,this.result) },this) },
         },
     }
 </script>
