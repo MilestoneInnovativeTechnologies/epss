@@ -1,7 +1,7 @@
 <template>
     <App title="Store Details">
         <TextTitle>{{ store.name }}</TextTitle>
-        <AppList title="Stock List" class="m-t-15" :source="source" :maxHeadContents="4" detail="product/ProductDetail"></AppList>
+        <AppList title="Stock List" class="m-t-15" :source="source" :layout="layout" :maxHeadContents="4" detail="product/ProductDetail"></AppList>
     </App>
 </template>
 
@@ -11,7 +11,7 @@
         name: "StoreDetail",
         props: ['id'],
         data(){ return {
-            layout: { Product:'name',Stock:'stock' }
+            layout: { Product:'Product',In:'In',Out:'Out',Stock:'Stock' }
         } },
         computed: {
             ...mapGetters('Stores',['_tableDataItem']),
@@ -21,8 +21,8 @@
             productStock(){ return _.mapValues(this.getGroupedStock(this.storeProducts),(InOutObj) => { return { ...InOutObj, Stock:(_.toSafeInteger(InOutObj['In']) - _.toSafeInteger(InOutObj['Out'])) } }) },
             allProducts(){ return this._tableDataByIdName('products','id') },
             source(){ let vm = this; return _(this.productStock).mapValues((IOObj,PID) => _.fromPairs([
-                ['Product',_.get(vm.allProducts,PID)],['In',_.toSafeInteger(IOObj['In'])],['Out',_.toSafeInteger(IOObj['Out'])],['Stock',_.toSafeInteger(IOObj['Stock'])]
-            ])).value() }
+                ['id',PID],['Product',_.get(vm.allProducts,PID)],['In',_.toSafeInteger(IOObj['In'])],['Out',_.toSafeInteger(IOObj['Out'])],['Stock',_.toSafeInteger(IOObj['Stock'])]
+            ])).value() },
         },
         methods: {
             getGroupedStock(coll){
