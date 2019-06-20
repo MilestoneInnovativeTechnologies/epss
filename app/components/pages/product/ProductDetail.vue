@@ -2,8 +2,8 @@
     <App title="Product Detail">
         <TextTitle>{{ product.name }}</TextTitle>
         <ProductBaseDetailMetric :id="id"></ProductBaseDetailMetric>
-        <ProductRecentSalesList limit="3" :id="id" class="m-t-10"></ProductRecentSalesList>
-        <ProductRecentReturnsList limit="2" :id="id" class="m-t-10"></ProductRecentReturnsList>
+        <ProductRecentSalesList limit="3" :id="id" class="m-t-15"></ProductRecentSalesList>
+        <ProductRecentReturnsList limit="2" :id="id" class="m-t-15"></ProductRecentReturnsList>
     </App>
 </template>
 
