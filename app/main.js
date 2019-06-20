@@ -35,7 +35,7 @@ global.VueApp = new Vue({
         let vuex = this.$store, actions = [];
         _.forEach(vuex._modulesNamespaceMap,(Obj,Module) => {
             let module =_.trim(Module,'/'); vuex.commit(add_module,Module);
-            if(vuex.state[module]._table) vuex.commit(bind_table_module,{ table:vuex.state[module]._table, module });
+            if(vuex.state[module].dbTables) vuex.commit(bind_table_module,{ table:vuex.state[module].dbTables, module });
             let init = Module + 'init'; if(vuex._actions[init]) actions.push(init);
         });
         _.forEach(actions,(action) => vuex.dispatch(action).then(null));

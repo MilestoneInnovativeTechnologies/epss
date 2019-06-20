@@ -15,7 +15,7 @@ export default {
         ...actions,
     },
     state:{
-        ...dbBind.getState(),
+        ...dbBind.state,
         ...state,
     },
     getters: {

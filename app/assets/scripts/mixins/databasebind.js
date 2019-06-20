@@ -1,15 +1,15 @@
 import {mutate_sync_data, update_table_timing} from "../vuex/mutation-types";
 
 export default {
-    getState: () => { return {
-        _data: {}
-    } },
+    state: {
+        dbData:[],
+    },
     mutations:{
         [mutate_sync_data](state, { table,data } ) {
-            if(!_.has(state._data, table))
-                state._data = Object.assign({},state._data,_.zipObject([table],[[]]));
-            state._data[table].splice(0); Array.prototype.push.apply(state._data[table],data);
-            // state._data[table] = data;
+            if(!_.has(state.dbData, table))
+                state.dbData = Object.assign({},state.dbData,_.zipObject([table],[[]]));
+            state.dbData[table].splice(0); Array.prototype.push.apply(state.dbData[table],data);
+            // state.dbData[table] = data;
         },
 
     },
@@ -31,14 +31,23 @@ export default {
         }
     },
     getters: {
-        __properTable({ _table }){
-            return (table) => table || (_.isArray(_table) ? _table[0] : _table)
+        __properTable({ dbTables }){
+            return (table) => table || (_.isArray(dbTables) ? dbTables[0] : dbTables)
         },
-        _tableData({ _data },{ __properTable }){
-            return (table) => _data[__properTable(table)];
+        _tableData({ dbData },{ __properTable }){
+            return (table) => dbData[__properTable(table)];
         },
-        _tableDataById(state,{ _tableData }){
-            return (table,id) => { return _.keyBy(_tableData(table),(id || 'id')) }
+        _tableDataAll({ dbData },{ _tableData,__properTable }){
+            return _tableData(__properTable());
+        },
+        _tableDataGroupByField(state,{ _tableData }){
+            return (table,field) => { return _.groupBy(_tableData(table),field) }
+        },
+        _tableDataByField(state,{ _tableData }){
+            return (table,field) => { return _.keyBy(_tableData(table),field) }
+        },
+        _tableDataById(state,{ _tableDataByField }){
+            return (table) => { return _tableDataByField(table,'id') }
         },
         _tableDataByIdField(state,{ _tableDataById }){
             return (table,field) => { return _.mapValues(_tableDataById(table),(field || 'name')) }

@@ -15,7 +15,7 @@ export default {
         ...actions,
     },
     state:{
-        _data:{},
+        ...dbBind.state,
         ...state,
     },
     getters: {

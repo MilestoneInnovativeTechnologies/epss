@@ -3,7 +3,8 @@ import mutations from './mutations';
 import * as getters from './getters';
 import state from './state';
 
-import dbBind from '../../../mixins/databasebind'
+import dbBind from '../../../mixins/databasebind';
+
 export default {
     namespaced: true,
     mutations:{
