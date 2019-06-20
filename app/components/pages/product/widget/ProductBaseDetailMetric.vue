@@ -4,6 +4,7 @@
 
 <script>
     import { mapGetters } from 'vuex'
+
     export default {
         name: "ProductBaseDetailMetric",
         props: ['id'],
