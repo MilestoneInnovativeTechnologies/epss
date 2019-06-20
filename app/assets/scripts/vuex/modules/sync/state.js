@@ -4,8 +4,8 @@ export default {
     queue_index: [],
     app_sync_start_after: 5,
     repeat_failed_processing_seconds: 60,
-    processing: {},
-    // processing: 'pause', // Pause sync while development
+    // processing: {},
+    processing: 'pause', // Pause sync while development
     url: '',
     time: {},
     repeat_failed_timeout: 0,

@@ -130,8 +130,7 @@ export function syncDataFail({ commit,dispatch,state }){
 
 export function processSyncReceivedData({ dispatch },data) {
     _.forEach(data,(activity) => {
-        let table = activity.table, mode = activity.mode, type = mode + 'Records',
-            payload = { type, table, records:activity.data };
+        let table = activity.table, mode = activity.mode, type = mode + ((table === 'setup') ? 'Setup' : 'Records'), payload = { type, table, records:activity.data };
         dispatch(payload); dispatch('redrawModules',table,{ root:true });
     })
 }
@@ -158,6 +157,24 @@ export function updateRecords({ commit }, {table, records}) {
 export function createRecords({ commit }, {table, records}) {
     if(records.length < 1) return;
     DB.insert(table,records,function(commit,table){
+        commit(update_table_timing,{ table,type:'sync',time:now() })
+    },commit,table);
+}
+
+export function updateSetup({ commit }, {table, records}) {
+    if(records.length < 1) return;
+    let data = []; _.forEach(_.head(records),(value,name) => { data.push({ name,value }); __[name] = value; });
+    let lastRecIndex = data.length - 1; if(lastRecIndex < 0) return;
+    _.forEach(data,(record,idx) => {
+        DB.update(table,{ name:record.name },{ value:record.value });
+        if(idx === lastRecIndex) commit(update_table_timing,{ table,type:'sync',time:now() })
+    });
+}
+
+export function createSetup({ commit }, {table, records}) {
+    if(records.length < 1) return;
+    let data = []; _.forEach(_.head(records),(value,name) => { data.push({ name,value }); __[name] = value; } );
+    DB.insert(table,data,function(commit,table){
         commit(update_table_timing,{ table,type:'sync',time:now() })
     },commit,table);
 }

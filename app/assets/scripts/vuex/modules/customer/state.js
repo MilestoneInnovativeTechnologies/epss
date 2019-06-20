@@ -1,3 +1,3 @@
 export default {
-    data: null,
+    _table:['users']
 }

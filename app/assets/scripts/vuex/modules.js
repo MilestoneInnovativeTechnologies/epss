@@ -8,4 +8,10 @@ export default {
     'Menu': require('./modules/menu/index').default,
     'Stores': require('./modules/stores/index').default,
     'Areas': require('./modules/areas/index').default,
+    'Product': require('./modules/products/index').default,
+    'TRNS': require('./modules/transactionnatures/index').default,
+    'TRPS': require('./modules/transactiontypes/index').default,
+    'Transaction': require('./modules/transactions/index').default,
+    'Users': require('./modules/users/index').default,
+    'Customer': require('./modules/customer/index').default,
 }
