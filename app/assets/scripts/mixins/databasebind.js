@@ -40,7 +40,7 @@ export default {
         _tableDataAll({ dbData },{ _tableData,__properTable }){
             return _tableData(__properTable());
         },
-        _tableDataGroupByField(state,{ _tableData }){
+        _tableDataByGroup(state,{ _tableData }){
             return (table,field) => { return _.groupBy(_tableData(table),field) }
         },
         _tableDataByField(state,{ _tableData }){

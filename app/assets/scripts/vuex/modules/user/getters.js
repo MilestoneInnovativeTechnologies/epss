@@ -11,6 +11,6 @@ export function areas(state,{ user_store_areas }) {
     return _.uniq(_.map(user_store_areas,'area'));
 }
 export function customers(state,{ areas },rootState,rootGetters) {
-    return _.flatMap(_.pick(rootGetters['Areas/_tableDataGroupByField']('area_users','area'),areas),(groupedArray)=>_.map(groupedArray,'user'));
+    return _.flatMap(_.pick(rootGetters['Areas/_tableDataByGroup']('area_users','area'),areas),(groupedArray)=>_.map(groupedArray,'user'));
 }
 
