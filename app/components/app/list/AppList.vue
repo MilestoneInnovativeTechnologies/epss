@@ -62,7 +62,6 @@
 
             setItems(data){ this.dataItems = _.isArray(data) ? data : _.toArray(data) },
             setLimit(limit){ this.dataLimit = _.toSafeInteger(limit); },
-            // linkProps(item){ return this.hasAction ? _.pick(item,this.props) : {} },
             loadMore(){ this.display += _.toSafeInteger(this.dataLimit) },
             getDataLayout(items){ return _.mapKeys(items,(item) => _.capitalize(item)) },
         },
