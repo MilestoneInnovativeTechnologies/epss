@@ -13,6 +13,8 @@ const nsWebpack = require("nativescript-dev-webpack");
 const nativescriptTarget = require("nativescript-dev-webpack/nativescript-target");
 const { NativeScriptWorkerPlugin } = require("nativescript-worker-loader/NativeScriptWorkerPlugin");
 
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+
 module.exports = env => {
     // Add your custom Activities, Services and other android app components here.
     const appComponents = [
@@ -235,6 +237,8 @@ module.exports = env => {
             }),
             // Does IPC communication with the {N} CLI to notify events when running in watch mode.
             new nsWebpack.WatchStateLoggerPlugin(),
+            // To strip all locales except “en” for moment.js
+            new MomentLocalesPlugin(),
         ],
     };
 
