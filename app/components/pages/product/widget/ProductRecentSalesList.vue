@@ -1,5 +1,5 @@
 <template>
-    <AppList title="Recent Sales" :limit="limit" :source="recentSalesSource" :layout="layout" :links="{ customer:['customer/CustomerDetail',[{ id:'cid' }]],quantity:'customer/CustomerDetail' }"></AppList>
+    <AppList title="Recent Sales" :limit="limit" :source="recentSalesSource" :layout="layout" :links="{ customer:['customer/CustomerDetail',{ id:'cid' }] }"></AppList>
 </template>
 
 <script>
