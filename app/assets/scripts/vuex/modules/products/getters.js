@@ -1,5 +1,5 @@
 export function productTrans(state,getters,rootState,rootGetters) {
-    return (product) => { return rootGetters['Stores/_tableDataFilter']('store_product_transactions','product',product) }
+    return (product) => { return rootGetters['SPT/_tableDataFilter']('store_product_transactions','product',product) }
 }
 export function productPrice(state,{ _tableDataFilter }) {
     return (product) => { return _(_tableDataFilter('pricelist','product',product)).groupBy('product').mapValues(PLArray => _.get(_.head(PLArray),'price')).get(product,0) }
