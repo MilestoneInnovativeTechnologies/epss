@@ -2,8 +2,9 @@
     <App title="Customer Detail">
         <TextTitle>{{ customer.name }}</TextTitle>
         <TextTitleSub>{{ customer.code }}</TextTitleSub>
-        <AppInfoWide title="Phone">{{ customer.phone }}</AppInfoWide>
-        <AppInfoWide title="Email">{{ customer.email }}</AppInfoWide>
+        <AppInfoWide title="Phone" v-if="customer.phone">{{ customer.phone }}</AppInfoWide>
+        <AppInfoWide title="Email" v-if="customer.email">{{ customer.email }}</AppInfoWide>
+        <CustomerOutstandingMetric :id="id" class="m-t-15"></CustomerOutstandingMetric>
     </App>
 </template>
 
