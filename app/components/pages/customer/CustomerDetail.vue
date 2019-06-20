@@ -5,6 +5,7 @@
         <AppInfoWide title="Phone" v-if="customer.phone">{{ customer.phone }}</AppInfoWide>
         <AppInfoWide title="Email" v-if="customer.email">{{ customer.email }}</AppInfoWide>
         <CustomerOutstandingMetric :id="id" class="m-t-15"></CustomerOutstandingMetric>
+        <CustomerRecentSaleList :id="id" :limit="3" class="m-t-15"></CustomerRecentSaleList>
     </App>
 </template>
 
