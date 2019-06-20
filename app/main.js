@@ -1,9 +1,10 @@
 import Vue from 'nativescript-vue'
 import Land from './components/Land'
 
-global._ = require('lodash');
+global._ = require('lodash'); global.__ = {};
 global.DB = require('./assets/scripts/services/database').DB;
 global.FD = require('./assets/scripts/services/formdata').FD;
+global.moment = require('moment'); moment().format(_.get(__,'OTHDATE_FORMAT'));
 
 import "./app.scss";
 import "./app.css";
