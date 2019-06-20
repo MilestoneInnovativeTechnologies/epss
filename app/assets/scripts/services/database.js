@@ -11,6 +11,12 @@ class Database {
                 db.valueType(Sqlite.VALUESARESTRING);
                 this.database = db;
                 sLog('DB Connection Success');
+                db.all('SELECT * FROM setup',function(error,rows){
+                    _.forEach(rows,(record) => {
+                        let value = (_.includes(record.name,'DATE_FORMAT')) ? _.replace(_.replace(record.value,/(dd)/g,'DD'),/(yy)/g,'YY') : record.value;
+                        _.set(__,record.name,value);
+                    });
+                })
             })
             .catch(e => sLog('DB Connection Failed..' + e));
     }
