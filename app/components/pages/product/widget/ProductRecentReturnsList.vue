@@ -1,5 +1,5 @@
 <template>
-    <AppList title="Recent Returns" :limit="limit" :source="recentReturnsSource" :layout="layout" :links="{ customer:['customer/CustomerDetail',{ id:'cid' }] }"></AppList>
+    <AppList title="Recent Returns" :limit="limit" :source="recentReturnsSource" :layout="layout" :links="{ customer:['customer/CustomerDetail',{ id:'cid' }] }" detail="pages/sales/SaleReturnDetail" :props="{ id:'_ref' }"></AppList>
 </template>
 
 <script>
