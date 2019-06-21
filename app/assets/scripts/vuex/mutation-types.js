@@ -6,6 +6,8 @@ export const bind_table_module = 'bindTableModule';
 
 //Module Common
 export const mutate_sync_data = 'mutateSyncData';
+export const stock_state_data = 'stockStateData';
+export const increment_stock_cache = 'incrementStockCache';
 
 export const add_message_to_log_queue = 'addQueue';
 
