@@ -42,7 +42,7 @@ export default {
         _stock({ commit },{ query,mutation,key,path }){
             mutation = mutation || stock_state_data;
             DB.getAllQuery(query,function(commit,mutation,key,path){
-                if(this.error) return log('DB Bind Global Module > action:_stock > execQuery error.',this.executedQuery[0]);
+                if(this.error) return log('DB Bind Global Module > action:_stock > execQuery error.',this.executedQuery[0],this.result);
                 commit(mutation,{ data:this.result,key,path });
             },[commit,mutation,key,path])
         },
@@ -92,6 +92,33 @@ export default {
             return (id,relationDeep,table) => { return _tableDataItem(table,_.reduce(relationDeep,function(id,relation){
                 return _.get(_tableDataItem(relation[0],id),relation[1])
             },id)) }
+        },
+        _stateData(state){
+            return (path) => { return _.get(state,path) }
+        },
+        _stateDataByGroup(state,{ _stateData }){
+            return (path,field) => { return _.groupBy(_stateData(path),field) }
+        },
+        _stateDataByField(state,{ _stateData }){
+            return (path,field) => { return _.keyBy(_stateData(path),field) }
+        },
+        _stateDataById(state,{ _stateDataByField }){
+            return (path) => { return _stateDataByField(path,'id') }
+        },
+        _stateDataByIdField(state,{ _stateDataById }){
+            return (path,field) => { return _.mapValues(_stateDataById(path),(field || 'name')) }
+        },
+        _stateDataByIdName(state,{ _stateDataByIdField }){
+            return (path) => { return _stateDataByIdField(path,'name') }
+        },
+        _stateDataItemByKey(state,{ _stateData }){
+            return (path,key,value) => { return _.find(_stateData(path),mpkva(key,value)) }
+        },
+        _stateDataItem(state,{ _stateDataItemByKey }){
+            return (path,id) => { return _stateDataItemByKey(path,'id',id) }
+        },
+        _stateDataFilter(state,{ _stateData }){
+            return (path,key,value) => _.filter(_stateData(path),mpkva(key,value))
         },
     }
 }
