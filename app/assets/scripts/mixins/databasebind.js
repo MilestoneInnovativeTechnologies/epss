@@ -1,8 +1,9 @@
-import {mutate_sync_data, update_table_timing} from "../vuex/mutation-types";
+import {increment_stock_cache, mutate_sync_data, stock_state_data, update_table_timing} from "../vuex/mutation-types";
 
 export default {
     state: {
         dbData:[],
+        stockActionCache:{},
     },
     mutations:{
         [mutate_sync_data](state, { table,data } ) {
@@ -11,7 +12,15 @@ export default {
             // state.dbData[table].splice(0); Array.prototype.push.apply(state.dbData[table],data);
             state.dbData[table] = data;
         },
-
+        [stock_state_data](state, { key,path,data } ) {
+            if(path) state[key] = Object.assign({},state[key],_.set({},path,data));
+            else state[key] = Object.assign({},state[key],data);
+        },
+        [increment_stock_cache](state,path) {
+            let cache = _.toSafeInteger(_.get(state.stockActionCache,path,0)) + 1;
+            if(_.has(state.stockActionCache,path)) state.stockActionCache[path] = cache;
+            else state.stockActionCache = Object.assign({},state.stockActionCache,_.zipObject([path],[cache]));
+        },
     },
     actions:{
         _insert({ dispatch,commit,state },{ table,data }){
@@ -28,6 +37,19 @@ export default {
                 commit('Sync/' + mutation,{ table,type:'update' },{ root:true });
                 dispatch('redrawModules',table,{ root:true });
             },table,update_table_timing,commit,dispatch,)
+        },
+        _stock({ commit },{ query,mutation,key,path }){
+            mutation = mutation || stock_state_data;
+            DB.getAllQuery(query,function(commit,mutation,key,path){
+                if(this.error) return log('DB Bind Global Module > action:_stock > execQuery error.',this.executedQuery[0]);
+                commit(mutation,{ data:this.result,key,path });
+            },[commit,mutation,key,path])
+        },
+        _stockIfNot({ state,dispatch,commit },payload){
+            let fullPath = _.trim([payload.key,payload.path].join('.'),'.');
+            if(_.isEmpty(_.get(state,fullPath))) return dispatch('_stock',payload);
+            commit(increment_stock_cache,fullPath);
+            if(_.toSafeInteger(state.stockActionCache[fullPath])%3 === 0) return dispatch('_stock',payload);
         }
     },
     getters: {
