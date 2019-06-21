@@ -50,7 +50,7 @@ export default {
             let fullPath = _.trim([payload.key,payload.path].join('.'),'.');
             if(_.isEmpty(_.get(state,fullPath))) return dispatch('_stock',payload);
             commit(increment_stock_cache,fullPath);
-            if(_.toSafeInteger(state.stockActionCache[fullPath])%stock_load_cache_refresh_on_each_nth_query === 0) return dispatch('_stock',payload);
+            if(_.toSafeInteger(state.stockActionCache[fullPath])%(payload.on || stock_load_cache_refresh_on_each_nth_query) === 0) return dispatch('_stock',payload);
         }
     },
     getters: {
