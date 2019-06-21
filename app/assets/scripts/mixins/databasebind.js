@@ -8,8 +8,8 @@ export default {
         [mutate_sync_data](state, { table,data } ) {
             if(!_.has(state.dbData, table))
                 state.dbData = Object.assign({},state.dbData,_.zipObject([table],[[]]));
-            state.dbData[table].splice(0); Array.prototype.push.apply(state.dbData[table],data);
-            // state.dbData[table] = data;
+            // state.dbData[table].splice(0); Array.prototype.push.apply(state.dbData[table],data);
+            state.dbData[table] = data;
         },
 
     },
