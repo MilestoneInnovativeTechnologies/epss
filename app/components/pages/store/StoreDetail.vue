@@ -6,28 +6,24 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
+    import { mapGetters,mapActions,mapState } from 'vuex';
     export default {
         name: "StoreDetail",
         props: ['id'],
         data(){ return {
+            query_stock: `SELECT TR.product id,PR.name Product,SUM(CASE WHEN TR.direction = 'In' THEN TR.quantity ELSE 0 END) 'In',SUM(CASE WHEN TR.direction = 'Out' THEN TR.quantity ELSE 0 END) 'Out', (SUM(CASE WHEN TR.direction = 'In' THEN TR.quantity ELSE 0 END)-SUM(CASE WHEN TR.direction = 'Out' THEN TR.quantity ELSE 0 END)) Stock FROM store_product_transactions TR,products PR WHERE TR.product = PR.id AND TR.store = "${this.id}" GROUP BY TR.product`,
             layout: { Product:'Product',In:'In',Out:'Out',Stock:'Stock' }
         } },
         computed: {
-            ...mapGetters('Stores',['_tableDataItem']),
-            ...mapGetters('SPT',['products']), ...mapGetters('Product',['_tableDataByIdName']),
-            store(){ return this._tableDataItem('stores',this.id) },
-            storeProducts(){ return this.products(this.id) },
-            productStock(){ return _.mapValues(this.getGroupedStock(this.storeProducts),(InOutObj) => { return { ...InOutObj, Stock:(_.toSafeInteger(InOutObj['In']) - _.toSafeInteger(InOutObj['Out'])) } }) },
-            allProducts(){ return this._tableDataByIdName('products','id') },
-            source(){ let vm = this; return _(this.productStock).mapValues((IOObj,PID) => _.fromPairs([
-                ['id',PID],['Product',_.get(vm.allProducts,PID)],['In',_.toSafeInteger(IOObj['In'])],['Out',_.toSafeInteger(IOObj['Out'])],['Stock',_.toSafeInteger(IOObj['Stock'])]
-            ])).value() },
+            ...mapState('Stores',['stock']),...mapGetters('Stores',['stores']),
+            store(){ return this.stores[this.id] },
+            source(){ return this.stock[this.id] },
         },
         methods: {
-            getGroupedStock(coll){
-                return _(coll).groupBy('product').mapValues((pSPT => _(pSPT).groupBy('direction').mapValues(ioSPT => _.sum(_(ioSPT).map((ioSPTItem) => _.toNumber(ioSPTItem.quantity)).value())).value())).value()
-            }
+            ...mapActions('Stores',['_stock']),
+        },
+        created(){
+            this._stock({ query:this.query_stock,key:'stock',path:this.id });
         }
     }
 </script>
