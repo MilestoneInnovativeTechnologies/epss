@@ -1,6 +1,5 @@
 export default {
     dbTables:['users','user_store_area'],
-    outstanding:{},
     id: null,
     email: null,
     password: null,

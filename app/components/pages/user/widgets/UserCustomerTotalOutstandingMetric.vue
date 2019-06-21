@@ -15,13 +15,13 @@
             itemKeys: ['coloured','size','icon','text','title']
         } },
         computed: {
-            ...mapGetters('User',['customers']), ...mapState('User',['outstanding']),
+            ...mapGetters('User',['customers']), ...mapState('Customer',['outstanding']),
             query(){ return _.replace(this.queryTemplate,/#USERS#/g,this.customers.join('","'))},
             itemText(){ return this.outstanding['all'][0] },
-            items(){ return _.map(this.metricTemplate,(title,idx) => _.zipObject(this.itemKeys,[this.coloured,this.size,this.metricIcons[idx],_.round(this.itemText[title],__.AMOUNT_DECIMAL),title])) }
+            items(){ let vm = this; return _.map(this.metricTemplate,(title,idx) => _.zipObject(vm.itemKeys,[vm.coloured,vm.size,vm.metricIcons[idx],_.round(vm.itemText[title],__.AMOUNT_DECIMAL),title])) }
         },
         methods: {
-            ...mapActions('User',['_stock']),
+            ...mapActions('Customer',['_stock']),
         },
         created() {
             this._stock({ query:this.query,key:'outstanding',path:'all' });

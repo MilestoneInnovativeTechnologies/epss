@@ -3,23 +3,28 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapState,mapGetters,mapActions } from 'vuex'
 
     export default {
         name: "CustomerOutstandingMetric",
         props: ['id'],
         data(){ return {
+            query: `SELECT outstanding_normal outstanding, outstanding_overdue overdue, outstanding_critical critical FROM users WHERE id = ${this.id}`,
             metricTemplate: ['outstanding','overdue','critical'],
             metricIcons: ['attach_money','error_outline','warning'],
-            size:25, coloured: true
+            size:25, coloured: true, itemKeys: ['coloured','size','icon','text','title']
         }},
         computed:{
-            ...mapGetters('Customer',['_tableDataItem']),
+            ...mapGetters('Customer',['_tableDataItem']), ...mapState('Customer',['outstanding']),
             customer(){ return this._tableDataItem('users',this.id) },
-            outstanding(){ return _.round(_.get(this.customer,'outstanding_normal'),__.AMOUNT_DECIMAL) },
-            overdue(){ return _.round(_.get(this.customer,'outstanding_overdue'),__.AMOUNT_DECIMAL) },
-            critical(){ return _.round(_.get(this.customer,'outstanding_critical'),__.AMOUNT_DECIMAL) },
-            items(){ let vm = this; return _.map(this.metricTemplate,(item,idx) => _.zipObject(['coloured','size','title','text','icon'],[vm.coloured,vm.size,item,vm[item],vm.metricIcons[idx]])) },
+            outstandings(){ return _.mapValues(this.outstanding[this.id][0],(item) => _.round(item,__.AMOUNT_DECIMAL)) },
+            items(){ let vm = this; return _.map(this.metricTemplate,(item,idx) => _.zipObject(['coloured','size','title','text','icon'],[vm.coloured,vm.size,item,vm.outstandings[item],vm.metricIcons[idx]])) },
         },
+        methods: {
+            ...mapActions('Customer',['_stockIfNot'])
+        },
+        created() {
+            this._stockIfNot({ query:this.query,key:'outstanding',path:this.id })
+        }
     }
 </script>
