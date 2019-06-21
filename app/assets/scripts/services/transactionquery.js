@@ -16,8 +16,7 @@ export const TransactionQueryBuilder = class {
         return this;
     }
     where(whereObj){
-        let rWhere = _.map(this.fieldMaps,(field,name) => { if(whereObj[name]){ return (_.isArray(whereObj[name])) ? `${this.fieldMaps[name]} IN ("${whereObj[name].join('","')}")` : `${this.fieldMaps[name]} = "${whereObj[name]}"` } });
-        this.aWhere = _.concat(this.ons,this.typeWhere,_.filter(rWhere));
+        this.rWhere = _.map(this.fieldMaps,(field,name) => { if(whereObj[name]){ return (_.isArray(whereObj[name])) ? `${this.fieldMaps[name]} IN ("${whereObj[name].join('","')}")` : `${this.fieldMaps[name]} = "${whereObj[name]}"` } });
         return this;
     }
     max(num){
@@ -25,6 +24,7 @@ export const TransactionQueryBuilder = class {
         return this;
     }
     query(){
+        this.aWhere = _.concat(this.ons,this.typeWhere,_.filter(this.rWhere));
         return `SELECT ${this.select.join(',')} FROM ${this.froms.join(',')} WHERE ${this.aWhere.join(' AND ')} ORDER BY TR.\`date\` DESC LIMIT ${this.limit}`;
     }
 };
