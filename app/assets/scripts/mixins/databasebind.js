@@ -1,4 +1,5 @@
 import {increment_stock_cache, mutate_sync_data, stock_state_data, update_table_timing} from "../vuex/mutation-types";
+import {stock_load_cache_refresh_on_each_nth_query} from "../vuex/constants";
 
 export default {
     state: {
@@ -49,7 +50,7 @@ export default {
             let fullPath = _.trim([payload.key,payload.path].join('.'),'.');
             if(_.isEmpty(_.get(state,fullPath))) return dispatch('_stock',payload);
             commit(increment_stock_cache,fullPath);
-            if(_.toSafeInteger(state.stockActionCache[fullPath])%3 === 0) return dispatch('_stock',payload);
+            if(_.toSafeInteger(state.stockActionCache[fullPath])%stock_load_cache_refresh_on_each_nth_query === 0) return dispatch('_stock',payload);
         }
     },
     getters: {
