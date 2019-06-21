@@ -8,8 +8,8 @@
     export default {
         name: "UserAreasInfoWithIcon",
         computed: {
-            ...mapGetters('User',['areas','customers']), ...mapGetters('Areas',['_tableDataById']),
-            myAreas(){ return _.map(_.pick(this._tableDataById('areas','id'),this.areas),'name') },
+            ...mapGetters('User',['areas']), ...mapGetters('Areas',['_tableDataByIdName']),
+            myAreas(){ return _.values(_.pick(this._tableDataByIdName('areas'),this.areas)) },
         },
     }
 </script>
