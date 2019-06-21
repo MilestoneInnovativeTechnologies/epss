@@ -1,29 +1,26 @@
 <template>
-<!--    <AppList :source="source" :limit="limit"></AppList>-->
-    <AppList :source="test"></AppList>
+    <AppList :source="source" :limit="limit" :layout="layout" :title="title"></AppList>
 </template>
 
 <script>
-    import { mapState,mapGetters,mapActions } from 'vuex';
+    import { mapActions,mapState } from 'vuex';
 
     export default {
         name: "CustomerRecentSaleList",
-        props: ['id','limit'],
+        props: ['id','limit','title'],
         data(){ return {
+            query: `SELECT TR._ref,TR.docno,TR.date, SUM(DT.total) total FROM transactions TR,transaction_details DT WHERE TR._ref = DT.\`transaction\` AND TR.customer = "${this.id}" AND TR.fncode LIKE 'SL%' GROUP BY TR._ref ORDER BY \`date\` ASC`,
+            layout: { 'DOC NO':'docno',Date:'date',Total:'total' },
         }},
         computed:{
-            ...mapGetters('Sales',['customer']), ...mapState('Sales',['saleSummary']),
-            sales(){ return this.customer(this.id) },
-            source(){ return _.map(this.sales,(item) => _.zipObject(['Doc No','Date','Customer'],[item.docno,moment(item.date).format(__.DOCDATE_FORMAT),_.round(item.total,__.AMOUNT_DECIMAML)])) },
-            test(){ return this.saleSummary[this.id] }
+            ...mapState('Sales',['customerSaleSummary']),
+            source(){ return _.map(this.customerSaleSummary[this.id],(details) => { return { ...details,date:moment(details.date).format(__.DOCDATE_FORMAT),total:_.round(details.total,__.AMOUNT_DECIMAL) } }) }
         },
         methods: {
-            ...mapActions('Sales',['customerSaleSummary','_stock']),
+            ...mapActions('Sales',['_stock']),
         },
         created() {
-            // this.customerSaleSummary(this.id)
-            let query = `SELECT TR._ref,TR.docno,TR.date, SUM(DT.total) total FROM transactions TR,transaction_details DT WHERE TR._ref = DT.\`transaction\` AND TR.customer = "${this.id}" GROUP BY TR._ref`;
-            this._stock({ query,key:'saleSummary',path:this.id });
+            this._stock({ query:this.query,key:'customerSaleSummary',path:this.id });
         }
     }
 </script>
