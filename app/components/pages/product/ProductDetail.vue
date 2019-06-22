@@ -15,8 +15,6 @@
         computed: {
             ...mapGetters('Product',['_tableDataItem']),
             product(){ return this._tableDataItem('products',this.id) },
-        },
-        methods: {
         }
     }
 </script>
