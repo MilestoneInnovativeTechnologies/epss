@@ -1,31 +1,33 @@
 <template>
-    <AppList :source="source" :limit="limit" :layout="layout" :title="title"></AppList>
+    <AppList :source="source" :limit="limit" :layout="layout" :title="title" detail="sales/SaleReturnDetail"></AppList>
 </template>
 
 <script>
-    import { mapActions,mapState } from 'vuex';
+    import { mapActions,mapGetters } from 'vuex';
+    import {TransactionQueryBuilder} from "../../../../assets/scripts/services/transactionquery";
 
     export default {
         name: "CustomerRecentReturnList",
         props: ['id','limit','title'],
         data(){ return {
-            query: `SELECT TR._ref,TR.docno,TR.date, SUM(DT.total) total FROM transactions TR,transaction_details DT WHERE TR._ref = DT.\`transaction\` AND TR.customer = "${this.id}" AND TR.fncode LIKE 'SR%' GROUP BY TR._ref ORDER BY \`date\` ASC`,
+            fields: ['id','docno','date','total'],
             layout: { 'DOC NO':'docno',Date:'date',Total:'total' },
             cast: { date:'docdate',total:'amount' }
         }},
         computed:{
-            ...mapState('Sales',['customerReturnSummary']),
-            source(){ return __.cast(this.customerReturnSummary[this.id],this.cast) }
+            ...mapGetters('Sales',['_stateDataByGroup']),
+            dbData(){ return this._stateDataByGroup('customerReturnSummary.'+this.id,'id')},
+            formatted(){ return _.map(this.dbData,(itemsArray) => { return this.getItemObj(itemsArray) }) },
+            source(){ return __.cast(this.formatted,this.cast); },
+            query(){ return new TransactionQueryBuilder('SR').fields(this.fields).where({ cid:this.id }).max(15).query(); }
         },
         methods: {
-            ...mapActions('Sales',['_stock']),
+            ...mapActions('Sales',['_stockIfNot']),
+            getItemObj(array){ let first = _.head(array); return _.zipObject(this.fields,[first.id,first.docno,first.date,this.getSumTotal(array)]); },
+            getSumTotal(array){ return _.sum(_.map(array,(item) => _.toNumber(item.total))) }
         },
         created() {
-            this._stock({ query:this.query,key:'customerReturnSummary',path:this.id });
+            this._stockIfNot({ query:this.query,key:'customerReturnSummary',path:this.id });
         }
     }
 </script>
-
-<style scoped>
-
-</style>
