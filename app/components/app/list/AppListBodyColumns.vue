@@ -15,6 +15,7 @@
             item: { type:Object,default:()=>{ return { name:'ePlus' } } },
             headColumnCount: { type:Number,default:1 },
             layout: { type:Object,default:()=> { return { Name:'name' } } },
+            cast: { type:Object,default:()=> { return { } } },
         },
         mixins: [getContentComponentOptions,AppListLinkNavigate],
         computed:{
@@ -24,7 +25,7 @@
             rows(){ return _.fill(Array(_.toSafeInteger(this.hasSubRow)+1),'auto').join(',') },
             columns(){ return _.fill(Array(this.headColumnCount),'*').join(',') },
             mainLayoutPaths(){ return _.take(_.values(this.layout),this.headColumnCount) },
-            content(){ return (path) => this.getContent(_.get(this.item,path)); },
+            content(){ return (path) => (!_.isEmpty(this.cast) && _.has(this.cast,path)) ? __[this.cast[path]](this.getContent(_.get(this.item,path))) : this.getContent(_.get(this.item,path)); },
             subLayout(){ return _.pick(this.layout,_.slice(_.keys(this.layout),this.headColumnCount)) },
         },
     }

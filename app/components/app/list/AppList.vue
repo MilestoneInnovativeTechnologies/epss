@@ -14,7 +14,7 @@
         <FlexboxLayout flexDirection="column" row="2" col="0" class="applist-tbody">
             <FlexBoxLayout class="applist-tbody-row" v-for="(item,rowNo) in items" :key="key(rowNo)">
                 <TextBold class="applist-tbody-column applist-column-no">{{ rowNo + 1 }}</TextBold>
-                <AppListBodyColumns :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links"></AppListBodyColumns>
+                <AppListBodyColumns :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :cast="cast"></AppListBodyColumns>
                 <AppListAction v-if="hasAction" class="applist-tbody-column applist-column-action" :link="detail" :props="linkProps(item)"></AppListAction>
             </FlexBoxLayout>
         </FlexboxLayout>
@@ -39,6 +39,7 @@
             links: { type:Object,default:()=>{return {}} },
             limit: { type:[Number,String],default:10 },
             title: { type:String,default:'' },
+            cast: { type:Object,default:()=>{ return {} } },
         },
         mixins: [AppListDetailProps],
         data(){ return {

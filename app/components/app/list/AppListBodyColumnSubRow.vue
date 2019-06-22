@@ -22,7 +22,7 @@
             unique(){ return new Date().getTime() },
             key(){ return (colNo) => ['applist',this.unique,'head','column',colNo].join('-') },
             columns(){ return _.fill(Array(_.toArray(this.layout).length),'*').join(',') },
-            content(){ return (path) => this.getContent(_.get(this.item,path)); },
+            content(){ return (path) => (!_.isEmpty(this.cast) && _.has(this.cast,path)) ? __[this.cast[path]](this.getContent(_.get(this.item,path))) : this.getContent(_.get(this.item,path)); },
         }
     }
 </script>
