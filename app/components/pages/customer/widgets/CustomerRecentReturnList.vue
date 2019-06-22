@@ -11,10 +11,11 @@
         data(){ return {
             query: `SELECT TR._ref,TR.docno,TR.date, SUM(DT.total) total FROM transactions TR,transaction_details DT WHERE TR._ref = DT.\`transaction\` AND TR.customer = "${this.id}" AND TR.fncode LIKE 'SR%' GROUP BY TR._ref ORDER BY \`date\` ASC`,
             layout: { 'DOC NO':'docno',Date:'date',Total:'total' },
+            cast: { date:'docdate',total:'amount' }
         }},
         computed:{
             ...mapState('Sales',['customerReturnSummary']),
-            source(){ return _.map(this.customerReturnSummary[this.id],(details) => { return { ...details,date:moment(details.date).format(__.DOCDATE_FORMAT),total:_.round(details.total,__.AMOUNT_DECIMAL) } }) }
+            source(){ return __.cast(this.customerReturnSummary[this.id],this.cast) }
         },
         methods: {
             ...mapActions('Sales',['_stock']),
