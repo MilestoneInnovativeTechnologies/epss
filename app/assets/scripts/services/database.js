@@ -1,5 +1,6 @@
 const Sqlite = require('nativescript-sqlite');
 const { path, knownFolders } = require('tns-core-modules/file-system');
+import { SSSetup } from './setup'
 
 class Database {
     constructor() {
@@ -11,12 +12,7 @@ class Database {
                 db.valueType(Sqlite.VALUESARESTRING);
                 this.database = db;
                 sLog('DB Connection Success');
-                db.all('SELECT * FROM setup',function(error,rows){
-                    _.forEach(rows,(record) => {
-                        let value = (_.includes(record.name,'DATE_FORMAT')) ? _.replace(_.replace(record.value,/(dd)/g,'DD'),/(yy)/g,'YY') : record.value;
-                        _.set(__,record.name,value);
-                    });
-                })
+                db.all('SELECT * FROM setup',function(error,rows){ global.__ = new SSSetup(rows); })
             })
             .catch(e => sLog('DB Connection Failed..' + e));
     }

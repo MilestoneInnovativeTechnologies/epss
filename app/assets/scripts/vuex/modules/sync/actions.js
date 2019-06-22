@@ -163,7 +163,7 @@ export function createRecords({ commit }, {table, records}) {
 
 export function updateSetup({ commit }, {table, records}) {
     if(records.length < 1) return;
-    let data = []; _.forEach(_.head(records),(value,name) => { data.push({ name,value }); __[name] = value; });
+    let data = []; _.forEach(_.head(records),(value,name) => __.setValue(name,value) );
     let lastRecIndex = data.length - 1; if(lastRecIndex < 0) return;
     _.forEach(data,(record,idx) => {
         DB.update(table,{ name:record.name },{ value:record.value });
@@ -173,7 +173,7 @@ export function updateSetup({ commit }, {table, records}) {
 
 export function createSetup({ commit }, {table, records}) {
     if(records.length < 1) return;
-    let data = []; _.forEach(_.head(records),(value,name) => { data.push({ name,value }); __[name] = value; } );
+    let data = []; _.forEach(_.head(records),(value,name) => __.setValue(name,value) );
     DB.insert(table,data,function(commit,table){
         commit(update_table_timing,{ table,type:'sync',time:now() })
     },commit,table);
