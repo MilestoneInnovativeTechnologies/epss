@@ -1,4 +1,7 @@
 <template>
+    <App title="Customers">
+
+    </App>
 </template>
 
 <script>

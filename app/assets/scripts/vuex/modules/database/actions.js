@@ -2,7 +2,7 @@ import {
     database_fetch_url,
     table_information_db_table_fields,
     table_information_db_table_name
-} from './../../constants';
+} from '../../../constants';
 
 export function Setup({ dispatch }){
     log('Initializing Database fetch');

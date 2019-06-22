@@ -1,7 +1,7 @@
 import {
     table_information_db_table_name, sync_recheck_timeout_seconds,
     app_user_create_date_for_fetch, setup_sync_table_after, init_sync_table_after, init_sync_user_table_after
-} from './../../constants';
+} from '../../../constants';
 import {
     add_new_table_for_sync, add_to_app_sync_queue,
     processing_queue, finish_processing_queue,

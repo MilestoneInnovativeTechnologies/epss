@@ -1,4 +1,4 @@
-import { organization_fetch_url } from '../../constants';
+import { organization_fetch_url } from '../../../constants';
 import {
     populate_organisation_data,
     populate_axios_url_data,

@@ -13,7 +13,7 @@
 
 <script>
     import {mapGetters, mapMutations, mapState, mapActions} from 'vuex'
-    import {table_information_db_table_name} from "../assets/scripts/vuex/constants";
+    import {table_information_db_table_name} from "../assets/scripts/constants";
 
     export default {
         name: "Debug",

@@ -1,5 +1,5 @@
 import {increment_stock_cache, mutate_sync_data, stock_state_data, update_table_timing} from "../vuex/mutation-types";
-import {stock_load_cache_refresh_on_each_nth_query} from "../vuex/constants";
+import {stock_load_cache_refresh_on_each_nth_query} from "../constants";
 
 export default {
     state: {

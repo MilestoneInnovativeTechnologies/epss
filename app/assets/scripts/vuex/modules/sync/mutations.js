@@ -9,7 +9,7 @@ import {
     set_new_sync_time_out,
     update_sync_user_details,
 } from '../../mutation-types';
-import {gap_between_sync_queue_seconds, table_information_db_table_name} from '../../constants';
+import {gap_between_sync_queue_seconds, table_information_db_table_name} from '../../../constants';
 
 export default {
     [add_new_table_for_sync](state, { table,up,down,type,sync,create,update }) {
