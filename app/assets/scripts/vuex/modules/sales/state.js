@@ -3,4 +3,5 @@ export default {
     customerSaleSummary: {},
     customerReturnSummary: {},
     transactions:{},
+    detail:{},
 }
