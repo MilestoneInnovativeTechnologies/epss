@@ -1,5 +1,5 @@
 <template>
-    <TextBold :style="styles" :text="mText" width="100%" class="text-center m-0 p-0" />
+    <TextBold :style="styles" :text="mText" width="100%" class="text-center m-0 p-0"></TextBold>
 </template>
 
 <script>
