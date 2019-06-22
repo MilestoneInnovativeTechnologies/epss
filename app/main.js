@@ -1,7 +1,7 @@
 import Vue from 'nativescript-vue'
 import Land from './components/Land'
 
-global._ = require('lodash'); global.moment = require('moment'); global.__ = {};
+global._ = require('lodash'); global.moment = require('moment'); global.__ = {}; global.sql = require('sqlstring');
 global.DB = require('./assets/scripts/services/database').DB;
 global.FD = require('./assets/scripts/services/formdata').FD;
 
