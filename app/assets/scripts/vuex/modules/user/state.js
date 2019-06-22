@@ -1,6 +1,7 @@
 export default {
     dbTables:['users','user_store_area'],
     id: null,
+    name:null,
     email: null,
     password: null,
     pin: null,
