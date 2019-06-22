@@ -1,7 +1,8 @@
 export class SSSetup {
     constructor(records){
         let ignoreKeys = ['id','created_at','updated_at'];
-        _.forEach(records,(record) => _.includes(ignoreKeys,record.name) ? '' : this.setValue(record.name,record.value) ); console.log('SETUP DONE');
+        _.forEach(records,(record) => _.includes(ignoreKeys,record.name) ? '' : this.setValue(record.name,record.value) );
+        console.log('SETUP DONE');
     }
     setValue(name,value){ this[name] = value; }
     correctedDateFormat(format){ return format.replace(/dd|yy/g,(x) => x.toUpperCase()) }
