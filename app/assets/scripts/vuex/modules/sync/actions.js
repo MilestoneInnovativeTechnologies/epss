@@ -7,6 +7,7 @@ import {
     processing_queue, finish_processing_queue,
     update_table_timing, set_new_sync_time_out
 } from './../../mutation-types';
+import {SSSetup} from "../../../services/setup";
 
 export function deleteClient({ dispatch,state,rootGetters }) {
     let client = rootGetters['Organization/client'],
@@ -163,7 +164,7 @@ export function createRecords({ commit }, {table, records}) {
 
 export function updateSetup({ commit }, {table, records}) {
     if(records.length < 1) return;
-    let data = []; _.forEach(_.head(records),(value,name) => __.setValue(name,value) );
+    let data = []; _.forEach(_.head(records),(value,name) => { __.setValue(name,value); data.push(_.zipObject(['name','value'],[name,value])) } );
     let lastRecIndex = data.length - 1; if(lastRecIndex < 0) return;
     _.forEach(data,(record,idx) => {
         DB.update(table,{ name:record.name },{ value:record.value });
@@ -172,8 +173,8 @@ export function updateSetup({ commit }, {table, records}) {
 }
 
 export function createSetup({ commit }, {table, records}) {
-    if(records.length < 1) return;
-    let data = []; _.forEach(_.head(records),(value,name) => __.setValue(name,value) );
+    if(records.length < 1) return; if(!__) __ = new SSSetup([]);
+    let data = []; _.forEach(_.head(records),(value,name) => { __.setValue(name,value); data.push(_.zipObject(['name','value'],[name,value])) } );
     DB.insert(table,data,function(commit,table){
         commit(update_table_timing,{ table,type:'sync',time:now() })
     },commit,table);
