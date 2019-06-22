@@ -1,1 +1,1 @@
-export const user_customers = '';
+export const user_assigned_area_customers = `SELECT * FROM users WHERE EXISTS ( SELECT * FROM area_users WHERE area_users.user = users.id AND EXISTS( SELECT * FROM user_store_area WHERE user_store_area.area = area_users.area AND EXISTS( SELECT * FROM users WHERE users.id = user_store_area.user AND users.id = ? ) ) )`;
