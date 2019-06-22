@@ -18,7 +18,7 @@
             ...mapGetters('User',['customers']), ...mapState('Customer',['outstanding']),
             query(){ return _.replace(this.queryTemplate,/#USERS#/g,this.customers.join('","'))},
             itemText(){ return this.outstanding['all'][0] },
-            items(){ let vm = this; return _.map(this.metricTemplate,(title,idx) => _.zipObject(vm.itemKeys,[vm.coloured,vm.size,vm.metricIcons[idx],_.round(vm.itemText[title],__.AMOUNT_DECIMAL),title])) }
+            items(){ let vm = this; return _.map(this.metricTemplate,(title,idx) => _.zipObject(vm.itemKeys,[vm.coloured,vm.size,vm.metricIcons[idx],__.amount(vm.itemText[title]),title])) }
         },
         methods: {
             ...mapActions('Customer',['_stock']),
