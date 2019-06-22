@@ -1,6 +1,11 @@
 export default {
     props: ['text'],
     computed: {
-        mText(){ return this.text || _.get(this.$slots.default,'0.text',' ') },
+        mText(){
+            if(!_.isNil(this.text)) return this.text;
+            if(!_.isEmpty(this.$slots.default) && this.$slots.default[0])
+                return this.$slots.default[0];
+            return ''
+        },
     }
 }
