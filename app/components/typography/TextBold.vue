@@ -1,5 +1,5 @@
 <template>
-    <Label class="fsb font-weight-bold c-black" :text="mText" />
+    <Label class="fsb font-weight-bold c-black" :text="mText" ></Label>
 </template>
 
 <script>
