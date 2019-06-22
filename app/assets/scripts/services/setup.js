@@ -13,4 +13,11 @@ export class SSSetup {
     refdate(date){ return moment(date).format(this.correctedDateFormat(this.REFDATE_FORMAT)) }
     chqdate(date){ return moment(date).format(this.correctedDateFormat(this.CHQDATE_FORMAT)) }
     date(date){ return moment(date).format(this.correctedDateFormat(this.OTHDATE_FORMAT)) }
+    cast(Obj,rule){
+        if(!_.isObject(Obj) && !_.isString(rule)) return this[rule](Obj);
+        if(_.isEmpty(rule)) return Obj;
+        if(_.isArray(Obj)) return _.map(Obj,(obj) => this.cast(obj,rule));
+        let castKeys = _.keys(rule);
+        return _.mapValues(Obj,(value,name) => _.includes(castKeys,name) ? this[rule[name]](value) : value)
+    }
 }
