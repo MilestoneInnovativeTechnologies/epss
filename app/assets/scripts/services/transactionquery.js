@@ -1,9 +1,9 @@
 export const TransactionQueryBuilder = class {
     constructor(type){
-        this.fieldMaps = { docno:'TR.`docno`',customer:'U.`name`',date:'TR.`date`',quantity:'SPT.`quantity`',nature:'PTN.`name`',total:'TD.`total`',price:'TD.`price`',tax:'TD.`tax`',discount:'TD.`discount`',store:'ST.`name`',product:'P.`name`',direction:'SPT.`direction`',type:'PTT.`name`',cid:'TR.`customer`',pid:'SPT.`product`',sid:'SPT.`store`',id:'TR.`_ref`' };
-        this.tableMap = { TR:'transactions',TD:'transaction_details',SPT:'store_product_transactions',PTN:'product_transaction_natures',PTT:'product_transaction_types',ST:'stores',P:'products',U:'users' };
+        this.fieldMaps = { docno:'TR.`docno`',customer:'U.`name`',date:'TR.`date`',quantity:'SPT.`quantity`',nature:'PTN.`name`',total:'TD.`total`',price:'TD.`price`',tax:'TD.`tax`',discount:'TD.`discount`',store:'ST.`name`',product:'P.`name`',direction:'SPT.`direction`',type:'PTT.`name`',cid:'TR.`customer`',pid:'SPT.`product`',sid:'SPT.`store`',id:'TR.`_ref`',eid:'E.`id`',executive:'E.`name`' };
+        this.tableMap = { TR:'transactions',TD:'transaction_details',SPT:'store_product_transactions',PTN:'product_transaction_natures',PTT:'product_transaction_types',ST:'stores',P:'products',U:'users',E:'users' };
         this.dependTables = { SPT:['TD'],PTN:['TD','SPT'],PTT:['TD','SPT'],ST:['TD','SPT'],P:['TD','SPT'] };
-        this.tableJoin = { TD:'TR.`_ref` = TD.`transaction`',SPT:'TD.`spt` = SPT.`_ref`',PTN:'SPT.`nature` = PTN.`id`',PTT:'SPT.`type` = PTT.`id`',ST:'SPT.`store` = ST.`id`',P:'SPT.`product` = P.`id`',U:'TR.`customer` = U.`id`' };
+        this.tableJoin = { TD:'TR.`_ref` = TD.`transaction`',SPT:'TD.`spt` = SPT.`_ref`',PTN:'SPT.`nature` = PTN.`id`',PTT:'SPT.`type` = PTT.`id`',ST:'SPT.`store` = ST.`id`',P:'SPT.`product` = P.`id`',U:'TR.`customer` = U.`id`',E:'TR.`user` = E.`id`' };
         this.typeWhere = [`TR.\`fncode\` LIKE "${type}%"`];
         this.limit = '0,100';
     }
