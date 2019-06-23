@@ -25,3 +25,20 @@
 .text-underline { text-decoration: underline; }
 .cp { color: #FFA656; }
 .bcp { background-color: #FFA656; }
+
+
+PropertyEditor {
+    margin-top: 6;
+    margin-bottom: 6;
+}
+
+DataFormEditorLabel {
+    color:#FFA656;
+    font-family: "Fira Sans Bold", FiraSans-Bold;
+    font-size: 16;
+}
+
+DataFormEditorCore {
+    font-family: "Fira Sans Regular", FiraSans-Regular;
+    font-size: 18;
+}
