@@ -1,15 +1,15 @@
 <template>
-    <InfoWithIcon heading="Stores" icon="store_mall_directory" :contents="myStores"></InfoWithIcon>
+    <InfoWithIcon heading="Stores" icon="store_mall_directory" :contents="stores"></InfoWithIcon>
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
+    import { mapState } from 'vuex';
 
     export default {
         name: "UserStoresInfoWithIcon",
         computed: {
-            ...mapGetters('User',['stores']), ...mapGetters('Stores',['_tableDataByIdName']),
-            myStores(){ return _.values(_.pick(this._tableDataByIdName('stores'),this.stores)) }
+            ...mapState('Stores',['list']),
+            stores(){ return _.map(this.list,'name') }
         }
     }
 </script>
