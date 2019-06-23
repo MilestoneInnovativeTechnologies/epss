@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapGetters } from 'vuex';
 
     export default {
         name: "SalesOrderPendingMetric",
@@ -13,8 +13,7 @@
             coloured: true, size:30
         }},
         computed: {
-            ...mapState('SalesOrder',['list']),
-            pCount(){ return _.countBy(this.list,'progress') },
+            ...mapGetters('SalesOrder',{ pCount:'progressCount' }),
             items(){ let vm = this; return _.map(this.metricTemplate,(item) => _.zipObject(['text','title','coloured','size'],[_.toSafeInteger(vm.pCount[item]),_.upperCase(item),vm.coloured,vm.size])) }
         },
     }
