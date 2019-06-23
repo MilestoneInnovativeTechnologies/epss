@@ -56,7 +56,8 @@
             submitForm(){ this.$refs.radDataForm.nativeView.validateAndCommitAll().then(result => this.$emit('submit',this.final)) },
             formPropsCommitted(data) {
                 let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj,field);
-                this.final = Object.assign({},this.final, editedObj); this.$emit(field,value);
+                if(this.fields[field].type === 'Picker') value = _.indexOf(this.values[field],value);
+                this.final = Object.assign({},this.final, _.fromPairs([[field,value]])); this.$emit(field,value);
             }
         },
         watch: {
