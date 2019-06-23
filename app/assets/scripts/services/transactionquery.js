@@ -9,7 +9,7 @@ export const TransactionQueryBuilder = class {
     }
     fields(fields){
         this.rFields = fields;
-        this.select = _.map(this.rFields,(field) => `${this.fieldMaps[field]} ${field}`);
+        this.select = _.map(this.rFields,(field) => `${this.fieldMaps[field]} '${field}'`);
         this.tables = _.filter(_.uniq(_.flattenDeep(_.map(this.rFields,(field) => { let tbl = this.fieldMaps[field].split('.')[0],dTbls = this.dependTables[tbl]; return [tbl,dTbls]; } ))));
         this.froms = _.map(this.tables,(tbl) => `${this.tableMap[tbl]} ${tbl}` );
         this.ons = _.filter(_.map(this.tables,(tbl) => this.tableJoin[tbl] ));
