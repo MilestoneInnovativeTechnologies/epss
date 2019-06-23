@@ -15,11 +15,24 @@
 </template>
 
 <script>
-    import { mapState,mapGetters } from 'vuex'
+    import { mapState,mapGetters,mapActions } from 'vuex'
+    import {
+        user_assigned_area_customers,
+        user_assigned_store_areas,
+        user_assigned_stores
+    } from "../assets/scripts/queries";
     export default {
         name: "Home",
         computed: {
-            ...mapGetters('Menu', ['menus']),...mapState('User', ['name','email']),
+            ...mapGetters('Menu', ['menus']),...mapState('User', ['id','name','email']),
+        },
+        methods: {
+            ...mapActions({ storeStock:'Stores/_stockIfNot',areaStock:'Areas/_stockIfNot',customerStock:'Customer/_stockIfNot', })
+        },
+        created() {
+            this.storeStock({ query:sql.format(user_assigned_stores,this.id),key:'list' })
+            this.areaStock({ query:sql.format(user_assigned_store_areas,this.id),key:'list' })
+            this.customerStock({ query:sql.format(user_assigned_area_customers,this.id),key:'list' })
         }
     }
 </script>
