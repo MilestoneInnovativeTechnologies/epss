@@ -39,7 +39,7 @@
         },
         created() {
             let query = new TransactionQueryBuilder(this.trType).fields(this.fields).where({ id:this.id }).query();
-            this._stockIfNot({ query:this.query,key:'detail',path:this.id,on:this.cacheOn })
+            this._stockIfNot({ query:query,key:'detail',path:this.id,on:this.cacheOn })
         }
     }
 </script>
