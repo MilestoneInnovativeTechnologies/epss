@@ -15,24 +15,37 @@
 </template>
 
 <script>
-    import { mapState,mapGetters,mapActions } from 'vuex'
+    import {mapState, mapGetters, mapActions} from 'vuex'
     import {
-        user_assigned_area_customers,
+        user_assigned_area_customers, user_assigned_customer_sales_orders,
         user_assigned_store_areas,
         user_assigned_stores
     } from "../assets/scripts/queries";
+
     export default {
         name: "Home",
         computed: {
-            ...mapGetters('Menu', ['menus']),...mapState('User', ['id','name','email']),
+            ...mapGetters('Menu', ['menus']), ...mapState('User', ['id', 'name', 'email']),
         },
         methods: {
-            ...mapActions({ storeStock:'Stores/_stockIfNot',areaStock:'Areas/_stockIfNot',customerStock:'Customer/_stockIfNot', })
+            ...mapActions({
+                storeStock: 'Stores/_stockIfNot',
+                areaStock: 'Areas/_stockIfNot',
+                customerStock: 'Customer/_stockIfNot',
+                soStock: 'SalesOrder/_stockIfNot'
+            })
         },
         created() {
-            this.storeStock({ query:sql.format(user_assigned_stores,this.id),key:'list' })
-            this.areaStock({ query:sql.format(user_assigned_store_areas,this.id),key:'list' })
-            this.customerStock({ query:sql.format(user_assigned_area_customers,this.id),key:'list' })
+            let methodQuery = {
+                store: user_assigned_stores,
+                area: user_assigned_store_areas,
+                customer: user_assigned_area_customers,
+                so: user_assigned_customer_sales_orders
+            }
+            _.forEach(methodQuery, (query, method) => this[method + 'Stock']({
+                query: sql.format(query, this.id),
+                key: 'list'
+            }))
         }
     }
 </script>
