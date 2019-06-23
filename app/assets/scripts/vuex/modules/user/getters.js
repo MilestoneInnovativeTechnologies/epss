@@ -4,13 +4,13 @@ export function credentials({ email,password }) {
 export function user_store_areas({ id },{ _tableDataFilter }) {
     return _tableDataFilter('user_store_area','user',id);
 }
-export function stores({ stores }) {
-    return _.map(stores,'id');
+export function stores(state,getters,rootState) {
+    return _.map(rootState['Stores'].list,'id');
 }
-export function areas({ areas }) {
-    return _.map(areas,'id');
+export function areas(state,getters,rootState) {
+    return _.map(rootState['Areas'].list,'id');
 }
-export function customers({ customers }) {
-    return _.map(customers,'id');
+export function customers(state,getters,rootState) {
+    return _.map(rootState['Customer'].list,'id');
 }
 
