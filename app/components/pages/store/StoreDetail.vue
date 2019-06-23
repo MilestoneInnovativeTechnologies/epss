@@ -15,8 +15,8 @@
             layout: { Product:'Product',In:'In',Out:'Out',Stock:'Stock' }
         } },
         computed: {
-            ...mapState('Stores',['stock']),...mapGetters('Stores',['stores']),
-            store(){ return this.stores[this.id] },
+            ...mapState('Stores',['stock']),...mapGetters('Stores',['_stateDataItem']),
+            store(){ return this._stateDataItem('list',this.id) },
             source(){ return this.stock[this.id] },
         },
         methods: {
