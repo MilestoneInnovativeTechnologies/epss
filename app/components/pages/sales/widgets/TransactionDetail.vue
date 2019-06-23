@@ -4,7 +4,7 @@
         <TextTitleSub class="m-b-15">{{ transaction.customer }}</TextTitleSub>
         <AppInfoWide title="date">{{ docdate(transaction.date) }}</AppInfoWide>
         <AppInfoWide title="executive" class="m-b-15">{{ transaction.executive }}</AppInfoWide>
-        <AppList :source="source" :layout="layout" title="Products"></AppList>
+        <AppList :source="source" :layout="layout" title="Products" detail="product/ProductDetail" :props="{ id:'pid' }"></AppList>
         <GridLayout rows="auto" columns="*,*,*" class="m-t-15">
             <AppInfoWithLabel row="0" col="0" title="TAX">{{ round(sum('tax')) }}</AppInfoWithLabel>
             <AppInfoWithLabel row="0" col="1" title="DISCOUNT">{{ round(sum('discount')) }}</AppInfoWithLabel>
