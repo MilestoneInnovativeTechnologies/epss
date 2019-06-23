@@ -15,7 +15,7 @@
             fields: ['docno','date','customer','cid','id'],
             layout: { Customer:'customer',Date:'date','DOC NO':'docno' },
             cast: { date:'docdate' },
-            limit: 10, max: 30, root:'transactions',path:'all',
+            limit: 10, max: 30, root:'transactions',path:'SL',
             links: { customer:['customer/CustomerDetail',{ id:'cid' }] }
         }},
         computed: {
