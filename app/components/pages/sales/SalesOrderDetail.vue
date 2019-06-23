@@ -1,13 +1,13 @@
 <template>
     <App title="Sales Order Detail">
         <StackLayout v-if="detail">
-            <TextHeading class="text-center" width="100%">NO DETAILS AVAILABLE</TextHeading>
-        </StackLayout>
-        <StackLayout v-else>
             <TextTitle>{{ detail.docno }}</TextTitle>
             <TextHeading class="m-b-15">{{ detail.customer }}</TextHeading>
             <AppInfoWide title="date">{{ docdate(detail.date) }}</AppInfoWide>
             <AppList :source="source" :layout="layout" title="Products" class="m-t-15" detail="product/ProductDetail" :props="{ id:'pid' }"></AppList>
+        </StackLayout>
+        <StackLayout v-else>
+            <TextHeading class="text-center" width="100%">NO DETAILS AVAILABLE</TextHeading>
         </StackLayout>
     </App>
 </template>
