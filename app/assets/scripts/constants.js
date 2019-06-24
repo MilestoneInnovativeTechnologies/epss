@@ -2,7 +2,7 @@ export const organization_fetch_url = 'http://milestoneit.net/api/ss/device';
 export const database_fetch_url = 'http://milestoneit.net/api/ss/setup';
 
 //Module Common
-export const stock_load_cache_refresh_on_each_nth_query = 3;
+export const stock_load_cache_refresh_on_each_nth_query = 0;
 
 //database
 export const table_information_db_table_name = 'table_information';
