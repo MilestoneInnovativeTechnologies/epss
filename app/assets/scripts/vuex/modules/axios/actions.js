@@ -15,7 +15,7 @@ import {
 const queueCheckSeconds = 5; let timeOutVariable = 0;
 
 export function init({ dispatch }) {
-    // startMonitoring((type) => { commit(set_connectivity_availability,type !== connectionType.none) });
+    startMonitoring((type) => { commit(set_connectivity_availability,type !== connectionType.none) });
     dispatch('processQueue');
 }
 
