@@ -17,4 +17,5 @@ export default {
     'Sales': require('./modules/sales/index').default,
     'SalesOrder': require('./modules/salesorders/index').default,
     'SPT': require('./modules/spt/index').default,
+    'Fiscal': require('./modules/fiscalyear/index').default,
 }
