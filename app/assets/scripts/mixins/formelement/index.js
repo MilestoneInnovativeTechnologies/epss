@@ -1,3 +1,12 @@
+export const common = require('./common').FormElementMixinCommon;
 export const customer = require('./customer').FormElementMixinCustomer;
-export const fiscalyear = require('./fiscalyear').FormElementMixinFiscalyear;
-export const dataepicker = require('./datepicker').FormElementMixinDatePicker;
+export const fiscal = require('./fiscalyear').FormElementMixinFiscalyear;
+export const datepicker = require('./datepicker').FormElementMixinDatePicker;
+export const number = require('./number').FormElementMixinNumber;
+export const decimal = require('./decimal').FormElementMixinDecimal;
+export const amount = require('./amount').FormElementMixinAmount;
+export const rate = require('./rate').FormElementMixinRate;
+export const store = require('./store').FormElementMixinStore;
+export const text = require('./text').FormElementMixinText;
+export const product = require('./product').FormElementMixinProduct;
+export const nature = require('./nature').FormElementMixinNature;
