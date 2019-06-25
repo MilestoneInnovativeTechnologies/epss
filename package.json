@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@vue/devtools": "^5.1.0",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
+    "debug": "^4.1.1",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "nativescript-background-http": "^3.4.1",
