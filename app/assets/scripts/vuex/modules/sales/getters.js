@@ -1,1 +1,0 @@
-export function customer(state) {}
