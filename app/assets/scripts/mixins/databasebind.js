@@ -24,21 +24,6 @@ export default {
         },
     },
     actions:{
-        _insert({ dispatch,commit,state },{ table,data }){
-            table = table || ( _.isArray(state.table) ? _.head(state.table) : state.table);
-            DB.insert(table,data,function (table,mutation,commit,dispatch) {
-                commit('Sync/' + mutation,{ table,type:'create' },{ root:true });
-                dispatch('redrawModules',table,{ root:true });
-            },table,update_table_timing,commit,dispatch)
-        },
-        _update({ dispatch,commit },{ table,data,id,pk,condition }){
-            table = table || ( _.isArray(state.table) ? _.head(state.table) : state.table);
-            condition = condition || (_.zipObject([(pk || 'id')],[id]));
-            DB.update(table,condition,data,function (table,mutation,commit,dispatch) {
-                commit('Sync/' + mutation,{ table,type:'update' },{ root:true });
-                dispatch('redrawModules',table,{ root:true });
-            },table,update_table_timing,commit,dispatch,)
-        },
         _stock({ commit },{ query,mutation,key,path }){
             mutation = mutation || stock_state_data;
             DB.getAllQuery(query,function(commit,mutation,key,path){
