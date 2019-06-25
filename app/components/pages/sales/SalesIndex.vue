@@ -1,5 +1,5 @@
 <template>
-    <App title="Sales">
+    <App title="Sales" action="New Sale" @new-sale="$navigateTo(newSale)">
         <AppList :source="source" :layout="layout" :links="links" detail="sales/SaleDetail" :title="title"></AppList>
     </App>
 </template>
@@ -16,7 +16,8 @@
             layout: { Customer:'customer',Date:'date','DOC NO':'docno' },
             cast: { date:'docdate' },
             limit: 10, max: 30, root:'transactions',path:'SL',
-            links: { customer:['customer/CustomerDetail',{ id:'cid' }] }
+            links: { customer:['customer/CustomerDetail',{ id:'cid' }] },
+            newSale: require('./SaleNew').default,
         }},
         computed: {
             ...mapState('Sales',['transactions']),
