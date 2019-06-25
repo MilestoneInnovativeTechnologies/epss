@@ -10,3 +10,4 @@ export const store = require('./store').FormElementMixinStore;
 export const text = require('./text').FormElementMixinText;
 export const product = require('./product').FormElementMixinProduct;
 export const nature = require('./nature').FormElementMixinNature;
+export const quantity = require('./quantity').FormElementMixinQuantity;
