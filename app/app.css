@@ -16,11 +16,21 @@
 .fs18 { font-size: 18 }
 .fs20 { font-size: 20 }
 .fs22 { font-size: 22 }
-.fs25 { font-size: 25 }
+.fs24 { font-size: 24 }
 .fs25 { font-size: 25 }
 .fs28 { font-size: 28 }
 .fs32 { font-size: 32 }
 .fs35 { font-size: 35 }
+
+.elevate-1 { android-elevation: 1 }
+.elevate-2 { android-elevation: 2 }
+.elevate-3 { android-elevation: 3 }
+.elevate-4 { android-elevation: 4 }
+.elevate-5 { android-elevation: 5 }
+.elevate-6 { android-elevation: 6 }
+.elevate-7 { android-elevation: 7 }
+.elevate-8 { android-elevation: 8 }
+.elevate-9 { android-elevation: 9 }
 
 .text-underline { text-decoration: underline; }
 .cp { color: #FFA656; }

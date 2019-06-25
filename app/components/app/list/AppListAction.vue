@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-    <Image backgroundColor="#F5F5F5" src="res://detail" stretch="aspectFit" @tap="$navigateTo(navComp,navProps)" />
+    <FontIcon size="24" stretch="aspectFit" class="cp applist-column-action-detail-icon" @tap.native="$navigateTo(navComp,navProps)">keyboard_arrow_right</FontIcon>
 </template>
 
 <script>
