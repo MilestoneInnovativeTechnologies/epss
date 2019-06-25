@@ -1,7 +1,8 @@
 export const FormElementMixinCommon = {
     methods: {
-        formFieldsToFields() {
-            return (_.isEmpty(this.formFields)) ? {} : _.mapValues(this.formFields, (mxn, name) => {
+        formFieldsToFields(fields) {
+            fields = fields || this.formFields;
+            return (_.isEmpty(fields)) ? {} : _.mapValues(fields, (mxn, name) => {
                 return {...(this['feField' + mxn]), name}
             })
         },
