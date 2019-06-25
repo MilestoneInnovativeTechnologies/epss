@@ -7,11 +7,9 @@
 </template>
 
 <script>
-    import TextTitleSub from "../../typography/TextTitleSub";
     export default {
         name: "AppForm",
-        components: {TextTitleSub},
-        props: ['fields', 'value', 'action', 'title'],
+        props: ['fields', 'values', 'action', 'title'],
         data() {
             return {
                 commit: 'Immediate', validate: 'Immediate', read: false,
@@ -44,16 +42,16 @@
                 }, Annotation);
                 return Annotation;
             },
-            getInitValue(name, values) {
-                values = values || this.value;
-                if (!values || _.isEmpty(values) || !_.has(values, name)) return '';
-                return (_.isArray(values[name])) ? 0 : values[name];
+            getInitValue(name) {
+                let values = this.values;
+                if (values && !_.isEmpty(values) && _.has(values, name)) return values[name];
+                return (this.fields && this.fields[name] && _.includes(this.valProTypes, this.fields[name]['type']) && _.isArray(this.fields[name]['values']) && !_.isEmpty(_.isArray(this.fields[name]['values']))) ? 0 : ''
             },
-            submitForm(){ this.$refs.radDataForm.nativeView.validateAndCommitAll().then(result => this.$emit('submit',this.final)) },
+            submitForm(){ this.$refs.radDataForm.nativeView.validateAndCommitAll().then(result => (result) ? this.$emit('submit',this.final) : null) },
             formPropsCommitted(data) {
                 let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj,field);
-                // if(this.fields[field].type === 'Picker') value = _.indexOf(this.value[field],value);
-                this.final = Object.assign({},this.final, _.fromPairs([[field,value]])); this.$emit(field,value);
+                if(this.fields[field].type === 'Picker') value = (value) ? (value.split(':')).shift() : '';
+                this.final = Object.assign({},this.final, _.fromPairs([[field,value]])); this.$emit(field,value); this.$emit('final',this.final);
             }
         },
         created(){
