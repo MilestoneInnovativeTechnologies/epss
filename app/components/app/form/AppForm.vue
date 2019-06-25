@@ -2,7 +2,7 @@
     <StackLayout>
         <TextTitleSub class="m-15 w-100 text-center" v-if="title">{{ title }}</TextTitleSub>
         <RadDataForm :source="source" :metadata="metadata" @propertyCommitted="formPropsCommitted" ref="radDataForm"></RadDataForm>
-        <Button @tap="submitForm" class="bcp m-12 p-16 c-white fs15">{{ action || 'Submit' }}</Button>
+        <Button @tap="submitForm" class="bcp m-12 p-16 c-white fs15" v-if="action">{{ action }}</Button>
     </StackLayout>
 </template>
 
