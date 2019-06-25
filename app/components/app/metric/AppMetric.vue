@@ -1,5 +1,5 @@
 <template>
-    <GridLayout rows="*" :columns="columns" >
+    <GridLayout rows="*" :columns="columns">
         <MetricItem row="0" v-for="(item,colNo) in items" :col="colNo" v-bind="item" :key="['metric',unique,'col',colNo].join('-')"></MetricItem>
     </GridLayout>
 </template>
@@ -17,7 +17,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

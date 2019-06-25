@@ -52,3 +52,9 @@ DataFormEditorCore {
     font-family: "Fira Sans Regular", FiraSans-Regular;
     font-size: 18;
 }
+
+.metric-item {
+    border-radius: 5;
+    border-width: 0;
+    android-elevation: 1;
+}
