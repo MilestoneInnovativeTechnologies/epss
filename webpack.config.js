@@ -52,6 +52,8 @@ module.exports = env => {
         return new RegExp(e + ".*");
     });
 
+    externals.push(new RegExp('nativescript-sqlite-encrypted' + ".*"),new RegExp('nativescript-sqlite-commercial' + ".*"));
+
     const mode = production ? "production" : "development"
 
     const appFullPath = resolve(projectRoot, appPath);
