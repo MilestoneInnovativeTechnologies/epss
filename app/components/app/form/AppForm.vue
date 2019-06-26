@@ -7,23 +7,25 @@
 </template>
 
 <script>
+    import {PropertyAnnotationValuesProvider} from "../../../assets/scripts/mixins/annotationprovider";
+
     export default {
         name: "AppForm",
         props: ['fields', 'values', 'action', 'title'],
+        mixins: [PropertyAnnotationValuesProvider],
         data() {
             return {
                 commit: 'Immediate', validate: 'Immediate', read: false,
                 morph: {label: 'displayName', type: 'editor', values: 'valuesProvider'},
                 valProTypes: ['Picker', 'SegmentedEditor', 'List', 'AutoCompleteInline'],
-                source:{}, final: {},
+                source: {}, final: {},
             }
         },
         computed: {
             propertyAnnotations() {
                 let fields = this.fields, Annotations = [];
                 _.forEach(fields, (Obj, name) => {
-                    let idx = Annotations.push(this.getPropertyAnnotation(name, Obj)) - 1;
-                    Annotations[idx]['index'] = idx;
+                    Annotations.push(this.getPropertyAnnotation(name, Obj));
                 });
                 return Annotations;
             },
@@ -40,22 +42,29 @@
                     Annotation[_.has(morph, key) ? morph[key] : key] = value;
                     return Annotation;
                 }, Annotation);
-                return Annotation;
+                return this.pavpValuesPatchedAnnotation(Annotation);
             },
             getInitValue(name) {
                 let values = this.values;
                 if (values && !_.isEmpty(values) && _.has(values, name)) return values[name];
-                return (this.fields && this.fields[name] && _.includes(this.valProTypes, this.fields[name]['type']) && _.isArray(this.fields[name]['values']) && !_.isEmpty(_.isArray(this.fields[name]['values']))) ? 0 : ''
+                return (_.includes(this.valProTypes, _.get(this.fields, [name, 'type']))) ? this.pavpGetAnnotationValueConverted(name) : ''
             },
-            submitForm(){ this.$refs.radDataForm.nativeView.validateAndCommitAll().then(result => (result) ? this.$emit('submit',this.final) : null) },
+            submitForm() {
+                this.$refs.radDataForm.nativeView.validateAndCommitAll().then(result => (result) ? this.$emit('submit', this.final) : null)
+            },
             formPropsCommitted(data) {
-                let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj,field);
-                if(this.fields[field].type === 'Picker') value = (value) ? (value.split(':')).shift() : '';
-                this.final = Object.assign({},this.final, _.fromPairs([[field,value]])); this.$emit(field,value); this.$emit('final',this.final);
+                let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj, field);
+                if (_.includes(this.valProTypes, this.fields[field].type)) value = this.pavpGetAnnotationValueConverted(field, value);
+                this.final = Object.assign({}, this.final, _.fromPairs([[field, value]]));
+                this.$emit(field, value); this.$emit('final', this.final);
             }
         },
-        created(){
-            _.forEach(this.fields, (nameObj, name) => { let value = this.getInitValue(name);  this.source[name] = value; this.final[name] = value; });
+        created() {
+            _.forEach(this.fields, (nameObj, name) => { this.source[name] = this.getInitValue(name); });
+        },
+        mounted() {
+            _.forEach(this.fields, (nameObj, name) => { this.final[name] = this.getInitValue(name); });
+            this.$emit('final', this.final);
         }
     }
 </script>
