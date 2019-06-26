@@ -8,14 +8,14 @@
             <FlexBoxLayout class="applist-thead-row">
                 <TextBold class="applist-thead-column applist-column-no"> </TextBold>
                 <AppListHeadColumns :headColumns="headColumns"></AppListHeadColumns>
-                <TextBold v-if="hasAction" class="applist-thead-column applist-column-action">  </TextBold>
+                <AppListHeadAction v-if="hasAction" :action="action" class="applist-thead-column applist-column-action" @list-action="listAction" :collection="dataCollection" :items="dataItems.length"></AppListHeadAction>
             </FlexBoxLayout>
         </FlexBoxLayout>
         <FlexboxLayout flexDirection="column" row="2" col="0" class="applist-tbody">
-            <FlexBoxLayout class="applist-tbody-row" v-for="(item,rowNo) in items" :key="key(rowNo)">
+            <FlexBoxLayout class="applist-tbody-row" v-for="(item,rowNo) in items" :key="key(rowNo,item)">
                 <TextBold class="applist-tbody-column applist-column-no">{{ rowNo + 1 }}</TextBold>
                 <AppListBodyColumns :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :cast="cast"></AppListBodyColumns>
-                <AppListAction v-if="hasAction" class="applist-tbody-column applist-column-action" :link="detail" :props="linkProps(item)"></AppListAction>
+                <AppListAction v-if="hasAction" class="applist-tbody-column applist-column-action" :action="action" :link="detail" :props="linkProps(item)" :rowno="rowNo" @list-action="listAction" :collection="dataCollection"></AppListAction>
             </FlexBoxLayout>
         </FlexboxLayout>
         <FlexBoxLayout row="3" col="0" class="applist-tfoot">
@@ -26,6 +26,7 @@
 
 <script>
     import {AppListDetailProps} from "../../../assets/scripts/mixins/applistdetailprops";
+    import {AppListAction} from "../../../assets/scripts/mixins/applistactions";
 
     export default {
         name: "AppList",
@@ -41,7 +42,7 @@
             title: { type:String,default:'' },
             cast: { type:Object,default:()=>{ return {} } },
         },
-        mixins: [AppListDetailProps],
+        mixins: [AppListDetailProps,AppListAction],
         data(){ return {
             display:0,
             dataItems:[],
@@ -50,17 +51,17 @@
         } },
         computed: {
             unique(){ return new Date().getTime() },
-            key(){ return (rowNo) => ['applist',this.unique,'body','row',rowNo].join('-') },
-            limited(){ return (this.dataLimit !== 0 && this.dataItems.length > this.display) },
+            key(){ return (rowNo,item) => ['applist',this.unique,'body','row',rowNo,this.itemCode(item)].join('-') },
+            itemCode(){ return (item) => (this.action === 'remove') ? _.kebabCase(item[_.keys(item)[0]]) : '' },
+            limited(){ return (!this.action && this.dataLimit !== 0 && this.dataItems.length > this.display) },
             rows(){ return [!this.title ? 0 : 'auto',this.headRowHeight,'auto',this.limited ? 'auto' : 0].join(',') },
             decent(){ return (this.maxHeadContents * 2) - 1 },
             headColumnCount(){ let headsLength = _.keys(this.dataLayout).length; return (headsLength <= this.maxHeadContents) ? headsLength : ( this.maxHeadContents - _.toSafeInteger(headsLength <= this.decent)) },
             headColumns(){ return _.take(_.keys(this.dataLayout),this.headColumnCount); },
-            hasAction(){ return !_.isEmpty(this.detail); },
+            hasAction(){ return (!_.isEmpty(this.detail) || !!this.action); },
             items(){ return this.limited ? _.take(this.dataItems,this.display): this.dataItems },
         },
         methods: {
-
             setItems(data){ this.dataItems = _.isArray(data) ? data : _.toArray(data) },
             setLimit(limit){ this.dataLimit = _.toSafeInteger(limit); },
             loadMore(){ this.display += _.toSafeInteger(this.dataLimit) },
