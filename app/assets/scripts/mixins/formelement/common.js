@@ -1,9 +1,9 @@
 export const FormElementMixinCommon = {
     methods: {
-        formFieldsToFields(fields) {
-            fields = fields || this.formFields;
+        appFormFields(fields) {
+            fields = fields || this.fieldLayout; let index = 0;
             return (_.isEmpty(fields)) ? {} : _.mapValues(fields, (mxn, name) => {
-                return {...(this['feField' + mxn]), name}
+                return { ...(this['feField' + mxn]), name, index:(index++) }
             })
         },
         formDataToTables(formData) {
@@ -15,6 +15,11 @@ export const FormElementMixinCommon = {
                     _.mapValues(bindObj.fields, (fField) => _.get(formData, fField));
                 this[method]({table, data, success: this[success], vm: this})
             })
+        },
+        defaultItemEmpty(array,key,label){
+            let emptyStr = ' - ';
+            array.unshift( (key && label) ? _.zipObject([key,label],['',emptyStr]) : emptyStr);
+            return array;
         }
     }
 };

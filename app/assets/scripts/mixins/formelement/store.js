@@ -5,8 +5,8 @@ export const FormElementMixinStore = {
     computed: {
         ...mapState('Stores',{ feStoreList:'list' }),...mapState('User',{ feUserID:'id' }),
         feValuesStore(){
-            let list = this.feStoreList, key = 'id', label = 'name', listArray = _.map(list,(store) => _.zipObject([key,label],[store.id,store.name]));
-            return _.map(list,(item) => [item.id,item.name,].join(': ')); //return { items:listArray, key, label };
+            let list = this.feStoreList, key = 'id', label = 'name', listArray = _.map(list,(store) => _.zipObject([key,label],[store[key],store[label]]));
+            return { items:listArray, key, label };
         },
         feFieldStore(){ return { name:'store',label:'Store',type:'Picker',values:this.feValuesStore } },
     },

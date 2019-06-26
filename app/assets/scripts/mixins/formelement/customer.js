@@ -6,7 +6,7 @@ export const FormElementMixinCustomer = {
         ...mapState('User',{ feUserID:'id' }), ...mapState('Customer',{ feCustomerList:'list' }),
         feValuesCustomer(){
             let list = this.feCustomerList, key = 'id', label = 'name', listArray = _.map(list,(customer) => _.zipObject([key,label],[customer.id,customer.name]));
-            return _.map(list,(item) => [item.id,item.name,].join(': ')); //return { items:listArray, key, label };
+            return { items:listArray, key, label };
         },
         feFieldCustomer(){ return { name:'customer',label:'Select a customer',type:'Picker',values:this.feValuesCustomer } }
     },

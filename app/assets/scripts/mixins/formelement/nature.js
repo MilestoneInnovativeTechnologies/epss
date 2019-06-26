@@ -5,8 +5,7 @@ export const FormElementMixinNature = {
     computed: {
         ...mapState('TRNS',{ feNatureList:'list' }),
         feValuesNature(){
-            let list = this.feNatureList, key = 'id', label = 'name', listArray = _.map(list,(nature) => _.zipObject([key,label],[nature.id,nature.name]));
-            return _.map(list,(item) => [item.id,item.name,].join(': ')); //return { items:listArray, key, label };
+            let list = this.feNatureList; return _(list).mapKeys('id').mapValues('name').value();
         },
         feFieldNature(){ return { name:'nature',label:'Select Nature',type:'Picker',values:this.feValuesNature } }
     },
