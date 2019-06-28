@@ -1,3 +1,1 @@
-export default {
-
-}
+export function _ref(state){ return () => ['U',state['User'].id,'T',moment().format('x')].join('') }
