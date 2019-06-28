@@ -22,5 +22,8 @@ export const AppListAction = {
     mounted(){
         if(this.action === 'remove') this.dataCollection = _.range(0,this.dataItems.length);
         this.emitCollection();
+    },
+    watch: {
+        source(nSrc){ if(this.action === 'remove') this.dataCollection = _.range(0,nSrc.length); this.emitCollection() },
     }
 };
