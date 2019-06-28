@@ -12,10 +12,11 @@
 <script>
     import {mapGetters, mapMutations, mapState, mapActions} from 'vuex'
     import {table_information_db_table_name} from "../assets/scripts/constants";
+    const feMX = require('./../assets/scripts/mixins/formelement')
 
     export default {
         name: "Debug",
-        mixins: [feMX.picker,feMX.common],
+        mixins: [feMX.common,feMX.picker],
         data() {
             return {
                 tblInfoSource:[],
