@@ -69,7 +69,7 @@
         },
         created() {
             this.display = this.dataLimit === 0 ? this.dataItems.length : this.dataLimit;
-            this.dataLayout = _.isEmpty(this.dataItems) ? this.dataLayout : ( _.isEmpty(this.layout) ? this.getDataLayout(_.keys(_.head(this.dataItems))) : this.layout );
+            this.dataLayout = _.isEmpty(this.layout) ? this.getDataLayout(_.keys(_.head(this.dataItems))) : this.layout;
         },
         watch: {
             source:{ deep:true,immediate:true,handler:'setItems' },
