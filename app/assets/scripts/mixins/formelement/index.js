@@ -13,3 +13,4 @@ export const nature = require('./nature').FormElementMixinNature;
 export const quantity = require('./quantity').FormElementMixinQuantity;
 export const payment = require('./payment').FormElementMixinPayment;
 export const salesorder = require('./salesorder').FormElementMixinSalesOrder;
+export const picker = require('./picker').FormElementMixinPicker;
