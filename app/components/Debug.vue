@@ -35,11 +35,10 @@
             tablePicker(){ return { picker: {...(this.feFieldPicker),name:'picker',values:this.tables }} }
         },
         methods: {
+            ...mapActions(['_insert']),
             fQL(){ let qLog = DB.log(); this.qLogSource = _.map(qLog,(qry) => { return { qry } }) },
             gTD(){ DB.get(this.tables[this.selectedTableIndex],null,function(vm){ vm.selectedTableInfoData.push({ table:this.tbl, records:this.result.length }) },this) },
-            aPR(){ DB.delete('fn_reserves',null,function(insData){
-                DB.insert('fn_reserves',insData);
-            },insData); },
+            aPR(){ this._insert({ table:'fn_reserves',data:insData }) },
             sRP(){ DB.get('pricelist',null,function(){
                 console.log(this.result);
                 _.forEach(this.result,function(pl){ DB.update('pricelist',{ id:pl.id },{ price:_.random(101,999,true)}) })
