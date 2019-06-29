@@ -23,10 +23,15 @@
             setSelectedData(data){ this.final = Object.assign({},this.final,data); },
             proceed(){
                 let { store,fiscal,type,customer,date,payment } = this.final, docno = this.docno(store,fiscal,type), _ref = this._ref();
-                let fycode = _.get(this._tableDataItem('fiscalyearmaster',fiscal),'code') || '2019';
+                let fycode = _.get(this._tableDataItem('fiscalyearmaster',fiscal),'code');
                 let master = { _ref,docno,customer,date,fycode,fncode:type,payment_type:payment };
-                this.$navigateTo(require('./SaleNewItems').default,{ props:{ master } })
+                this.$navigateTo(require('./SaleNewItems').default,{ props:{ master,store } })
             }
+        },
+        created() {
+            console.log('=================================================');
+
+            console.log('=================================================');
         }
     }
 </script>
