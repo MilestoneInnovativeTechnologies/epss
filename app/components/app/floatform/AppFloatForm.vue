@@ -5,11 +5,11 @@
                 <AppForm v-for="(column,col) in columns" :col="col" :fields="getField(posNum(row,col))" @final="setFinal" :key="['ff',unique,'fr',row,'frc',col].join('-')"></AppForm>
             </GridLayout>
             <GridLayout :row="labelsStartRowNum+row" col="0" v-for="(columns,row) in labelRow" rows="auto" :columns="getRepeated('*',columns.length)" class="p-24" :key="['ff',unique,'lr',row].join('-')">
-                <AppInfoWithLabel row="0" v-for="(cTxt,col) in columns" :col="col" :title="labels[posNum(row,col)]" :key="['ff',unique,'lr',row,'lrc',col].join('-')">{{ labelValues[labels[posNum(row,col)]] }}</AppInfoWithLabel>
+                <AppInfoWithLabel row="0" v-for="(cTxt,col) in columns" :col="col" :title="labels[posNum(row,col)]" :key="['ff',unique,'lr',row,'lrc',col,labelCode(posNum(row,col))].join('-')">{{ labelValues[labels[posNum(row,col)]] }}</AppInfoWithLabel>
             </GridLayout>
             <AppButton :row="actionButtonRowNum" col="0" v-if="action" class="c-white p-y-20" @tap.native="$emit('done',final)">{{ action }}</AppButton>
         </GridLayout>
-        <GridLayout><TextHighlight class="text-center m-t-8" @tap.native="$emit('close')">Close Window</TextHighlight></GridLayout>
+        <TextHighlight class="text-center m-t-8" @tap.native="$emit('close')">Close Window</TextHighlight>
     </StackLayout>
 </template>
 
@@ -33,6 +33,7 @@
             rows(){ return _.map(Array(this.fieldRow.length + this.labelRow.length + 1),()=>'auto').join(',') },
             labelsStartRowNum(){ return this.fieldRow.length },
             actionButtonRowNum(){ return this.fieldRow.length+this.labelRow.length },
+            labelCode(){ return (pos) => (this.labels && this.labels[pos] && this.labelValues && this.labelValues[this.labels[pos]]) ? _.kebabCase(this.labelValues[this.labels[pos]]) : '' }
         },
         methods: {
             gridDistributeLogic(num){
