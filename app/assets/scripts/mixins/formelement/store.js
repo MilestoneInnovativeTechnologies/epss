@@ -8,7 +8,7 @@ export const FormElementMixinStore = {
             let list = this.feStoreList, key = 'id', label = 'name', listArray = _.map(list,(store) => _.zipObject([key,label],[store[key],store[label]]));
             return { items:listArray, key, label };
         },
-        feFieldStore(){ return { name:'store',label:'Store',type:'Picker',values:this.feValuesStore } },
+        feFieldStore(){ return { name:'store',label:'Store',type:'Picker',values:this.feValuesStore,hidden:(this.feValuesStore.items.length === 1) } },
     },
     methods: {
         ...mapActions({ feListFetchStore: 'Stores/_stockIfNot' }),
