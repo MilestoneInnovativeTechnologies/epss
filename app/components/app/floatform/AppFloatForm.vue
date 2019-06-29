@@ -1,9 +1,5 @@
 <template>
     <StackLayout class="appff-container">
-        <GridLayout columns="*,auto">
-            <Label col="0" text=""></Label>
-            <FontIcon col="1" size="24" class="text-right bcp p-5 elevate-2 font-weight-bold c-white" @tap.native="$emit('close')">clear</FontIcon>
-        </GridLayout>
         <GridLayout :rows="rows" columns="*" style="border-width:5; border-color: #FFA656;">
             <GridLayout v-for="(columns,row) in fieldRow" :row="row" col="0" rows="auto" :columns="columns.join(',')" :key="['ff',unique,'fr',row].join('-')">
                 <AppForm v-for="(column,col) in columns" :col="col" :fields="getField(posNum(row,col))" @final="setFinal" :key="['ff',unique,'fr',row,'frc',col].join('-')"></AppForm>
@@ -13,6 +9,7 @@
             </GridLayout>
             <AppButton :row="actionButtonRowNum" col="0" v-if="action" class="c-white p-y-20" @tap.native="$emit('done',final)">{{ action }}</AppButton>
         </GridLayout>
+        <GridLayout><TextHighlight class="text-center m-t-8" @tap.native="$emit('close')">Close Window</TextHighlight></GridLayout>
     </StackLayout>
 </template>
 
