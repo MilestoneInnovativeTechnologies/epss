@@ -18,4 +18,7 @@ export default {
     'SalesOrder': require('./modules/salesorders/index').default,
     'SPT': require('./modules/spt/index').default,
     'Fiscal': require('./modules/fiscalyear/index').default,
+    'Reserves': require('./modules/reserves/index').default,
+    'Settings': require('./modules/settings/index').default,
+    'FN': require('./modules/fn/index').default,
 }
