@@ -7,6 +7,7 @@
         <Button text="Get Table Data" @tap="gTD" />
         <AppList :source="selectedTableInfoData" :layout="tblInfolayout" :title="tables[selectedTableIndex]"></AppList>
         <Button text="Add Predefined Reserves" @tap="aPR" />
+        <Button text="Set Random Price" @tap="sRP" />
     </App>
 </template>
 
@@ -38,7 +39,11 @@
             gTD(){ DB.get(this.tables[this.selectedTableIndex],null,function(vm){ vm.selectedTableInfoData.push({ table:this.tbl, records:this.result.length }) },this) },
             aPR(){ DB.delete('fn_reserves',null,function(insData){
                 DB.insert('fn_reserves',insData);
-            },insData); }
+            },insData); },
+            sRP(){ DB.get('pricelist',null,function(){
+                console.log(this.result);
+                _.forEach(this.result,function(pl){ DB.update('pricelist',{ id:pl.id },{ price:_.random(101,999,true)}) })
+            }); },
         },
     }
     const insData = [{"fncode":"SL1","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL2","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SR1","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SO1","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL1","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL2","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SR1","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SO1","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL1","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL2","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SR1","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SO1","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active"}];;
