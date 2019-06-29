@@ -27,11 +27,6 @@
                 let master = { _ref,docno,customer,date,fycode,fncode:type,payment_type:payment };
                 this.$navigateTo(require('./SaleNewItems').default,{ props:{ master,store } })
             }
-        },
-        created() {
-            console.log('=================================================');
-
-            console.log('=================================================');
         }
     }
 </script>
