@@ -2,8 +2,8 @@
     <StackLayout>
         <!--suppress HtmlDeprecatedTag -->
         <Image v-if="image" :src="image" height="96" stretch="aspectFit"></Image>
-        <TextTitleSub style="width: 100%; text-align: center">{{ print_head_text1 || 'milestone innovative technologies' }}</TextTitleSub>
-        <TextItalic style="width: 100%; text-align: center; color: #000000">{{ print_head_text2 || 'wisma pan ovungal bazar, india' }}</TextItalic>
+        <TextTitleSub style="width: 100%; text-align: center">{{ print_head_text1 }}</TextTitleSub>
+        <TextItalic style="width: 100%; text-align: center; color: #000000">{{ print_head_text2 }}</TextItalic>
     </StackLayout>
 </template>
 
