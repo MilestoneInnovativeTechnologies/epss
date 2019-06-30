@@ -1,7 +1,7 @@
 <template>
     <App title="NEW SALE - ITEMS" :action="action" @save="save">
         <GridLayout rows="auto,auto" columns="*">
-            <AppFormDetail row="0" col="0" :source="tblSource" :layout="tblLayout" :fields="appFormFields()" :labels="labels" :labelValues="labelValues" @ff-active="ffActive = $event" @collection="collection" @done="done" @final="updateLabels" :instance="instance"></AppFormDetail>
+            <AppFormDetail row="0" col="0" :source="tblSource" :layout="tblLayout" :fields="appFormFields()" :fieldValues="fieldValues" :labels="labels" :labelValues="labelValues" @ff-active="ffActive = $event" @collection="collection" @done="done" @final="updateLabels" :instance="instance"></AppFormDetail>
             <StackLayout row="1" col="0">
                 <AppInfoWideNumerical class="m-t-20" title="Total Tax" :text="toRate(tTax)"></AppInfoWideNumerical>
                 <AppInfoWideNumerical title="Total Amount" :text="toAmount(tAmount)"></AppInfoWideNumerical>
@@ -22,7 +22,7 @@
         data() {
             return {
                 tblSource: [], tblLayout: { Product:'name', Quantity:'quantity', Total:'total' },
-                fieldLayout: { product:'Product',quantity:'Quantity' },
+                fieldLayout: { product:'Product',quantity:'Quantity' }, fieldValues: { quantity:1 },
                 labels: ['rate','tax','amount'], labelValues: { rate:0,tax:0,amount:0 },
                 instance: 0, ffActive: false,
                 items: [], spt: [], td: [],
@@ -41,6 +41,7 @@
             toAmount(amount){ return __.amount(amount) }, toRate(amount){ return __.rate(amount) },
             collection(items){ this.items = items; let tTotal = this.getTotal(items); this.tTax = tTotal.tax; this.tAmount = tTotal.amount; },
             updateLabels({ product,quantity }){
+                if(!product || !this.products[product]) return;
                 let prd = this.products[product], qty = quantity || 0, rate = __.rate(prd.price), tax = __.rate(_.toNumber(prd.tax)*100), amount = this.toAmount(this.total(prd.price,qty,prd.tax));
                 this.labelValues = Object.assign({},this.labelValues,{ rate,tax,amount })
             },
@@ -69,8 +70,9 @@
                 return true;
             },
             save(){
-                let status = this.setExtras(this.items);
-                this.enterSale({ transaction:this.master,details:this.td,spt:this.spt }).then((_ref) => {
+                let status = this.setExtras(this.items), reserve = { store:this.store, fncode:this.master.fncode };
+                if(!this.spt.length) return alert('You didn\'t added any products..');
+                this.enterSale({ transaction:this.master,details:this.td,spt:this.spt,reserve }).then((_ref) => {
                     this.$navigateTo(require('./SaleDetail').default,{ props: { id:_ref }});
                 });
             },
