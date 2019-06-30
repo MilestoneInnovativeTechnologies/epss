@@ -1,4 +1,4 @@
-export function _ref(state){ return () => ['U',state['User'].id,'T',new Date().getTime()].join('') }
+export function _ref(state){ return () => ['U',state['User'].id,'T',moment().format('xS')].join('') }
 export function date(){ return () => moment().format('YYYY-MM-DD') }
 export function datetime(){ return () => moment().format('YYYY-MM-DD HH:mm:ss') }
 export function docno(){
