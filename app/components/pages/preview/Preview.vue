@@ -4,8 +4,11 @@
             <ScrollView row="0">
                 <StackLayout width="95%">
                     <PreviewHead class="m-b-15"></PreviewHead>
-                    <TextTitleSub v-if="title" style="width: 100%; text-align: center" class="m-b-15">{{ title }}</TextTitleSub>
+                    <TextHeading v-if="title" style="width: 100%; text-align: center" class="m-b-15">{{ title }}</TextHeading>
                     <slot></slot>
+                    <template v-if="template">
+                        <component v-for="(compAry,no) in template" :is="properComponent(compAry[0])" v-bind="compAry[1]" :key="['pt',unique,no].join('-')" class="m-b-15"></component>
+                    </template>
                     <PreviewFooter></PreviewFooter>
                 </StackLayout>
             </ScrollView>
@@ -17,10 +20,12 @@
 <script>
     export default {
         name: "Preview",
-        props: ['title']
+        props: ['title','template'],
+        computed: {
+            unique(){ return new Date().getTime() }
+        },
+        methods: {
+            properComponent(comp){ return 'Preview' + _.upperFirst(comp); }
+        },
     }
 </script>
-
-<style scoped>
-
-</style>
