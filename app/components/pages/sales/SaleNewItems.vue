@@ -37,7 +37,7 @@
             pAmount(){ return (this.tTax + this.tAmount) - _.toNumber(this.discount) }
         },
         methods: {
-            ...mapActions({ stockProduct: 'Product/_stockIfNot',dbInsert:'_insert'}),
+            ...mapActions({ stockProduct: 'Product/_stockIfNot',enterSale:'Sales/sale'}),
             toAmount(amount){ return __.amount(amount) }, toRate(amount){ return __.rate(amount) },
             collection(items){ this.items = items; let tTotal = this.getTotal(items); this.tTax = tTotal.tax; this.tAmount = tTotal.amount; },
             updateLabels({ product,quantity }){
@@ -70,11 +70,10 @@
             },
             save(){
                 let status = this.setExtras(this.items);
-                this.dbInsert({ table:'transactions',data:this.master,success:this.insertSPT,vm:this })
+                this.enterSale({ transaction:this.master,details:this.td,spt:this.spt }).then((_ref) => {
+                    this.$navigateTo(require('./SaleDetail').default,{ props: { id:_ref }});
+                });
             },
-            insertSPT(){ this.dbInsert({ table:'store_product_transactions',data:this.spt,success:this.insertTD,vm:this }); },
-            insertTD(){ this.dbInsert({ table:'transaction_details',data:this.td,success:this.doneInsert,vm:this }); },
-            doneInsert(){},
         },
         created() { this.stockProduct({ query:sql.format(fetch_all_products),key:'list' }); }
     }
