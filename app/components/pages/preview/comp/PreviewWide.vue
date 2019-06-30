@@ -1,6 +1,6 @@
 <template>
     <StackLayout>
-        <PreviewWideItem v-for="(text,title,no) in items" :title="title" :key="['pwi',unique,no].join('-')">{{ text }}</PreviewWideItem>
+        <PreviewWideItem v-for="(text,title,no) in items" :title="title" :key="['pwi',unique,no].join('-')" class="m-b-5">{{ text }}</PreviewWideItem>
     </StackLayout>
 </template>
 

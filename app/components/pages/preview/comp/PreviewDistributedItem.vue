@@ -1,7 +1,7 @@
 <template>
     <StackLayout>
-        <TextHeadingRowSub :class="alignClass" style="color: black; width: 100%;">{{ title }}</TextHeadingRowSub>
-        <TextHeading :class="alignClass" style="color: black; width: 100%" :text="mText"></TextHeading>
+        <TextBold :class="alignClass" style="color: black; width: 100%; font-size: 16; text-transform: uppercase">{{ title }}</TextBold>
+        <TextRegular :class="alignClass" style="color: black; width: 100%; font-size: 20; text-transform: uppercase" :text="mText"></TextRegular>
     </StackLayout>
 </template>
 
