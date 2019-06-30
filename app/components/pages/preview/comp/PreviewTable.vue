@@ -5,7 +5,7 @@
         </GridLayout>
         <GridLayout row="1" :rows="rows" columns="*">
             <GridLayout v-for="(item,row) in items" :row="row" col="0" :columns="columns" style="border-bottom-width: 1" :key="['pt',unique,'dr',row].join('-')">
-                <TextRegular v-for="(key,head,no) in layout" :col="no" textWrap="true" :key="['pt',unique,'dr',row,'dc',no].join('-')" class="p-y-12 p-x-10">{{ item[key] }}</TextRegular>
+                <TextRegular v-for="(key,head,no) in layout" :col="no" textWrap="true" :key="['pt',unique,'dr',row,'dc',no].join('-')" class="p-y-12 p-x-10" style="vertical-align: center">{{ item[key] }}</TextRegular>
             </GridLayout>
         </GridLayout>
     </GridLayout>
