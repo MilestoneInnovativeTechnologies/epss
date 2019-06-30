@@ -2,7 +2,7 @@
     <StackLayout class="appff-container">
         <GridLayout :rows="rows" columns="*" style="border-width:5; border-color: #FFA656;">
             <GridLayout v-for="(columns,row) in fieldRow" :row="row" col="0" rows="auto" :columns="columns.join(',')" :key="['ff',unique,'fr',row].join('-')">
-                <AppForm v-for="(column,col) in columns" :col="col" :fields="getField(posNum(row,col))" @final="setFinal" :key="['ff',unique,'fr',row,'frc',col].join('-')"></AppForm>
+                <AppForm v-for="(column,col) in columns" :col="col" :fields="getField(posNum(row,col))" :values="getFieldValue(posNum(row,col))" @final="setFinal" :key="['ff',unique,'fr',row,'frc',col].join('-')"></AppForm>
             </GridLayout>
             <GridLayout :row="labelsStartRowNum+row" col="0" v-for="(columns,row) in labelRow" rows="auto" :columns="getRepeated('*',columns.length)" class="p-24" :key="['ff',unique,'lr',row].join('-')">
                 <AppInfoWithLabel row="0" v-for="(cTxt,col) in columns" :col="col" :title="labels[posNum(row,col)]" :key="['ff',unique,'lr',row,'lrc',col,labelCode(posNum(row,col))].join('-')">{{ labelValues[labels[posNum(row,col)]] }}</AppInfoWithLabel>
@@ -20,6 +20,7 @@
             fields:Object,
             labels:Array,
             maxInARow:{ type:Number,default:3 },
+            fieldValues:Object,
             labelValues:Object,
             action:String,
         },
@@ -45,6 +46,10 @@
             getField(col){
                 let name = _.keys(this.fields)[col];
                 return _.zipObject([name],[_.get(this.fields,name)]);
+            },
+            getFieldValue(col){
+                let name = _.keys(this.fields)[col];
+                return _.zipObject([name],[_.get(this.fieldValues,name,'')]);
             },
             getRepeated(txt,num){
                 return _.map(Array(num),() => txt).join(',')

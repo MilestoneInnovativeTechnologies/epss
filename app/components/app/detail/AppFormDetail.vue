@@ -5,7 +5,7 @@
             <TextHighlight v-show="!ffActive" class="text-underline m-t-8 m-r-5 text-right" width="100%" @tap.native="alterActive">Add Item</TextHighlight>
         </StackLayout>
         <StackLayout width="100%" top="100%" :visibility="visible" >
-            <AppFloatForm style="background-color: #FAFAFA" :fields="fields" action="Add Product" @close="alterActive" :labels="labels" :labelValues="labelValues" v-on="$listeners" :key="instance"></AppFloatForm>
+            <AppFloatForm style="background-color: #FAFAFA" :fields="fields" :fieldValues="fieldValues" action="Add Product" @close="alterActive" :labels="labels" :labelValues="labelValues" v-on="$listeners" :key="instance"></AppFloatForm>
         </StackLayout>
     </AbsoluteLayout>
 </template>
@@ -13,7 +13,7 @@
 <script>
     export default {
         name: "AppFormDetail",
-        props: ['source','layout','fields','labels','labelValues','instance'],
+        props: ['source','layout','fields','fieldValues','labels','labelValues','instance'],
         data(){ return {
             ffActive: false,
             visibilityAlter: { hidden:'visible',visible:'hidden' },
