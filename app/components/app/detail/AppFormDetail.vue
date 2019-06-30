@@ -1,11 +1,11 @@
 <template>
     <AbsoluteLayout>
-        <StackLayout width="100%">
+        <StackLayout width="100%" style="min-height: 250;">
             <AppList :source="source" :layout="layout" action="remove" @collection="$emit('collection',$event)"></AppList>
             <TextHighlight v-show="!ffActive" class="text-underline m-t-8 m-r-5 text-right" width="100%" @tap.native="alterActive">Add Item</TextHighlight>
         </StackLayout>
-        <StackLayout width="100%" top="400%" :visibility="visible">
-            <AppFloatForm :fields="fields" action="Add Product" @close="alterActive" :labels="labels" :labelValues="labelValues" v-on="$listeners" :key="instance"></AppFloatForm>
+        <StackLayout width="100%" top="100%" :visibility="visible" >
+            <AppFloatForm style="background-color: #FAFAFA" :fields="fields" action="Add Product" @close="alterActive" :labels="labels" :labelValues="labelValues" v-on="$listeners" :key="instance"></AppFloatForm>
         </StackLayout>
     </AbsoluteLayout>
 </template>
