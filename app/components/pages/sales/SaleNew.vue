@@ -25,7 +25,7 @@
                 let { store,fiscal,type,customer,date,payment } = this.final, docno = this.docno(store,fiscal,type), _ref = this._ref();
                 let fycode = _.get(this._tableDataItem('fiscalyearmaster',fiscal),'code');
                 let master = { _ref,docno,customer,date,fycode,fncode:type,payment_type:payment,user:this.user };
-                this.$navigateTo(require('./SaleNewItems').default,{ props:{ master,store } })
+                this.$navigateTo(require('./SaleNewItems').default,{ props:{ master,store },backstackVisible:false })
             }
         }
     }
