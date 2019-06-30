@@ -28,7 +28,7 @@
         },
         created() {
             let query = new TransactionQueryBuilder('SL').fields(this.fields).max(this.max).query();
-            this._stockIfNot({ query,key:this.root,path:this.path })
+            this._stockIfNot({ query,key:this.root,path:this.path,on:3 })
         }
     }
 </script>
