@@ -1,5 +1,5 @@
 <template>
-    <App title="Sale Detail">
+    <App title="Sale Detail" action="Print Preview" @print-preview="$navigateTo(preview,{ props: { id }})">
         <TransactionDetail trType="SL" :id="id" :fields="fields" :layout="layout" :cast="cast"></TransactionDetail>
     </App>
 </template>
@@ -15,6 +15,7 @@
         }},
         computed: {
             layout(){ return _.mapKeys(this.layoutValues,(item) => _.capitalize(item)) },
+            preview(){ return require('./SalePreview').default }
         }
     }
 </script>
