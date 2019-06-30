@@ -31,7 +31,7 @@
         },
         mixins: [feMX.common, feMX.product, feMX.quantity],
         computed: {
-            ...mapGetters({ _ref:'_ref',total:'total',productsById:'Product/_stateDataById',natureEnum:'TRNS/NameId',typeEnum:'TRPS/NameId',datetime:'datetime',sptSale:'SPT/sale' }), ...mapState({ userId: state => state.User.id }),
+            ...mapGetters({ _ref:'_ref',total:'total',productsById:'Product/_stateDataById',sptSale:'SPT/sale' }),
             action(){ return this.ffActive ? null : 'SAVE' },
             products(){ return this.productsById('list') },
             pAmount(){ return (this.tTax + this.tAmount) - _.toNumber(this.discount) }
@@ -47,11 +47,11 @@
             done(data){ this.instance = this.tblSource.push(this.getSourceData(data)) },
             getSourceData({ product,quantity }) {
                 let p = this.products[product];
-                return Object.assign({},_.zipObject(['product','quantity','name','total'],[product,quantity,p.name,this.toAmount(this.total(p.price,quantity,p.tax))]));
+                return Object.assign({},_.zipObject(['product','quantity','name','total','_ref'],[product,quantity,p.name,this.toAmount(this.total(p.price,quantity,p.tax)),this._ref()]));
             },
             getTotal(items){
                 let tTotal = Object.assign({},{ tax:0, amount:0 });
-                _.forEach(items,(item) => { let tObj = this.getItemTotal(item); tTotal.tax += tObj.tax; tTotal.amount = tObj.amount; });
+                _.forEach(items,(item) => { let tObj = this.getItemTotal(item); tTotal.tax += tObj.tax; tTotal.amount += tObj.amount; });
                 return Object.assign({},tTotal);
             },
             getItemTotal({product,quantity}){
@@ -59,8 +59,8 @@
                 return { amount,tax };
             },
             setExtras(items){
-                _.forEach(items,({product,quantity}) => {
-                    let spt = this.sptSale(this.store,product,quantity); this.spt.push(spt);
+                _.forEach(items,({product,quantity,_ref}) => {
+                    let spt = this.sptSale(this.store,product,quantity,_ref); this.spt.push(spt);
                     let iTotal = this.getItemTotal({product,quantity}), total = _.sum(_.toArray(iTotal)) - this.discount;
                     let td = _.zipObject(['transaction','spt','amount','tax','discount','total'],[
                         this.master._ref,spt._ref,iTotal.amount,iTotal.tax,this.discount,total
