@@ -31,8 +31,11 @@ export function _insert({ dispatch,commit,state },{ table,data,success,vm }){
 export function _update({ dispatch,commit },{ table,data,id,pk,condition }){
     table = table || ( _.isArray(state.table) ? _.head(state.table) : state.table);
     condition = condition || (_.zipObject([(pk || 'id')],[id]));
-    DB.update(table,condition,data,function (table,mutation,commit,dispatch) {
-        commit('Sync/' + mutation,{ table,type:'update' },{ root:true });
-        dispatch('redrawModules',table,{ root:true });
-    },table,update_table_timing,commit,dispatch,)
+    return new Promise((res, rej) => {
+        DB.update(table, condition, data, function (table, mutation, commit, dispatch, res) {
+            commit('Sync/' + mutation, {table, type: 'update'}, {root: true});
+            dispatch('redrawModules', table, {root: true});
+            res(this.result);
+        }, table, update_table_timing, commit, dispatch,res);
+    });
 }
