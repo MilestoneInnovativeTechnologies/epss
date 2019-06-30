@@ -5,7 +5,7 @@
             <TextHighlight v-show="!ffActive" class="text-underline m-t-8 m-r-5 text-right" width="100%" @tap.native="alterActive">Add Item</TextHighlight>
         </StackLayout>
         <StackLayout width="100%" top="400%" :visibility="visible">
-            <AppFloatForm :fields="fields" action="Add Product" @close="alterActive" :labels="labels" v-on="$listeners" :key="instance"></AppFloatForm>
+            <AppFloatForm :fields="fields" action="Add Product" @close="alterActive" :labels="labels" :labelValues="labelValues" v-on="$listeners" :key="instance"></AppFloatForm>
         </StackLayout>
     </AbsoluteLayout>
 </template>
