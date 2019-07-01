@@ -15,3 +15,5 @@ export const payment = require('./payment').FormElementMixinPayment;
 export const salesorder = require('./salesorder').FormElementMixinSalesOrder;
 export const picker = require('./picker').FormElementMixinPicker;
 export const salestype = require('./salestype').FormElementMixinSalesType;
+export const customersales = require('./customersales').FormElementMixinCustomerSales;
+export const label = require('./label').FormElementMixinLabel;
