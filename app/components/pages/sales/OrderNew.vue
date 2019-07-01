@@ -1,0 +1,33 @@
+<template>
+    <App title="New Sales Order" action="Proceed" @proceed="proceed">
+        <AppForm :fields="appFormFields()" :values="values" @final="setSelectedData"></AppForm>
+    </App>
+</template>
+
+<script>
+    import { mapGetters } from 'vuex';
+    const feMX = require('./../../../assets/scripts/mixins/formelement');
+
+    export default {
+        name: "OrderNew",
+        mixins: [feMX.common,feMX.customer,feMX.fiscal,feMX.datepicker,feMX.payment],
+        data(){ return {
+            fieldLayout: { customer:'Customer',fiscal:'Fiscal',date:'DatePicker',payment:'Payment' },
+            final: {}
+        }},
+        computed: {
+            ...mapGetters({ docno:'SalesOrder/docno',_tableDataItem:'Fiscal/_tableDataItem',date:'datetime',_ref:'_ref',user:'user',setting:'Settings/setting' }),
+            fncode(){ return this.setting('SALESORDERFNCODE'); },
+            values(){ return { date:this.date() } }
+        },
+        methods: {
+            setSelectedData(data){ this.final = Object.assign({},this.final,data); },
+            proceed(){
+                let { fiscal,customer,date,payment } = this.final, docno = this.docno(this.fncode,fiscal), _ref = this._ref();
+                let fycode = _.get(this._tableDataItem('fiscalyearmaster',fiscal),'code');
+                let master = { _ref,docno,customer,date,fycode,fncode:this.fncode,payment_type:payment,user:this.user,progress:'Incomplete' };
+                this.$navigateTo(require('./OrderNewItems').default,{ props:{ master },backstackVisible:false })
+            }
+        }
+    }
+</script>
