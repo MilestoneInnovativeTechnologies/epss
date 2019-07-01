@@ -14,8 +14,8 @@ export default {
             state.dbData[table] = data;
         },
         [stock_state_data](state, { key,path,data } ) {
-            if(path) state[key] = Object.assign({},state[key],_.set({},path,data));
-            else state[key] = Object.assign({},state[key],data);
+            if(!path) return state[key] = Object.assign({},state[key],data);
+            state[key] = Object.assign({},state[key],_.set(state[key],path,data));
         },
         [increment_stock_cache](state,path) {
             let cache = _.toSafeInteger(_.get(state.stockActionCache,path,0)) + 1;
