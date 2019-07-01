@@ -6,3 +6,4 @@ export const sales_order_items_of_a_sales_order = `SELECT SOI.product pid,SOI.ra
 export const fetch_fiscal_year_details = `SELECT * FROM fiscalyearmaster`;
 export const fetch_all_products = `SELECT P.id, P.name, P.uom, P.narration, G1.name category, G2.name brand, G1.tax1 'tax', PL.price FROM products P LEFT JOIN productgroups G1 ON G1.id = P.group1 LEFT JOIN productgroups G2 ON G2.id = P.group2 LEFT JOIN pricelist PL ON PL.product = P.id WHERE G1.id = P.group1`;
 export const fetch_all_transaction_natures = `SELECT * FROM product_transaction_natures`;
+export const fetch_total_sale_details_of_a_period = `SELECT SUM(TD.\`total\`) total FROM transactions T, transaction_details TD WHERE TD.\`transaction\` = T._ref AND T.fncode LIKE 'SL%' AND T.user = ? AND datetime(T.date) >= ?`;
