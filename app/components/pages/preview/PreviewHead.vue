@@ -13,7 +13,7 @@
     export default {
         name: "PreviewHead",
         computed: {
-            ...mapState('Organization',['image','print_head_text1','print_head_text2'])
+            ...mapState('Organization',['image','print_head_line1','print_head_line2'])
         }
     }
 </script>

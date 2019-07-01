@@ -1,5 +1,5 @@
 <template>
-    <TextItalic>{{ footer_text }}</TextItalic>
+    <TextItalic width="100%" style="text-align: center; font-size: 12;">{{ footer_text }}</TextItalic>
 </template>
 
 <script>

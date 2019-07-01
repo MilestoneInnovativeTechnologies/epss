@@ -9,7 +9,7 @@
                     <template v-if="template">
                         <component v-for="(compAry,no) in template" :is="properComponent(compAry[0])" v-bind="compAry[1]" :key="['pt',unique,no].join('-')" class="m-b-15"></component>
                     </template>
-                    <PreviewFooter></PreviewFooter>
+                    <PreviewFooter class="m-t-20"></PreviewFooter>
                 </StackLayout>
             </ScrollView>
             <StackLayout row="1" orientation="horizontal"></StackLayout>

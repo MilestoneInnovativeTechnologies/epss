@@ -8,7 +8,7 @@ export default {
         state.uuid = uuid;
     },
     [populate_organisation_data](state, data) {
-        let stateKeys = ['code','name','image','brief','print_head_text1','print_head_text2','footer_text','url_web','url_api','url_interact'];
+        let stateKeys = ['code','name','image','brief','print_head_line1','print_head_line2','footer_text','url_web','url_api','url_interact'];
         data = _.mapValues(_.keyBy(data,'name'),'detail');
         _.forEach(stateKeys,(key) => state[key] = data[key])
     },
