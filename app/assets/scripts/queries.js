@@ -8,3 +8,5 @@ export const fetch_all_products = `SELECT P.id, P.name, P.uom, P.narration, G1.n
 export const fetch_all_transaction_natures = `SELECT * FROM product_transaction_natures`;
 export const fetch_total_sale_details_of_a_period = `SELECT SUM(TD.\`total\`) total FROM transactions T, transaction_details TD WHERE TD.\`transaction\` = T._ref AND T.fncode LIKE 'SL%' AND T.user = ? AND datetime(T.date) >= ?`;
 export const fetch_total_sale_returns_of_a_period = `SELECT SUM(TD.\`total\`) total FROM transactions T, transaction_details TD WHERE TD.\`transaction\` = T._ref AND T.fncode LIKE 'SR%' AND T.user = ? AND datetime(T.date) >= ?`;
+export const customer_recent_sales_count_for_return = `SELECT T.\`customer\` cid, COUNT(T.\`fncode\`) salesCount ,C.\`name\` customer, MAX(datetime(T.\`date\`)) lastSaleDate FROM transactions T,users C WHERE T.\`customer\` = C.\`id\` AND fncode like 'SL%' GROUP BY T.\`customer\``;
+
