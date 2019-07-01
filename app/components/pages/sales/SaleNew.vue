@@ -10,7 +10,7 @@
 
     export default {
         name: "SaleNew",
-        mixins: [feMX.common,feMX.customer,feMX.store,feMX.salestype,feMX.fiscal,feMX.datepicker,feMX.payment,feMX.nature],
+        mixins: [feMX.common,feMX.customer,feMX.store,feMX.salestype,feMX.fiscal,feMX.datepicker,feMX.payment],
         data(){ return {
             fieldLayout: { customer:'Customer',store:'Store',type:'SalesType',fiscal:'Fiscal',date:'DatePicker',payment:'Payment' },
             final: {}
