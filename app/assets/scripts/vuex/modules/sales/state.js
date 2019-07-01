@@ -4,4 +4,5 @@ export default {
     customerReturnSummary: {},
     transactions:{},
     detail:{},
+    metric:{ SL:{}, SR:{} },
 }
