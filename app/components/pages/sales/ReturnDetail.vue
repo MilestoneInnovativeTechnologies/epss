@@ -6,12 +6,12 @@
 
 <script>
     export default {
-        name: "SaleReturnDetail",
+        name: "ReturnDetail",
         props: ['id'],
         data(){ return {
-            fields: [ 'docno','date','customer','executive','total','tax','discount','product','quantity','price','nature','pid' ],
-            layoutValues: [ 'product','quantity','price','nature','tax','discount','total' ],
-            cast: { quantity:'quantity',price:'rate',discount:'amount',total:'amount',tax:'rate' },
+            fields: [ 'docno','date','customer','executive','total','tax','discount','product','quantity','amount','nature','pid' ],
+            layoutValues: [ 'product','quantity','amount','nature','tax','discount','total' ],
+            cast: { quantity:'quantity',amount:'rate',discount:'amount',total:'amount',tax:'rate' },
         }},
         computed: {
             layout(){ return _.mapKeys(this.layoutValues,(item) => _.capitalize(item)) },
