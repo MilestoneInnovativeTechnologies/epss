@@ -46,7 +46,7 @@
             },
             getInitValue(name) {
                 let values = this.values;
-                if (values && !_.isEmpty(values) && _.has(values, name)) return values[name];
+                if (values && !_.isEmpty(values) && _.has(values, name) && !_.isNil(values[name])) return values[name];
                 return (_.includes(this.valProTypes, _.get(this.fields, [name, 'type']))) ? this.pavpGetAnnotationValueConverted(name) : ''
             },
             submitForm() {
