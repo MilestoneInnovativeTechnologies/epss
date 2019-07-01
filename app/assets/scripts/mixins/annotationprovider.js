@@ -1,7 +1,7 @@
 export const PropertyAnnotationValuesProvider = {
     data(){ return {
         valuesProviderTypeEditors: ['Picker', 'SegmentedEditor', 'List', 'AutoCompleteInline'],
-        pavpSourceValues: {}, pavpPathchValues: {},
+        pavpSourceValues: {}, pavpPatchValues: {},
         pavpValueConverter: {}, pavpConverterParams: {}
     }},
     methods: {
@@ -12,7 +12,7 @@ export const PropertyAnnotationValuesProvider = {
         },
         pavpSetPatchValue(name,value){
             let valObj = _.zipObject([name],[value]);
-            this.pavpPathchValues = Object.assign({},this.pavpPathchValues,valObj);
+            this.pavpPatchValues = Object.assign({},this.pavpPatchValues,valObj);
             return value;
         },
         pavpSetValueConverter(name,type,params){
@@ -70,7 +70,7 @@ export const PropertyAnnotationValuesProvider = {
         pavpGetAnnotationValueConverted(name,value){
             if(!this.pavpValueConverter[name]) return value || '';
             let method = 'pavpValueConverter' + this.pavpValueConverter[name];
-            value = _.isNil(value) ? _.head(this.pavpPathchValues[name]) : value;
+            value = _.isNil(value) ? _.head(this.pavpPatchValues[name]) : value;
             return this[method](value,name);
         }
     }
