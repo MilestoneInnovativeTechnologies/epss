@@ -1,6 +1,6 @@
 export function get(state,{ processable,getAI },rootState,rootGetters) {
     return (store,fyid,fncode) => {
-        let abr = rootGetters['abbreviations'](store,fyid);
+        let abr = rootGetters['abbreviations'](store,fyid,fncode);
         let data = processable(fncode,store);
         let fn = rootGetters['FN/_tableDataItemByKey']('functiondetails','code',fncode);
         let AI = getAI(fn,data);
