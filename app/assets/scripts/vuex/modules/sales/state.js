@@ -5,4 +5,5 @@ export default {
     transactions:{},
     detail:{},
     metric:{ SL:{}, SR:{} },
+    count:[],
 }
