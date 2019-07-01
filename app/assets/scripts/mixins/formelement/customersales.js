@@ -10,7 +10,7 @@ export const FormElementMixinCustomerSales = {
         ...mapActions('Sales',['_stock']),
         feValuesCustomerSales(){
             let list = this.customerSaleSummary[this.customer], key = 'id', label = 'docno',
-                listArray = _.map(list,(sale) => _.zipObject([key,label],[sale[key],sale[label]]));
+                listArray = _.map(list,(sale) => _.zipObject([key,label],[sale[key],sale[label]+' - '+__.docdate(sale.date)]));
             return { items:listArray, key, label };
         }
     },
