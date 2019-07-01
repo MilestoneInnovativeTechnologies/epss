@@ -49,7 +49,7 @@
             },
             getFieldValue(col){
                 let name = _.keys(this.fields)[col];
-                return _.zipObject([name],[_.get(this.fieldValues,name,'')]);
+                return _.zipObject([name],[_.get(this.fieldValues,name)]);
             },
             getRepeated(txt,num){
                 return _.map(Array(num),() => txt).join(',')
