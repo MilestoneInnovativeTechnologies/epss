@@ -9,10 +9,10 @@ export function docno(){
     }
 }
 export function abbreviations(state,getters){
-    return (store,fyid) => {
+    return (store,fyid,fncode) => {
         let str = _.get(getters['Stores/_tableDataById']('stores'),store);
         let FY = _.get(getters['Fiscal/_tableDataItem']('fiscalyearmaster',fyid),'abr');
-        return _.zipObject(['FY','BR','CMP'],[FY,str.br_abr,str.co_abr]);
+        return _.zipObject(['FY','BR','CMP','FN'],[FY,str.br_abr,str.co_abr,fncode]);
     }
 }
 export function total(){
