@@ -25,8 +25,8 @@
 </template>
 
 <script>
-    import { mapState,mapGetters,mapActions } from 'vuex';
-    import {sales_order_items_of_a_sales_order} from "../../../assets/scripts/queries";
+    import { mapState,mapActions } from 'vuex';
+    import { sales_order_items_of_a_sales_order } from "../../../assets/scripts/queries";
 
     export default {
         name: "SalesOrderDetail",
@@ -37,8 +37,8 @@
             cast: { quantity:'quantity',rate:'rate',tax:'rate',discount:'amount',total:'amount' }
         }},
         computed: {
-            ...mapGetters('SalesOrder',['_stateDataItemByKey']),...mapState('SalesOrder',['list','products']),
-            detail(){ return this._stateDataItemByKey('list','_ref',this.id); },
+            ...mapState('SalesOrder',['list','products']),
+            detail(){ return this.list[_.findKey(this.list,['id',this.id])]; },
             source(){ return __.cast(this.products[this.id],this.cast) }
         },
         methods: {
@@ -49,7 +49,7 @@
         },
         created() {
             let query = sql.format(sales_order_items_of_a_sales_order,[this.id]);
-            this._stockIfNot({ query,key:this.key,path:this.id,on:this.cacheOn })
+            this._stockIfNot({ query,key:this.key,path:this.id,on:this.cacheOn });
         }
     }
 </script>
