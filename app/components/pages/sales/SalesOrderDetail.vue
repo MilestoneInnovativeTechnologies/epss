@@ -1,5 +1,5 @@
 <template>
-    <App title="Sales Order Detail">
+    <App title="Sales Order Detail" action="Preview" @preview="$navigateTo(preview,{ props: { id }})">
         <StackLayout v-if="detail">
 
             <TextTitle>{{ detail.docno }}</TextTitle>
@@ -39,7 +39,8 @@
         computed: {
             ...mapState('SalesOrder',['list','products']),
             detail(){ return this.list[_.findKey(this.list,['id',this.id])]; },
-            source(){ return __.cast(this.products[this.id],this.cast) }
+            source(){ return __.cast(this.products[this.id],this.cast) },
+            preview(){ return require('./OrderPreview').default }
         },
         methods: {
             ...mapActions('SalesOrder',['_stockIfNot']),
