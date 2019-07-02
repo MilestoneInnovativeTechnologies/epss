@@ -37,7 +37,7 @@
         },
         created() {
             let query = new TransactionQueryBuilder(this.path).fields(this.fields).max(this.max).query();
-            this._stockIfNot({ query,key:this.root,path:this.path });
+            this._stockIfNot({ query,key:this.root,path:this.path,on:2 });
             this._stock({ query:sql.format(fetch_total_sale_returns_of_a_period,[this.id,this.startOfDay]),key:'metric',path:this.getMetricPath(this.startOfDay) });
             this._stock({ query:sql.format(fetch_total_sale_returns_of_a_period,[this.id,this.startOfWeek]),key:'metric',path:this.getMetricPath(this.startOfWeek) });
             this._stock({ query:sql.format(fetch_total_sale_returns_of_a_period,[this.id,this.startOfMonth]),key:'metric',path:this.getMetricPath(this.startOfMonth) });
