@@ -1,7 +1,7 @@
 <template>
     <AbsoluteLayout>
         <StackLayout width="100%" style="min-height: 250;">
-            <AppList :source="source" :layout="layout" action="remove" @collection="$emit('collection',$event)"></AppList>
+            <AppList :source="source" :layout="layout" :cast="cast" action="remove" @collection="$emit('collection',$event)"></AppList>
             <TextHighlight v-show="!ffActive" class="text-underline m-t-8 m-r-5 text-right" width="100%" @tap.native="alterActive">Add Item</TextHighlight>
         </StackLayout>
         <StackLayout width="100%" top="100%" :visibility="visible" >
@@ -13,7 +13,7 @@
 <script>
     export default {
         name: "AppFormDetail",
-        props: ['source','layout','fields','fieldValues','labels','labelValues','instance'],
+        props: ['source','layout','cast','fields','fieldValues','labels','labelValues','instance'],
         data(){ return {
             ffActive: false,
             visibilityAlter: { hidden:'visible',visible:'hidden' },
