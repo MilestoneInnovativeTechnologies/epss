@@ -3,7 +3,7 @@
         <GridLayout rows="auto,auto,auto,auto" columns="*">
             <AppList row="0" col="0" title="Sale Products" :layout="PPLayout" :source="PPSrc"></AppList>
             <TextHeading row="1" class="m-y-10">Removed Items</TextHeading>
-            <AppFormDetail row="2" col="0" :source="RPSrc" :layout="RPLayout" :fields="appFormFields()" :fieldValues="fieldValues" :labels="labels" :labelValues="labelValues" @ff-active="ffActive = $event" @final="updateLabels" @collection="setCollected" @done="addItem" :instance="instance"></AppFormDetail>
+            <AppFormDetail row="2" col="0" :source="RPSrc" :cast="PPCast" :layout="RPLayout" :fields="appFormFields()" :fieldValues="fieldValues" :labels="labels" :labelValues="labelValues" @ff-active="ffActive = $event" @final="updateLabels" @collection="setCollected" @done="addItem" :instance="instance"></AppFormDetail>
             <StackLayout row="3" col="0" class="m-t-20">
                 <AppInfoWideNumerical title="Total Tax" :text="tAmount"></AppInfoWideNumerical>
                 <AppInfoWideNumerical title="Total Amount" :text="tTax"></AppInfoWideNumerical>
@@ -24,6 +24,7 @@
         props: ['master','sales','store','transaction'],
         mixins: [feMX.common,feMX.returnsaleproducts,feMX.quantity,feMX.nature],
         data(){ return {
+            detailFields: [ 'docno','date','customer','executive','total','tax','discount','product','quantity','amount','rate','taxRate','taxValue','pid' ],
             PPLayout: { Product:'product',Quantity:'quantity',Rate:'rate','Tax/Qty':'tax',Discount:'discount',Total:'total' },
             PPCast: { quantity:'quantity',rate:'rate',tax:'rate',discount:'amount',total:'amount' },
             RPSrc:[],
@@ -104,7 +105,7 @@
             },
         },
         created() {
-            let query = new TransactionQueryBuilder('SL').fields([ 'docno','date','customer','executive','total','tax','discount','product','quantity','amount','rate','taxRate','taxValue','pid' ]).where({ id:this.sales }).query();
+            let query = new TransactionQueryBuilder('SL').fields(this.detailFields).where({ id:this.sales }).query();
             this.stockTrnDetail({ query:query,key:'detail',path:this.sales })
         }
     }
