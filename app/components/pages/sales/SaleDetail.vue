@@ -9,7 +9,7 @@
         name: "SaleDetail",
         props: ['id'],
         data(){ return {
-            fields: [ 'docno','date','customer','executive','total','tax','discount','product','quantity','amount','rate','taxRate','pid' ],
+            fields: [ 'docno','date','customer','executive','total','tax','discount','product','quantity','amount','rate','taxRate','taxValue','pid' ],
             layoutValues: [ 'product','quantity','amount','tax','discount','total' ],
             cast: { quantity:'quantity',amount:'rate',discount:'amount',total:'amount',tax:'rate' },
         }},
