@@ -4,3 +4,6 @@ export function increment({ dispatch,getters,state },id){
     if((_.toNumber(rData.start_num) + data['current']) >= _.toNumber(rData.end_num)) data['progress'] = 'Completed';
     dispatch('_update',{ table:'fn_reserves',data,condition:{ id } },{ root:true });
 }
+export function incReserve({ getters,dispatch }, {fncode, store}) {
+    dispatch('increment',getters.processable(fncode,store)['id']);
+}
