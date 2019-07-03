@@ -9,4 +9,5 @@ export const fetch_all_transaction_natures = `SELECT * FROM product_transaction_
 export const fetch_total_sale_details_of_a_period = `SELECT SUM(TD.\`total\`) total FROM transactions T, transaction_details TD WHERE TD.\`transaction\` = T._ref AND T.fncode LIKE 'SL%' AND T.user = ? AND datetime(T.date) >= ?`;
 export const fetch_total_sale_returns_of_a_period = `SELECT SUM(TD.\`total\`) total FROM transactions T, transaction_details TD WHERE TD.\`transaction\` = T._ref AND T.fncode LIKE 'SR%' AND T.user = ? AND datetime(T.date) >= ?`;
 export const customer_recent_sales_count_for_return = `SELECT T.\`customer\` cid, COUNT(T.\`fncode\`) salesCount ,C.\`name\` customer, MAX(datetime(T.\`date\`)) lastSaleDate FROM transactions T,users C WHERE T.\`customer\` = C.\`id\` AND fncode like 'SL%' GROUP BY T.\`customer\``;
+export const fetch_all_active_receipts = `SELECT R._ref id, R.docno, R.mode, R.customer cid, C.name customer, R.user eid, E.name executive, R.date, R.amount, R.bank, R.cheque, R.cheque_date FROM receipts R,users C,users E WHERE R.customer = C.id AND R.user = E.id AND R.status = 'Active'`;
 
