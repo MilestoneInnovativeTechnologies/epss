@@ -1,6 +1,6 @@
 <template>
     <App title="Cash Receipt" action="New Receipt" @new-receipt="$navigateTo(require('./ReceiptNew').default,{ backstackVisible:false })">
-        <AppList :source="receipts" :cast="cast" :layout="layout" detail="receipt/ReceiptDetail"></AppList>
+        <ReceiptList :receipts="receipts"></ReceiptList>
     </App>
 </template>
 
@@ -12,8 +12,6 @@
         name: "CashReceiptIndex",
         data() { return {
             page: 'Cash',
-            cast: { date:'docdate',amount:'amount',cheque_date:'chqdate' },
-            layout: { Customer:'customer',Date:'date',Amount:'amount' }
         }},
         computed: {
             ...mapState('Receipts',['list']),
