@@ -19,12 +19,12 @@ export function redrawModules({state, commit, rootState}, table) {
 export function _insert({ dispatch,commit,state },{ table,data,success,vm }){
     table = table || ( _.isArray(state.table) ? _.head(state.table) : state.table);
     return new Promise((res,rej) => {
-        DB.insert(table,data,function (table,callback,mutation,commit,dispatch,res) {
+        DB.insert(table,data,function (table,callback,vm,mutation,commit,dispatch,res) {
             commit('Sync/' + mutation,{ table,type:'create' },{ root:true });
             dispatch('redrawModules',table,{ root:true });
             if(callback) callback.call(vm,this.result);
             res(this.result);
-        },table,success,update_table_timing,commit,dispatch,res)
+        },table,success,vm,update_table_timing,commit,dispatch,res)
     });
 }
 
