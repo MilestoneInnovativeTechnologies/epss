@@ -25,13 +25,14 @@ export default {
     },
     actions:{
         _stock({ commit },{ query,mutation,key,path }){
-            mutation = mutation || stock_state_data;
+            mutation = mutation || stock_state_data; key = key || ((path) ? 'detail' : 'list');
             DB.getAllQuery(query,function(commit,mutation,key,path){
                 if(this.error) return log('DB Bind Global Module > action:_stock > execQuery error.',this.executedQuery[0],this.result);
                 commit(mutation,{ data:this.result,key,path });
             },[commit,mutation,key,path])
         },
         _stockIfNot({ state,dispatch,commit },payload){
+            payload.key = payload.key || ((payload.path) ? 'detail' : 'list');
             let fullPath = _.trim([payload.key,payload.path].join('.'),'.');
             if(_.isEmpty(_.get(state,fullPath))) return dispatch('_stock',payload);
             commit(increment_stock_cache,fullPath);
