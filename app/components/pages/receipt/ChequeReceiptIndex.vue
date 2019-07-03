@@ -1,6 +1,10 @@
 <template>
     <App title="Cheque Receipt" action="New Receipt" @new-receipt="$navigateTo(require('./ReceiptNew').default,{ backstackVisible:false,props:{ pMode:'Cheque'} })">
-        <ReceiptList :receipts="receipts"></ReceiptList>
+        <TextTitleSub>Total Receipts</TextTitleSub>
+        <ReceiptsTotalTodayMetric mode="Cheque"></ReceiptsTotalTodayMetric>
+        <ReceiptList :receipts="receipts" :limit="5" title="Recent Receipts" class="m-t-15"></ReceiptList>
+        <TextTitleSub>Total Cheque Receipts</TextTitleSub>
+        <ReceiptsTotalMonthMetric mode="Cheque"></ReceiptsTotalMonthMetric>
     </App>
 </template>
 

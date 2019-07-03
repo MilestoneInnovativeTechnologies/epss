@@ -1,15 +1,21 @@
 <template>
     <App title="Cash Receipt" action="New Receipt" @new-receipt="$navigateTo(require('./ReceiptNew').default,{ backstackVisible:false })">
-        <ReceiptList :receipts="receipts"></ReceiptList>
+        <TextTitleSub>Total Receipts</TextTitleSub>
+        <ReceiptsTotalTodayMetric mode="Cash"></ReceiptsTotalTodayMetric>
+        <ReceiptList :receipts="receipts" :limit="5" title="Recent Receipts" class="m-t-15"></ReceiptList>
+        <TextTitleSub>Total Cash Receipts</TextTitleSub>
+        <ReceiptsTotalMonthMetric mode="Cash"></ReceiptsTotalMonthMetric>
     </App>
 </template>
 
 <script>
     import { mapState,mapActions } from 'vuex';
     import {fetch_all_active_receipts} from "../../../assets/scripts/queries";
+    import TextHeading from "../../typography/TextHeading";
 
     export default {
         name: "CashReceiptIndex",
+        components: {TextHeading},
         data() { return {
             page: 'Cash',
         }},
