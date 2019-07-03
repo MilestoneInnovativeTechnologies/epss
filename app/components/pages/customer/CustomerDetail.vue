@@ -7,6 +7,7 @@
         <CustomerOutstandingMetric :id="id" class="m-t-15"></CustomerOutstandingMetric>
         <CustomerRecentSaleList :id="id" :limit="3" class="m-t-15" title="Recent Sales"></CustomerRecentSaleList>
         <CustomerRecentReturnList :id="id" :limit="3" class="m-t-15" title="Recent Returns"></CustomerRecentReturnList>
+        <CustomerRecentReceipts :id="id" :limit="4" class="m-t-15" title="Recent Receipts"></CustomerRecentReceipts>
     </App>
 </template>
 
