@@ -13,7 +13,7 @@
         mixins: [feMX.common,feMX.customersales,feMX.store,feMX.fiscal,feMX.datepicker,feMX.payment],
         props: ['id'],
         data(){ return {
-            fieldLayout: { sales:'CustomerSales',store:'Store',fiscal:'Fiscal',date:'DatePicker',payment_type:'Payment' },
+            fieldLayout: { sales:'CustomerSales',store:'Store',fycode:'Fiscal',date:'DatePicker',payment_type:'Payment' },
             final: {},
         }},
         computed: {
@@ -21,7 +21,6 @@
             customer(){ return this.id }, values(){ return { date:this.date() } },
             fncode(){ return this.setting('SALESRETURNFNCODE') }, store(){ return this.stores[0] },
             docno(){ return this.doc(this.store,this.final.fiscal,this.fncode) },
-            fycode(){ return _.get(this.fiscal('fiscalyearmaster',this.final.fiscal),'code');}
         },
         methods: {
             setFinal(data){ this.final = Object.assign({},this.final,data) },
