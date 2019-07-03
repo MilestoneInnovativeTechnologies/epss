@@ -29,11 +29,6 @@
                 selectedTableInfoData:[],
             }
         },
-        computed: {
-            ...mapState('Sync',['queue','queue_index','processing','url','time','user','client']),
-            tblInfolayout(){ return _.mapKeys(this.tblInfoLays,(l) => _.capitalize(l) ) },
-            tablePicker(){ return { picker: {...(this.feFieldPicker),name:'picker',values:this.tables }} }
-        },
         methods: {
             ...mapActions(['_insert']),
             fQL(){ let qLog = DB.log(); this.qLogSource = _.map(qLog,(qry) => { return { qry } }) },
@@ -43,6 +38,13 @@
                 console.log(this.result);
                 _.forEach(this.result,function(pl){ DB.update('pricelist',{ id:pl.id },{ price:_.random(101,999,true)}) })
             }); },
+        },
+        computed: {
+            ...mapState('Sync',['queue','queue_index','processing','url','time','user','client']),
+            ...mapState('Sales',{ SLScustomerSaleSummary:'customerSaleSummary',SLStransactions:'transactions',SLSdetail:'detail' }),
+            ...mapState('Transaction',{ TRNdetail:'detail' }),
+            tblInfolayout(){ return _.mapKeys(this.tblInfoLays,(l) => _.capitalize(l) ) },
+            tablePicker(){ return { picker: {...(this.feFieldPicker),name:'picker',values:this.tables }} }
         },
     }
     const insData = [{"fncode":"SL1","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL2","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SR1","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SO1","user":"","store":1,"start_num":100,"end_num":199,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL1","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL2","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SR1","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SO1","user":"","store":2,"start_num":200,"end_num":299,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL1","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SL2","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SR1","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active",},{"fncode":"SO1","user":"","store":3,"start_num":300,"end_num":399,"quantity":100.0000000000,"current":0,"progress":"Awaiting","status":"Active"}];;
