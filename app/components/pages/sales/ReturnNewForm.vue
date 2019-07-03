@@ -26,7 +26,7 @@
         methods: {
             setFinal(data){ this.final = Object.assign({},this.final,data) },
             selectProducts(){
-                let master = { user:this.user,docno:this.docno,date:this.final.date,customer:this.id,fycode:this.fycode,fncode:this.fncode,payment_type:this.final.payment_type,_ref:this._ref() };
+                let master = { user:this.user,docno:this.docno,date:this.final.date,customer:this.id,fycode:this.final.fiscal,fncode:this.fncode,payment_type:this.final.payment_type,_ref:this._ref() };
                 let sales = this.final.sales, store = this.final.store, transaction = master._ref;
                 this.$navigateTo(require('./ReturnNewItems').default,{ props: { master,sales,store,transaction },backstackVisible:false })
             },
