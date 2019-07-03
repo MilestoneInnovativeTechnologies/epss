@@ -2,6 +2,9 @@ export function user(state){ return state['User'].id }
 export function _ref(state){ return () => ['U',state['User'].id,'T',moment().format('xS')].join('') }
 export function date(){ return () => moment().format('YYYY-MM-DD') }
 export function datetime(){ return () => moment().format('YYYY-MM-DD HH:mm:ss') }
+export function startOfDay(){ return moment().startOf('day').format('X') }
+export function startOfWeek(){ return moment().startOf('week').format('X') }
+export function startOfMonth(){ return moment().startOf('month').format('X') }
 export function docno(){
     return (format,object) => {
         let replaces = ['CMP','BR','FN','FY','AI'];
