@@ -25,19 +25,25 @@ export default {
     },
     actions:{
         _stock({ commit },{ query,mutation,key,path }){
-            mutation = mutation || stock_state_data; key = key || ((path) ? 'detail' : 'list');
-            DB.getAllQuery(query,function(commit,mutation,key,path){
-                if(this.error) return log('DB Bind Global Module > action:_stock > execQuery error.',this.executedQuery[0],this.result);
-                commit(mutation,{ data:this.result,key,path });
-            },[commit,mutation,key,path])
+            return new Promise((resolve,reject) => {
+                mutation = mutation || stock_state_data; key = key || ((path) ? 'detail' : 'list');
+                DB.getAllQuery(query,function(resolve,commit,mutation,key,path){
+                    if(this.error) return log('DB Bind Global Module > action:_stock > execQuery error.',this.executedQuery[0],this.result);
+                    commit(mutation,{ data:this.result,key,path });
+                    resolve(this.result);
+                },[resolve,commit,mutation,key,path])
+            });
         },
         _stockIfNot({ state,dispatch,commit },payload){
-            payload.key = payload.key || ((payload.path) ? 'detail' : 'list');
-            let fullPath = _.trim([payload.key,payload.path].join('.'),'.');
-            if(_.isEmpty(_.get(state,fullPath))) return dispatch('_stock',payload);
-            commit(increment_stock_cache,fullPath);
-            let on = _.toSafeInteger(_.isNil(payload.on) ? stock_load_cache_refresh_on_each_nth_query : payload.on);
-            if(on !== 0 && _.toSafeInteger(state.stockActionCache[fullPath])%(on) === 0) return dispatch('_stock',payload);
+            return new Promise((resolve, reject) => {
+                payload.key = payload.key || ((payload.path) ? 'detail' : 'list');
+                let fullPath = _.trim([payload.key,payload.path].join('.'),'.');
+                if(_.isEmpty(_.get(state,fullPath))) resolve(dispatch('_stock',payload));
+                commit(increment_stock_cache,fullPath);
+                let on = _.toSafeInteger(_.isNil(payload.on) ? stock_load_cache_refresh_on_each_nth_query : payload.on);
+                if(on !== 0 && _.toSafeInteger(state.stockActionCache[fullPath])%(on) === 0) return dispatch('_stock',payload);
+                reject(state.stockActionCache[fullPath]);
+            });
         }
     },
     getters: {
