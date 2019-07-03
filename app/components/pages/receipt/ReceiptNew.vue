@@ -28,13 +28,14 @@
             chequeAppFields(){ let fields = this.appFormFields(this.chequeFields); return _.mapValues(fields,(field,name) => { field.label = _.startCase(name); return field; }) },
         },
         methods: {
-            ...mapActions({ newReceipt:'Receipts/create',stock:'_stock' }),
+            ...mapActions('Receipts',{ newReceipt:'create',stock:'_stock' }),
             setReceiptFields(data){ this.final = Object.assign({},this.final,data) },
             save(){
                 if(_.isEmpty(this.final.amount) && !_.isNumber(this.final.amount)) return alert('Please enter any amount');
                 this.newReceipt(this.final).then(id => {
-                    this.stock({ query:sql.format(fetch_all_active_receipts) });
-                    this.$navigateTo(require('./ReceiptDetail').default,{ props:{ id }})
+                    this.stock({ query:sql.format(fetch_all_active_receipts) }).then(() => {
+                        this.$navigateTo(require('./ReceiptDetail').default,{ props:{ id }})
+                    });
                 });
             }
         },
