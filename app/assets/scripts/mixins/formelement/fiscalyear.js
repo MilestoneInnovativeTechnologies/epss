@@ -5,10 +5,10 @@ export const FormElementMixinFiscalyear = {
     computed: {
         ...mapState('Fiscal',{ feFiscalList:'list' }),
         feValuesFiscal(){
-            let list = this.feFiscalList, key = 'id', label = 'name', listArray = _.map(list,(fiscal) => _.zipObject([key,label],[fiscal[key],fiscal[label]]));
+            let list = this.feFiscalList, key = 'code', label = 'name', listArray = _.map(list,(fiscal) => _.zipObject([key,label],[fiscal[key],fiscal[label]]));
             return { items:listArray, key, label };
         },
-        feFieldFiscal(){ return { name:'fiscal',label:'Select Fiscal Year',type:'Picker',values:this.feValuesFiscal,hidden:this.feValuesFiscal.items.length === 1 } }
+        feFieldFiscal(){ return { name:'fycode',label:'Select Fiscal Year',type:'Picker',values:this.feValuesFiscal,hidden:this.feValuesFiscal.items.length === 1 } }
     },
     methods: {
         ...mapActions({ feListFetchFiscal: 'Fiscal/_stockIfNot' }),
