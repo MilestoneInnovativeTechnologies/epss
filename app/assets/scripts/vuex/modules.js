@@ -21,4 +21,5 @@ export default {
     'Reserves': require('./modules/reserves/index').default,
     'Settings': require('./modules/settings/index').default,
     'FN': require('./modules/fn/index').default,
+    'Receipts': require('./modules/receipt/index').default,
 }
