@@ -18,3 +18,4 @@ export const salestype = require('./salestype').FormElementMixinSalesType;
 export const customersales = require('./customersales').FormElementMixinCustomerSales;
 export const label = require('./label').FormElementMixinLabel;
 export const returnsaleproducts = require('./returnsaleproduct').FormElementMixinReturnSaleProduct;
+export const paymentmode = require('./paymentmode').FormElementMixinPaymentMode;
