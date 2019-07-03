@@ -14,7 +14,7 @@ export default {
             state.dbData[table] = data;
         },
         [stock_state_data](state, { key,path,data } ) {
-            if(!path) return state[key] = Object.assign({},state[key],data);
+            if(!path) return state[key] = _.isArray(state[key]) ? data : Object.assign({},state[key],data);
             state[key] = Object.assign({},state[key],_.set(state[key],path,data));
         },
         [increment_stock_cache](state,path) {
