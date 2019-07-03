@@ -1,40 +1,29 @@
 <template>
-    <App title="Cash Receipt">
-        <AppForm :fields="fields" title="TEST FORM" :values="values" @submit="formDataToTables"></AppForm>
+    <App title="Cash Receipt" action="New Receipt" @new-receipt="$navigateTo(require('./ReceiptNew').default,{ backstackVisible:false })">
+        <AppList :source="receipts" :cast="cast" :layout="layout" detail="receipt/ReceiptDetail"></AppList>
     </App>
 </template>
 
 <script>
-    import {mapActions} from 'vuex';
-    const feMX = require("../../../assets/scripts/mixins/formelement");
+    import { mapState,mapActions } from 'vuex';
+    import {fetch_all_active_receipts} from "../../../assets/scripts/queries";
 
     export default {
         name: "CashReceiptIndex",
-        data() {
-            return {
-                formFields: {product: 'Product', nat: 'Nature', date: 'DatePicker', amount: 'Decimal', name: 'Text'},
-                formBinds: {testtable: {fields: { t1:'product',t2:'date',t3:'amount',t4:'name',t5:'nat'}, method: '_insert', success: 'successMethod'}},
-                values: {}, executedQuery:['TEST OK']
-            }
-        },
-        mixins: [feMX.common, feMX.product, feMX.nature, feMX.datepicker, feMX.decimal, feMX.text],
+        data() { return {
+            page: 'Cash',
+            cast: { date:'docdate',amount:'amount',cheque_date:'chqdate' },
+            layout: { Customer:'customer',Date:'date',Amount:'amount' }
+        }},
         computed: {
-            fields() {
-                return this.appFormFields()
-            },
+            ...mapState('Receipts',['list']),
+            receipts(){ return this.list.filter(item => item.mode === this.page) }
         },
         methods: {
-            ...mapActions(['_insert']),
-            successMethod(){
-                console.log('I am success method');
-                console.log(this.executedQuery[0]);
-                console.log('If TEST OK is printed, then this bind is proper');
-                console.log('if executed query in printed, then binding to db');
-                DB.get('testtable',null,function(){
-                    console.log(this.result);
-                    console.log('IF Array then data inserted successfully');
-                })
-            }
+            ...mapActions('Receipts',{ stockReceipt:'_stockIfNot' })
+        },
+        created() {
+            this.stockReceipt({ query:sql.format(fetch_all_active_receipts) })
         }
     }
 </script>
