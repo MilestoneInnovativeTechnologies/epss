@@ -7,6 +7,15 @@ export function transferOut({ dispatch },data){
         })
     });
 }
+export function transferIn({ dispatch },data){
+    return new Promise((resolve, reject) => {
+        dispatch('entry',data).then(({ store,fncode,transactions }) => {
+            dispatch('Reserves/incReserve',{fncode, store},{ root:true });
+            dispatch('_update',{ table:'stock_transfer',data:{ in:transactions._ref },condition:{ out:data.id } },{ root:true });
+            resolve(transactions);
+        })
+    });
+}
 export function entry({ dispatch },{ transactions,transaction_details,store_product_transactions }){
     return new Promise((resolve, reject) => {
         Promise.all([
