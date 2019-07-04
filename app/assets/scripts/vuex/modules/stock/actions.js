@@ -1,0 +1,20 @@
+export function transferOut({ dispatch },data){
+    return new Promise((resolve, reject) => {
+        dispatch('entry',data).then(({ store,fncode,transactions }) => {
+            dispatch('Reserves/incReserve',{fncode, store},{ root:true });
+            dispatch('_insert',{ table:'stock_transfer',data:{ out:transactions._ref } },{ root:true });
+            resolve(transactions);
+        })
+    });
+}
+export function entry({ dispatch },{ transactions,transaction_details,store_product_transactions }){
+    return new Promise((resolve, reject) => {
+        Promise.all([
+            dispatch('_insert',{ table:'transactions',data:transactions },{ root:true }),
+            dispatch('_insert',{ table:'store_product_transactions',data:store_product_transactions },{ root:true }),
+        ]).then(() => {
+            dispatch('_insert',{ table:'transaction_details',data:transaction_details },{ root:true });
+            resolve({ transactions,store:store_product_transactions[0]['store'],fncode:transactions.fncode })
+        })
+    })
+}
