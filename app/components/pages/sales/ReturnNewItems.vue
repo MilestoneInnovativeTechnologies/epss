@@ -81,7 +81,7 @@
                 this.RPSrc.push(this.getRPSrc(item))
             },
             getRPSrc(item){
-                let pid = item.product, p = this.getSalePrdDetails(pid), nature = item.nature, nName = this.natures[nature]['name'], rate = p.rate, quantity = _.toNumber(item.quantity);
+                let pid = item.product, p = this.getSalePrdDetails(pid), nature = item.nature, nName = this.natures[nature]['name'], rate = __.rate(p.rate), quantity = _.toNumber(item.quantity);
                 let tax = __.rate(p.tax * quantity), discount = __.amount(_.toNumber(p.discount)/quantity), amount = __.amount(p.rate * quantity), total = __.amount(amount+tax-discount);
                 return { pid,product:p.product,rate,nature,nName,quantity,tax,discount,amount,total,_ref:this._ref() }
             },
