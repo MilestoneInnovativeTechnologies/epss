@@ -1,4 +1,6 @@
 export function user(state){ return state['User'].id }
+export function client(state){ return state['App'].uuid }
+export function uuid(state){ return state['App'].uuid }
 export function _ref(state){ return () => ['U',state['User'].id,'T',moment().format('xS')].join('') }
 export function date(){ return () => moment().format('YYYY-MM-DD') }
 export function datetime(){ return () => moment().format('YYYY-MM-DD HH:mm:ss') }
