@@ -2,7 +2,6 @@ import axios from 'axios';
 const backHttp = require("nativescript-background-http");
 const session = backHttp.session("activity-upload");
 
-// const connectivity = require("tns-core-modules/connectivity");
 import { getConnectionType,connectionType,startMonitoring } from "tns-core-modules/connectivity";
 
 import {
@@ -15,11 +14,12 @@ import {
 const queueCheckSeconds = 5; let timeOutVariable = 0;
 
 export function init({ dispatch }) {
-    startMonitoring((type) => { commit(set_connectivity_availability,type !== connectionType.none) });
+    // startMonitoring((type) => { commit(set_connectivity_availability,type !== connectionType.none) });
     dispatch('processQueue');
 }
 
 export function queue({ dispatch,commit },{ config,success,fail }) {
+    if(_.isEmpty(config.url)) return;
     commit(add_configuration_to_server_queue, { config,success,fail });
     dispatch('processQueue');
 }
@@ -111,7 +111,7 @@ export function doHandleFailedResponse({ state,dispatch,commit }) {
 export const api = {
     root: true,
     handler({ state,getters,dispatch },{ item,params,success }){
-        let config = _.isEmpty(params) ? state.api_config : _.defaultsDeep({ data:params },state.api_config);
+        let config = _.isEmpty(params) ? getters.api_config : _.defaultsDeep({ data:params },getters.api_config);
         config.url = getters.url_api(item);
         axios.request(config).then((response) => {
             if (_.isFunction(success)) return success.call(response,response.data);
