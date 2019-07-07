@@ -2,12 +2,10 @@ import {
     add_new_table_for_sync,
     add_to_app_sync_queue,
     processing_queue,
-    set_sync_base_url,
     finish_processing_queue,
     set_repeat_failed_timeout,
     update_table_timing,
     set_new_sync_time_out,
-    update_sync_user_details,
 } from '../../mutation-types';
 import {gap_between_sync_queue_seconds, table_information_db_table_name} from '../../../constants';
 
@@ -33,11 +31,6 @@ export default {
         state.processing = item; delete state.queue[index];
         state.queue_index = _.without(state.queue_index,index);
     },
-    [set_sync_base_url](state, { data,uuid }) {
-        let url = _.find(data,{ name:'url_interact' }).detail;
-        state.url = [url,'sync',uuid,''].join('/');
-        state.client = uuid;
-    },
     [finish_processing_queue](state) {
         state.processing = {}; state.success = ''; state.fail = '';
         clearTimeout(state.repeat_failed_timeout);
@@ -52,10 +45,7 @@ export default {
     },
     [set_new_sync_time_out](state,timeout) {
         clearTimeout(state.time_out); state.time_out = timeout;
-    },
-    [update_sync_user_details](state,{ id }) {
-        state.user = id;
-    },
+    }
 };
 
 function getNextPossibleQueueTokenAfter(token,queue){
@@ -67,4 +57,4 @@ function getNextPossibleQueueTokenAfter(token,queue){
     return getNextPossibleQueueTokenAfter(token+(adjacent),queue);
 }
 
-function now(){ return _.toSafeInteger(new Date().getTime()/1000); }
+function now(){ return __.now(); }

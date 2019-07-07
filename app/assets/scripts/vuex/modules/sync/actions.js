@@ -9,18 +9,18 @@ import {
 } from './../../mutation-types';
 import {SSSetup} from "../../../services/setup";
 
-export function deleteClient({ dispatch,state,rootGetters }) {
-    let client = rootGetters['Organization/client'],
-        url = state.url.replace(client+'/','delete'),
+export function deleteClient({ dispatch,getters,rootGetters }) {
+    let client = rootGetters.client,
+        url = getters.deleteClientUrl,
         params = { client };
     dispatch('post',{ url,params },{ root:true });
 }
 
-export function init({ dispatch,commit,state }) {
+export function init({ dispatch,commit,state,rootGetters }) {
     DB.get(table_information_db_table_name,null,function (commit,dispatch,state) {
         if(this.error) return log('Error getting app table information to sync');
         _.forEach(this.result,function (tblObj) {
-            if (tblObj.type === 'APP' || !!(state.user)){
+            if (tblObj.type === 'APP' || !!(rootGetters.user)){
                 let after = _.toSafeInteger(tblObj.next) - now(); after = ((after < 1) ? 0 : after) + init_sync_table_after;
                 dispatch('addNewSyncTable',tblObj);
                 dispatch('requeueSyncImmediate',{ table:tblObj.table,after });
@@ -28,14 +28,17 @@ export function init({ dispatch,commit,state }) {
         });
     },commit,dispatch,state)
 }
-export function initUserTables({ dispatch,commit }) {
-    DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch) {
-        if(this.error) return log('Error getting user table information to sync');
-        _.forEach(this.result,function (tblObj) {
-            dispatch('addNewSyncTable',tblObj);
-            dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
-        });
-    },commit,dispatch)
+export function initUserTables({ dispatch,commit,state }) {
+    return new Promise((resolve, reject) => {
+        DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,resolve) {
+            if(this.error) return log('Error getting user table information to sync');
+            _.forEach(this.result,function (tblObj) {
+                dispatch('addNewSyncTable',tblObj);
+                dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
+            });
+            resolve(this.result);
+        },commit,dispatch,resolve)
+    });
 }
 
 export function downloadTableRecords({ commit,dispatch },tblObj){
@@ -74,22 +77,22 @@ export function doStartSyncProcessing({ state,dispatch }){
 
 export function prepareSyncTable_APP({ dispatch,getters },table){
     let params = { format: 'json',  type: 'data' },
-        url = getters.getTableSyncUrl(table);
+        url = getters.tableSyncUrl(table);
     log('Sync request delivered for, '+table);
     dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
 }
 
-export function prepareSyncTable_APPUSER({ dispatch,getters,state },table){
-    if (!(state.user)) return dispatch('syncDataReceived_APPUSER',[]);
-    let params = { format: 'json',  type: 'data', _user:state.user, client:state.client, created:app_user_create_date_for_fetch },
-        url = getters.getTableSyncUrl(table);
+export function prepareSyncTable_APPUSER({ dispatch,getters,rootGetters },table){
+    if (!(rootGetters.user)) return dispatch('syncDataReceived_APPUSER',[]);
+    let params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client, created:app_user_create_date_for_fetch },
+        url = getters.tableSyncUrl(table);
     dispatch('post',{ url,params,success:'Sync/syncDataReceived_APPUSER',fail:'Sync/syncDataFail' },{ root:true });
 }
 
-export function prepareSyncTable_USER({ dispatch,getters,state,commit },table){
-    if (!(state.user)) return dispatch('syncDataReceived',[]);
-    let params = { format: 'json',  type: 'data', _user:state.user, client:state.client },
-        url = getters.getTableSyncUrl(table), times = state.time,
+export function prepareSyncTable_USER({ dispatch,getters,rootGetters,commit,state },table){
+    if (!(rootGetters.user)) return dispatch('syncDataReceived',[]);
+    let params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client },
+        url = getters.tableSyncUrl(table), times = state.time,
         sync = _.toSafeInteger(_.get(times,`${table}.sync`,0)), create = _.toSafeInteger(_.get(times,`${table}.create`,0)), update = _.toSafeInteger(_.get(times,`${table}.update`,0));
     if (sync < create || sync <= update){
         Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
@@ -184,7 +187,7 @@ export function deleteRecords({ commit }, table) {
     DB.delete(table);
 }
 
-function now(){ return _.toSafeInteger(new Date().getTime()/1000); }
+function now(){ return __.now(); }
 
 function getTableRecordsForUpdate(table,sync){
     return new Promise(function(resolve, reject){

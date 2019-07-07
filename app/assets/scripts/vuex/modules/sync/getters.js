@@ -5,4 +5,6 @@ export function getFirstQueueItem({ queue_index,queue }){
     let index = _.head(queue_index), item = queue[index];
     return { item,index };
 }
-export function getTableSyncUrl({ url }){ return (table) => url + table; }
+export function syncBaseUrl(state,getters,rootState){ let app = rootState['App']; return [app.url_interact,'sync',app.uuid,''].join('/') }
+export function tableSyncUrl(state,{ syncBaseUrl }){ return (table) => syncBaseUrl + table; }
+export function deleteClientUrl(state,getters,rootState){ let app = rootState['App']; return [app.url_interact,'sync','delete'].join('/') }
