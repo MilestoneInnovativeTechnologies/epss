@@ -58,7 +58,7 @@
   "scripts": {
     "emulator": "F:\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_V1S -netdelay none -netspeed full -gpu off",
     "devtool": "vue-devtools",
-    "android": "tns run android --bundle",
+    "android": "tns debug android --bundle",
     "db": "adb pull /data/user/0/net.milestoneit.epss/files/database/epss.db"
   }
 }
