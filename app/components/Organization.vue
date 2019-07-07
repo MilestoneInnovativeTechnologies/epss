@@ -7,26 +7,23 @@
                          style="background: linear-gradient(to top, #E1E1E1, #FFFFFF); width: 100%;"></StackLayout>
             <StackLayout row="2" class="p-y-20">
                 <Image :src="image" height="128"/>
-                <Label :text="name" class="text-center cp m-y-15 fsb fs22" style="width: 100%"/>
-                <Label :text="brief" textWrap="true" class="font-weight-bold text-center font-italic fsi t-12"
-                       style="width: 70%"/>
+                <TextTitle :text="name" class="text-center cp w-full"></TextTitle>
+                <TextItalic :text="brief" textWrap="true" class="font-weight-bold text-center t-12" width="70%"></TextItalic>
             </StackLayout>
-            <StackLayout row="3" class=""
-                         style="background: linear-gradient(to bottom, #E1E1E1, #FFFFFF); width: 100%;"></StackLayout>
+            <StackLayout row="3" class="" style="background: linear-gradient(to bottom, #E1E1E1, #FFFFFF); width: 100%;"></StackLayout>
         </GridLayout>
     </StackLayout>
 </template>
 
 <script>
     import {mapState} from 'vuex';
+    import TextTitle from "./typography/TextTitle";
 
     export default {
         name: 'Organization',
-        data() {
-            return {}
-        },
+        components: {TextTitle},
         computed: {
-            ...mapState('Organization', ['image', 'name', 'brief', 'uuid']),
+            ...mapState('App', ['image', 'name', 'brief']),
         }
     }
 </script>
