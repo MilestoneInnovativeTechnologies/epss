@@ -1,24 +1,28 @@
-import {
-    init_login_validation,
-    login_validation_failed,
-    update_axios_user_details,
-    update_login_details, update_sync_user_details
-} from "../../mutation-types";
+import { set_state_data } from "../../mutation-types";
 
-//Manul login entry to debug
-export function init({ dispatch }){
-    dispatch('LoginReceived',{"id":300109,"name":"Sales Executive","email":"SE01.sls@temp.mail","api_token":"e5e4acb744def44efab04e8270e2bc4c09d528120fdf923e8afe3d5befdf4c4b","reference":"SE01","email_verified_at":null,"created_at":"2019-06-14 10:28:46","updated_at":"2019-06-14 11:17:03"})
+const userStateKeys = ['name','email','id','api_token','reference'];
+
+export function doLogin({ state,commit,dispatch }){
+    let { email,password } = state; commit(set_state_data,{ validating:true });
+    dispatch('api',{ item:'login', params: { email,password }, success: 'User/doLoginActions' },{ root:true })
 }
 
-export function login({ state,commit,dispatch }){
-    let { email,password } = state; commit(init_login_validation);
-    dispatch('api',{ item:'login', params: { email,password }, success: 'User/LoginReceived'},{ root:true })
+export function doLoginActions({ commit,dispatch },data) {
+    return new Promise((resolve, reject) => {
+        if(_.isEmpty(data)) return reject(commit(set_state_data,{ validating:false,message:'No email and password matching records found' }));
+        let insData = _.map(data,(detail,name) => _.zipObject(['name','detail'],[name,detail]));
+        dispatch('_insert',{ table:'user',data:insData },{ root:true }).then(() => {
+            commit(set_state_data,_.pick(data,userStateKeys));
+            dispatch('Sync/initUserTables',null,{ root:true }).then((data) => resolve(data));
+            commit(set_state_data,{ validating:false });
+        });
+    })
 }
-
-export function LoginReceived({ commit,dispatch },data) {
-    if(_.isEmpty(data)) return commit(login_validation_failed);
-    commit(update_login_details,data);
-    commit('Axios/' + update_axios_user_details,data,{ root:true });
-    commit('Sync/' + update_sync_user_details,data,{ root:true });
-    dispatch('Sync/initUserTables',null,{ root:true });
+export function logout({ commit },vm) {
+    return new Promise((resolve, reject) => {
+        DB.delete('user',null,function(resolve,vm,commit){
+            commit(set_state_data,_(userStateKeys).mapKeys(key => key).mapValues(() => null).value());
+            resolve(vm);
+        },resolve,vm,commit)
+    });
 }
