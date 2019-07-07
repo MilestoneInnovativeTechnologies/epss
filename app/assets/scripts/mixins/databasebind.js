@@ -1,4 +1,4 @@
-import {increment_stock_cache, mutate_sync_data, stock_state_data, update_table_timing} from "../vuex/mutation-types";
+import {increment_stock_cache, mutate_sync_data, stock_state_data, set_state_data} from "../vuex/mutation-types";
 import {stock_load_cache_refresh_on_each_nth_query} from "../constants";
 
 export default {
@@ -7,6 +7,15 @@ export default {
         stockActionCache:{},
     },
     mutations:{
+        [set_state_data](state, dataObj) {
+            _.forEach(dataObj, (value, key) => {
+                let path = '';
+                if (_.includes(key, '.')) { let kParts = key.split('.'); key = kParts[0]; path = _.tail(kParts).join('.'); }
+                state[key] = (_.isEmpty(path) || _.isNumber(path))
+                    ? (_.isObject(value) ? Object.assign({}, state[key], value) : value)
+                    : state[key] = Object.assign({}, state[key], _.set({}, path, value));
+            })
+        },
         [mutate_sync_data](state, { table,data } ) {
             if(!_.has(state.dbData, table))
                 state.dbData = Object.assign({},state.dbData,_.zipObject([table],[[]]));
@@ -47,6 +56,9 @@ export default {
         }
     },
     getters: {
+        _get(state, key) {
+            return (Array.isArray(key)) ? _.pick(state,key) : (_.includes(key,'.') ? _.get(state,key) : state[key])
+        },
         __properTable({ dbTables }){
             return (table) => table || (_.isArray(dbTables) ? dbTables[0] : dbTables)
         },
