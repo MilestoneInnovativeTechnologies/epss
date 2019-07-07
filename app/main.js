@@ -1,5 +1,5 @@
 import Vue from 'nativescript-vue'
-import Land from './components/Land'
+import Home from './components/Home'
 
 global._ = require('lodash'); global.moment = require('moment'); global.__ = {}; global.sql = require('sqlstring');
 global.DB = require('./assets/scripts/services/database').DB;
@@ -39,5 +39,5 @@ global.VueApp = new Vue({
         });
         _.forEach(actions,(action) => vuex.dispatch(action).then(null));
     },
-    render: h => h('frame', [h(Land)])
+    render: h => h('frame', [h(Home)])
 }).$start();
