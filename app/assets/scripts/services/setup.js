@@ -21,4 +21,5 @@ export class SSSetup {
         let castKeys = _.keys(rule);
         return _.mapValues(Obj,(value,name) => _.includes(castKeys,name) ? this[rule[name]](value) : value)
     }
+    now(){ return parseInt(new Date().getTime()/1000) }
 }
