@@ -1,5 +1,5 @@
 <template>
-    <Button class="bcp fsb" :text="mText"></Button>
+    <Button class="bcp fsb" height="60" :text="mText"></Button>
 </template>
 
 <script>
