@@ -9,7 +9,7 @@ export const table_information_db_table_name = 'table_information';
 export const table_information_db_table_fields = 'table,fields,type,up,down,sync,next,update,create';
 
 //sync
-export const setup_sync_table_after = 4;
+export const setup_sync_table_after = 1;
 export const init_sync_table_after = 10;
 export const init_sync_user_table_after = 1;
 export const sync_recheck_timeout_seconds = 3;
