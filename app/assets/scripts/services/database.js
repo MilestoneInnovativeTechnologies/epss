@@ -36,12 +36,14 @@ class Database {
     }
 
     insert(tbl,data,callback,...args){
+        sLog(this.tbl + ' -> Insert');
         this.table(tbl); let insert = this.dataToInsert(data);
         let query = `INSERT INTO ${this.tbl} (${ insert.names.join(',') }) VALUES ${ insert.values.join(',') }`;
         this.query(query,callback,...args);
     }
 
     update(tbl,condition,data,callback,...args){
+        sLog(this.tbl + ' -> Update');
         this.table(tbl); let update = this.dataToUpdate(data);
         condition = this.correctCondition(condition);
         let query = `UPDATE ${this.tbl} SET ${update} WHERE ${condition}`;
@@ -66,6 +68,7 @@ class Database {
     }
 
     delete(tbl,condition,callback,...args){
+        sLog(this.tbl + ' -> Delete');
         this.table(tbl); let query = `DELETE FROM ${this.tbl}`;
         if(_.isNil(condition)) return this.query(query,callback,...args);
         let where = this.correctCondition(condition);
@@ -73,6 +76,7 @@ class Database {
     }
 
     get(tbl,condition,callback,...args){
+        sLog(this.tbl + ' -> Select');
         this.table(tbl);
         if(_.isNil(condition)) return this.getAll(callback,args);
         if(_.isString(condition) || _.isNumber(condition)) return this.getWithID(condition,callback,args);
@@ -176,17 +180,17 @@ class Database {
     postQuery(query,error,result,callback,args){
         this.error = !!error; this.success = !error;
         if (error) {
-            sLog('Query error, ' + this.tbl);
+            sLog(this.tbl + ' -> Error');
             this.result = error;
         } else {
-            sLog('Query success, ' + this.tbl);
+            sLog(this.tbl + ' -> Success');
             this.result = result;
         }
         if(callback) callback.apply(this,args);
     }
 
     drop(tbl) { this.table(tbl); return this.query(`DROP TABLE IF EXISTS "${tbl}"`); }
-    create(tbl, fields, callback, ...args) { this.drop(tbl); return this.query(this.create_Q(tbl, fields),callback,...args); }
+    create(tbl, fields, callback, ...args) { sLog(tbl+' -> Create'); this.drop(tbl); return this.query(this.create_Q(tbl, fields),callback,...args); }
     create_idField() { return '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'; }
     create_CAField() { return this.create_I('created_at'); }
     create_UAField() { return this.create_I('updated_at'); }
@@ -205,7 +209,7 @@ class Database {
 
 function sLog(text) {
     if (TNS_ENV === 'production') return;
-    console.log('SQlite: '+ text);
+    console.log('DB: '+ text);
 }
 
 
