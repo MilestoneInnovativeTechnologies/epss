@@ -11,6 +11,7 @@
             <TextTitleSub class="m-t-12 m-b-8 m-l-2">{{ caption }}</TextTitleSub>
             <GridMenuRow :menus="items"></GridMenuRow>
         </template>
+        <AppButton @tap.native="userLogout" class="m-t-15 c-white">LOGOUT</AppButton>
     </App>
 </template>
 
@@ -18,34 +19,39 @@
     import {mapState, mapGetters, mapActions} from 'vuex'
     import {
         user_assigned_area_customers, user_assigned_customer_sales_orders,
-        user_assigned_store_areas,
-        user_assigned_stores
+        user_assigned_store_areas, user_assigned_stores
     } from "../assets/scripts/queries";
+    import {logoutMixin} from "../assets/scripts/mixins/logout";
 
     export default {
         name: "Home",
+        mixins: [logoutMixin],
+        data(){ return {}},
         computed: {
-            ...mapGetters('Menu', ['menus']), ...mapState('User', ['id', 'name', 'email']),
+            ...mapGetters('Menu', ['menus']), ...mapState('User', ['id','name']),
+            ...mapState('Sync',{ SyncTables: 'tables',SyncQueue:'queue',SyncQIndex:'queue_index',SyncProcessing:'processing',SyncURL:'url',SyncTime:'time',SyncClient:'client',SyncUser:'user' }),
         },
         methods: {
             ...mapActions({
                 storeStock: 'Stores/_stockIfNot',
                 areaStock: 'Areas/_stockIfNot',
                 customerStock: 'Customer/_stockIfNot',
-                soStock: 'SalesOrder/_stockIfNot'
-            })
-        },
-        created() {
-            let methodQuery = {
-                store: user_assigned_stores,
-                area: user_assigned_store_areas,
-                customer: user_assigned_area_customers,
-                so: user_assigned_customer_sales_orders
+                soStock: 'SalesOrder/_stockIfNot',
+            }),
+            start(){
+                let methodQuery = { store: user_assigned_stores, area: user_assigned_store_areas, customer: user_assigned_area_customers, so: user_assigned_customer_sales_orders }
+                _.forEach(methodQuery, (query, method) => this[method + 'Stock']({ query: sql.format(query, this.id) }))
+            },
+            login(){
+                this.$navigateTo(require('./Login').default,{ backstackVisible:false });
             }
-            _.forEach(methodQuery, (query, method) => this[method + 'Stock']({
-                query: sql.format(query, this.id),
-                key: 'list'
-            }))
+        },
+        mounted: function () {
+            let vm = this;
+            this.$nextTick(function () {
+                if(vm.id){ this.start() }
+                else { setTimeout(() => vm.login(),2000); }
+            })
         }
     }
 </script>
