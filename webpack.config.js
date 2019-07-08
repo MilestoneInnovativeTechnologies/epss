@@ -192,6 +192,7 @@ module.exports = env => {
                 {
                     test: /\.js$/,
                     loader: 'babel-loader',
+                    exclude: resolve(__dirname, 'node_modules/'),
                 },
                 {
                     test: /\.vue$/,
