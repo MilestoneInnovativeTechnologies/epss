@@ -5,7 +5,7 @@ export default {
         'Initialize App':false,'Reset client on server':false,
         'Get DB Tables':false,'Create and Sync Tables':false },
     message: '', uuid: '', height: '', width:'',
-    code: 'iopiop', name: null, image: null, brief: null,
-    print_head_text1: null, print_head_text2: null, footer_text: null,
+    code: '', name: null, image: null, brief: null,
+    print_head_line1: null, print_head_line2: null, footer_text: null,
     url_web:null, url_api:null, url_interact:null,
 }
