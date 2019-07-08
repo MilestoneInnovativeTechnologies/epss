@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-    <App title="Setup Application" action="Setup Application" :actionProps="{ isEnabled:!busy }" @setup-application="doSetup">
+    <App title="Setup Application" action="Setup Application" drawer="false" back="false" :actionProps="{ isEnabled:!busy }" @setup-application="doSetup">
         <TextHeadingSub class="m-t-30">Device UUID</TextHeadingSub>
         <TextField class="cp fsi" v-model="uuid" />
         <TextRegular :textWrap="true">Provide this UUID to Milestone to get your device registered for using ePlus Smart Sale</TextRegular>
@@ -20,11 +20,11 @@
 </template>
 
 <script>
-    import {set_state_data} from "../assets/scripts/vuex/mutation-types";
+    import {set_state_data} from "../../assets/scripts/vuex/mutation-types";
     const { device, screen } = require('tns-core-modules/platform');
 
     import { mapActions,mapState,mapMutations } from 'vuex';
-    const Login = require('./Login').default
+    const Login = require('../login/Login').default
 
     export default {
         name: "Setup",

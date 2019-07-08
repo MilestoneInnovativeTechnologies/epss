@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import {RadSideDrawerControl} from "../assets/scripts/mixins/sidedrawer";
+    import {RadSideDrawerControl} from "../../assets/scripts/mixins/sidedrawer";
 
     export default {
         name: 'CustomActionBar',

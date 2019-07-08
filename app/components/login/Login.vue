@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-    <App title="Login" :action="loginForm ? 'Login' : null" @login="authenticate" width="100%">
+    <App title="Login" :action="loginForm ? 'Login' : null" back="false" drawer="false" @login="authenticate" width="100%">
         <GridLayout rows="auto,auto,*" class="w-full">
             <Organization row="0"></Organization>
             <LoginForm row="1" width="85%" class="m-t-30" v-if="loginForm"></LoginForm>
@@ -14,7 +14,7 @@
 
 <script>
     import { mapGetters,mapActions,mapState,mapMutations } from 'vuex';
-    import {set_state_data} from "../assets/scripts/vuex/mutation-types";
+    import {set_state_data} from "../../assets/scripts/vuex/mutation-types";
 
     export default {
         name: 'Login',
@@ -40,14 +40,14 @@
             checkLogin(){
                 this.pTxt('Checking loging details in Database..'); this.busy = true;
                 DB.get('user',null,function(vm){
-                    if(this.error) return setTimeout((vm) => vm.$navigateTo(require('./Setup').default,{ backstackVisible:false }),500,vm);
+                    if(this.error) return setTimeout((vm) => vm.$navigateTo(require('../misc/Setup').default,{ backstackVisible:false }),500,vm);
                     if(_.isEmpty(this.result)) return vm.initLogin();
                     vm.populateUserData(this.result)
                 },this)
             },
             redirectToHome(after){
                 this.pTxt(`You will be redirected to home page within ${after} seconds!!`);
-                setTimeout(() => this.$navigateTo(require('./Home').default),after*1000);
+                setTimeout(() => this.$navigateTo(require('../Home').default),after*1000);
             },
             populateUserData(data){
                 this.pTxt('User data found, populating..');

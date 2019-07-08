@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import {set_state_data} from './../assets/scripts/vuex/mutation-types'
+    import {set_state_data} from '../../assets/scripts/vuex/mutation-types'
     import { mapState,mapGetters,mapMutations } from 'vuex';
 
     export default {

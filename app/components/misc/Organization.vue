@@ -17,7 +17,7 @@
 
 <script>
     import {mapState} from 'vuex';
-    import TextTitle from "./typography/TextTitle";
+    import TextTitle from "../typography/TextTitle";
 
     export default {
         name: 'Organization',
