@@ -3,7 +3,7 @@
         <TextTitleSub>Total Receipts</TextTitleSub>
         <ReceiptsTotalTodayMetric mode="Cash"></ReceiptsTotalTodayMetric>
         <ReceiptList :receipts="receipts" :limit="5" title="Recent Receipts" class="m-t-15"></ReceiptList>
-        <TextTitleSub>Total Cash Receipts</TextTitleSub>
+        <TextTitleSubSmall class="m-t-15">Total Cash Receipts</TextTitleSubSmall>
         <ReceiptsTotalMonthMetric mode="Cash"></ReceiptsTotalMonthMetric>
     </App>
 </template>
