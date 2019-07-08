@@ -29,7 +29,6 @@
         data(){ return {}},
         computed: {
             ...mapGetters('Menu', ['menus']), ...mapState('User', ['id','name']),
-            ...mapState('Sync',{ SyncTables: 'tables',SyncQueue:'queue',SyncQIndex:'queue_index',SyncProcessing:'processing',SyncURL:'url',SyncTime:'time',SyncClient:'client',SyncUser:'user' }),
         },
         methods: {
             ...mapActions({

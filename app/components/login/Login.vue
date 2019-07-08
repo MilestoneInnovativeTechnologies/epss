@@ -26,8 +26,6 @@
         }},
         computed: {
             ...mapState('User',['message','validating','id']),...mapState('Sync',['queue_index']),
-            ...mapState('Sync',{ SyncTables: 'tables',SyncQueue:'queue',SyncQIndex:'queue_index',SyncProcessing:'processing',SyncURL:'url',SyncTime:'time',SyncClient:'client',SyncUser:'user' }),
-            ...mapState('Axios',{ AxiosConnection: 'connection', AxiosQueue: 'queue', AxiosProcessing: 'processing', AxiosStatus: 'status', AxiosTransfer: 'transfer', AxiosConfig: 'config', AxiosURLInteract: 'url_interact', AxiosURLApi: 'url_api', AxiosRRLSync: 'url_sync', AxiosSuccess: 'success', AxiosFail: 'fail', AxiosSyncConfig: 'sync_config', AxiosApiConfig: 'api_config', AxiosLastResponse: 'last_response',AxiosQueue_failed: 'queue_failed',AxiosClient: 'client' }),
             authenticated(){ let id = this.id; return !(_.isNil(id)) }
         },
         methods: {

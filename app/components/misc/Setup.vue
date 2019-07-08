@@ -34,7 +34,6 @@
         }},
         computed: {
             ...mapState('App',['message','tasks']),
-            ...mapState('Axios',['queue']),
             taskRows(){ return _.fill(Array(_.size(this.tasks)),'auto').join(','); },
             taskStatus(){ let tasks = this.tasks; return _.every(tasks) },
             setupData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs } },
