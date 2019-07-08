@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-    <RadSideDrawer ref="drawer" drawerLocation="right" @drawerClosed="changeRadSideDrawerStatus(false)">
+    <RadSideDrawer ref="drawer" drawerLocation="right" @drawerClosed="changeRadSideDrawerStatus(false)" :drawerContentSize="drawerContentSize" >
         <GridLayout rows="auto,auto,auto,*,auto" columns="*" ~drawerContent class="bcp">
             <DrawerTitleBar row="0" col="0"></DrawerTitleBar>
             <DrawerProfileBar row="1" col="0"></DrawerProfileBar>
@@ -20,7 +20,6 @@
 
     export default {
         name: "Drawer",
-        props: ['status'],
         mixins: [logoutMixin,RadSideDrawerControl]
     }
 </script>
