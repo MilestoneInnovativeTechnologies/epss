@@ -1,12 +1,14 @@
 <!--suppress ALL -->
 <template>
-    <Page actionBarHidden="false" backgroundSpanUnderStatusBar="true">
-        <CustomActionBar :title="title"></CustomActionBar>
-        <GridLayout :rows="rows">
-            <ScrollView v-if="scroll !== 'false' && scroll !== false" row="0"><StackLayout :verticalAlignment="vAlign" class="p-t-10" :width="width"><slot></slot></StackLayout></ScrollView>
-            <StackLayout v-else :verticalAlignment="vAlign" row="0" class="p-t-10" :width="width"><slot></slot></StackLayout>
-            <StackLayout row="1" orientation="horizontal"><AppButton class="c-white btn-active" v-bind="bindVars(btn)" :width="actWidth" v-for="(btn,idx) in actions" @tap.native="$emit(eventName(btn))" :key="['app',unique,'btn',idx].join('-')">{{ btn }}</AppButton></StackLayout>
-        </GridLayout>
+    <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
+        <Drawer>
+            <CustomActionBar :title="title" :back="back" :drawer="drawer"></CustomActionBar>
+            <GridLayout :rows="rows">
+                <ScrollView v-if="scroll !== 'false' && scroll !== false" row="0"><StackLayout :verticalAlignment="vAlign" class="p-t-10" :width="width"><slot></slot></StackLayout></ScrollView>
+                <StackLayout v-else :verticalAlignment="vAlign" row="0" class="p-t-10" :width="width"><slot></slot></StackLayout>
+                <StackLayout row="1" orientation="horizontal"><AppButton class="c-white btn-active" v-bind="bindVars(btn)" :width="actWidth" v-for="(btn,idx) in actions" @tap.native="$emit(eventName(btn))" :key="['app',unique,'btn',idx].join('-')">{{ btn }}</AppButton></StackLayout>
+            </GridLayout>
+        </Drawer>
     </Page>
 </template>
 
@@ -19,10 +21,12 @@
             scroll: { type: [Boolean,String], default: true },
             width: { type: [String,Number], default: '95%' },
             center: { type: [String,Boolean], default: false },
-            actionProps: { type:Object }
+            actionProps: { type:Object },
+            back: { type: [String,Boolean], default: true },
+            drawer: { type: [String,Boolean], default: true },
         },
         data(){ return {
-            fixHeight: 60
+            fixHeight: 60,
         }},
         computed: {
             unique(){ return new Date().getTime() },
