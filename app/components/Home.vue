@@ -43,7 +43,7 @@
                 _.forEach(methodQuery, (query, method) => this[method + 'Stock']({ query: sql.format(query, this.id) }))
             },
             login(){
-                this.$navigateTo(require('./Login').default,{ backstackVisible:false });
+                this.$navigateTo(require('./login/Login').default,{ backstackVisible:false });
             }
         },
         mounted: function () {

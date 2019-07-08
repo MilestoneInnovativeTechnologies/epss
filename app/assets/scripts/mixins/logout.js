@@ -1,5 +1,5 @@
 import { mapActions } from 'vuex'
-const Login = require('./../../../components/Login').default;
+const Login = require('../../../components/login/Login').default;
 
 export const logoutMixin = {
     methods: {
