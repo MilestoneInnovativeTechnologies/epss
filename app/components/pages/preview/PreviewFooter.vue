@@ -8,7 +8,7 @@
     export default {
         name: "PreviewFooter",
         computed: {
-            ...mapState('Organization',['footer_text'])
+            ...mapState('App',['footer_text'])
         }
     }
 </script>
