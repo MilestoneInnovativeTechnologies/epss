@@ -51,8 +51,8 @@ module.exports = env => {
     const externals = (env.externals || []).map((e) => { // --env.externals
         return new RegExp(e + ".*");
     });
-
-    externals.push(new RegExp('nativescript-sqlite-encrypted' + ".*"),new RegExp('nativescript-sqlite-commercial' + ".*"));
+	
+	externals.push(new RegExp('nativescript-sqlite-encrypted' + ".*"),new RegExp('nativescript-sqlite-commercial' + ".*"));
 
     const mode = production ? "production" : "development"
 
@@ -192,7 +192,7 @@ module.exports = env => {
                 {
                     test: /\.js$/,
                     loader: 'babel-loader',
-                    exclude: resolve(__dirname, 'node_modules/'),
+					exclude: resolve(__dirname, 'node_modules/'),
                 },
                 {
                     test: /\.vue$/,
@@ -217,7 +217,7 @@ module.exports = env => {
             // Copy native app resources to out dir.
             new CopyWebpackPlugin([{
                 from: `${appResourcesFullPath}/${appResourcesPlatformDir}`,
-                to: `${dist}/App_Resourcexternalses/${appResourcesPlatformDir}`,
+                to: `${dist}/App_Resources/${appResourcesPlatformDir}`,
                 context: projectRoot,
             }]),
             // Copy assets to out dir. Add your own globs as needed.
