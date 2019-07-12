@@ -1,9 +1,8 @@
 export default {
     dbTables:['app','user'], fields:'name,detail',
-    tasks: { 'Create App DB':false,'Insert device basic data':false,'Create User Table':false,
-        'Request device registration data':false, 'Insert Device registration data':false,
-        'Initialize App':false,'Reset client on server':false,
-        'Get DB Tables':false,'Create and Sync Tables':false },
+    tasks: { 'Init state data':false, 'Request device registration data':false, 'Create app table':false,
+        'Insert device registration data':false, 'Create user table':false,'Initialize app':false,
+        'Reset client on server':false, 'Get DB tables':false,'Create and sync tables':false },
     message: '', uuid: '', height: '', width:'',
     code: '', name: null, image: null, brief: null,
     print_head_line1: null, print_head_line2: null, footer_text: null,
