@@ -43,4 +43,4 @@ new Vue({
 	});
 	_.forEach(actions,(action) => vuex.dispatch(action).then(null));
   },
-}).$start()
+}).$start();
