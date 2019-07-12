@@ -2,7 +2,7 @@ import axios from 'axios';
 const backHttp = require("nativescript-background-http");
 const session = backHttp.session("activity-upload");
 
-import { getConnectionType,connectionType,startMonitoring } from "tns-core-modules/connectivity";
+import { connectionType,startMonitoring } from "tns-core-modules/connectivity";
 
 import {
     add_configuration_to_server_queue,
@@ -13,8 +13,8 @@ import {
 
 const queueCheckSeconds = 5; let timeOutVariable = 0;
 
-export function init({ dispatch }) {
-    // startMonitoring((type) => { commit(set_connectivity_availability,type !== connectionType.none) });
+export function init({ commit,dispatch }) {
+    startMonitoring((type) => { commit(set_connectivity_availability,type !== connectionType.none) });
     dispatch('processQueue');
 }
 
