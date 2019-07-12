@@ -36,15 +36,15 @@ class Database {
     }
 
     insert(tbl,data,callback,...args){
-        sLog(this.tbl + ' -> Insert');
-        this.table(tbl); let insert = this.dataToInsert(data);
+        sLog(this.table(tbl).tbl + ' -> Insert');
+        let insert = this.dataToInsert(data);
         let query = `INSERT INTO ${this.tbl} (${ insert.names.join(',') }) VALUES ${ insert.values.join(',') }`;
         this.query(query,callback,...args);
     }
 
     update(tbl,condition,data,callback,...args){
-        sLog(this.tbl + ' -> Update');
-        this.table(tbl); let update = this.dataToUpdate(data);
+        sLog(this.table(tbl).tbl + ' -> Update');
+        let update = this.dataToUpdate(data);
         condition = this.correctCondition(condition);
         let query = `UPDATE ${this.tbl} SET ${update} WHERE ${condition}`;
         this.query(query,callback,...args);
@@ -68,16 +68,15 @@ class Database {
     }
 
     delete(tbl,condition,callback,...args){
-        sLog(this.tbl + ' -> Delete');
-        this.table(tbl); let query = `DELETE FROM ${this.tbl}`;
+        sLog(this.table(tbl).tbl + ' -> Delete');
+        let query = `DELETE FROM ${this.tbl}`;
         if(_.isNil(condition)) return this.query(query,callback,...args);
         let where = this.correctCondition(condition);
         return this.query(`${query} WHERE ${where}`,callback,...args);
     }
 
     get(tbl,condition,callback,...args){
-        sLog(this.tbl + ' -> Select');
-        this.table(tbl);
+        sLog(this.table(tbl).tbl + ' -> Select');
         if(_.isNil(condition)) return this.getAll(callback,args);
         if(_.isString(condition) || _.isNumber(condition)) return this.getWithID(condition,callback,args);
         if(_.isArray(condition)){
