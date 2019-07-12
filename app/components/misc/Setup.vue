@@ -36,13 +36,13 @@
             ...mapState('App',['message','tasks']),
             taskRows(){ return _.fill(Array(_.size(this.tasks)),'auto').join(','); },
             taskStatus(){ let tasks = this.tasks; return _.every(tasks) },
-            setupData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs } },
+            regData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs } },
         },
         methods: {
-            ...mapActions('App',['setup']), ...mapMutations('App',{ setStateData:set_state_data }),
+            ...mapActions('App',['register']), ...mapMutations('App',{ setStateData:set_state_data }),
             doSetup(){
                 this.busy = true;
-                this.setup(this.setupData);
+                this.register(this.regData);
             }
         },
         watch: {
