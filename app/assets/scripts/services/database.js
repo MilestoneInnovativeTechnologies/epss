@@ -201,7 +201,7 @@ class Database {
 
     exeQuery(query){
         this.executedQuery.unshift(query);
-        this.executedQuery.splice(50);
+        this.executedQuery.splice(5);
     }
     log(){ return this.executedQuery }
 }
