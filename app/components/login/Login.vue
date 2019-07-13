@@ -45,7 +45,7 @@
             },
             redirectToHome(after){
                 this.pTxt(`You will be redirected to home page within ${after} seconds!!`);
-                setTimeout(() => this.$navigateTo(require('../Home').default),after*1000);
+                setTimeout(() => this.$navigateTo(require('../Home').default,{ clearHistory:true }),after*1000);
             },
             populateUserData(data){
                 this.pTxt('User data found, populating..');
