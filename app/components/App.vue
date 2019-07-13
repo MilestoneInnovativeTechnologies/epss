@@ -1,13 +1,12 @@
 <!--suppress ALL -->
 <template>
-    <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
+    <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true" @navigatedTo="navigationBusy = false" @navigatingFrom="navigationBusy = true" @navigatingTo="navigationBusy = true">
         <Drawer>
             <CustomActionBar :title="title" :back="back" :drawer="drawer"></CustomActionBar>
-            <GridLayout :rows="rows">
-                <ScrollView v-if="scroll !== 'false' && scroll !== false" row="0"><StackLayout :verticalAlignment="vAlign" class="p-t-10" :width="width"><slot></slot></StackLayout></ScrollView>
-                <StackLayout v-else :verticalAlignment="vAlign" row="0" class="p-t-10" :width="width"><slot></slot></StackLayout>
-                <StackLayout row="1" orientation="horizontal"><AppButton class="c-white btn-active" v-bind="bindVars(btn)" :width="actWidth" v-for="(btn,idx) in actions" @tap.native="$emit(eventName(btn))" :key="['app',unique,'btn',idx].join('-')">{{ btn }}</AppButton></StackLayout>
-            </GridLayout>
+            <AbsoluteLayout class="w-full">
+                <MainContent top="0" left="0" class="w-full h-full" v-bind="mainContentBind" v-on="$listeners"><slot></slot></MainContent>
+                <NavigationSpinner top="0" left="0" class="w-full h-full" v-if="navigationBusy"></NavigationSpinner>
+            </AbsoluteLayout>
         </Drawer>
     </Page>
 </template>
@@ -17,31 +16,20 @@
         name: 'App',
         props: {
             title: String,
+            back: { type: [String,Boolean], default: true },
+            drawer: { type: [String,Boolean], default: true },
             action: String,
             scroll: { type: [Boolean,String], default: true },
             width: { type: [String,Number], default: '95%' },
             center: { type: [String,Boolean], default: false },
             actionProps: { type:Object },
-            back: { type: [String,Boolean], default: true },
-            drawer: { type: [String,Boolean], default: true },
         },
         data(){ return {
-            fixHeight: 60,
+            mainContentProps: ['action','scroll','width','center','actionProps'],
+            navigationBusy: false,
         }},
         computed: {
-            unique(){ return new Date().getTime() },
-            rows(){ let rows = ['*'], action = !!this.action; rows.push(_.toSafeInteger(action)*this.fixHeight); return rows.join(','); },
-            vAlign(){ return (this.center === true || this.center === 'true') ? 'center' : 'top' },
-            actions(){ let actions = this.action; return (actions) ? _.concat(actions) : []; },
-            actWidth(){ return _.toSafeInteger(100/this.actions.length)+'%' }
-        },
-        methods: {
-            eventName(name){ return _.kebabCase(name) },
-            bindVars(act){
-                let name = this.eventName(act); return (_.isEmpty(this.actionProps))
-                    ? {}
-                    : ( _.has(this.actionProps,name) ? this.actionProps[name] : this.actionProps )
-            }
+            mainContentBind(){  return _(this.mainContentProps).mapKeys(i => i).mapValues(i => this[i]).value() },
         }
     }
 </script>
