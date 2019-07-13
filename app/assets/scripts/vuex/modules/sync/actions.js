@@ -28,8 +28,8 @@ export function init({ dispatch,commit,state,rootGetters }) {
         });
     },commit,dispatch,state)
 }
-export function initUserTables({ dispatch,commit,state }) {
-    return new Promise((resolve, reject) => {
+export function initUserTables({ dispatch,commit }) {
+    return new Promise((resolve) => {
         DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,resolve) {
             if(this.error) return log('Error getting user table information to sync');
             _.forEach(this.result,function (tblObj) {
