@@ -12,11 +12,11 @@ import "./app.css";
 import store from './assets/scripts/vuex/store';
 global.log = function(text,...texts){ store.commit('Log/addQueue',text); if(TNS_ENV !== 'production') console.log(text,...texts); };
 
-import VueDevtools from 'nativescript-vue-devtools'
+// import VueDevtools from 'nativescript-vue-devtools'
 
-if(TNS_ENV !== 'production') {
-  Vue.use(VueDevtools,{ host:'192.168.43.48' })
-}
+// if(TNS_ENV !== 'production') {
+//   Vue.use(VueDevtools,{ host:'192.168.43.48' })
+// }
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production');
 
