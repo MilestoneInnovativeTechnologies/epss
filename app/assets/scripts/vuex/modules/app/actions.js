@@ -28,7 +28,7 @@ export function deviceRegistration({ dispatch,commit }, {uuid}) {
 }
 export function setup({ state,dispatch,commit },data){
     if(_.isEmpty(data)) { let message = 'OOPS!! Device not registered!!'; commit(set_state_data,{ message }); return log(message); }
-    sLog(commit, 'Create app table');
+    sLog(commit, 'Create app table'); data = _.assign(data,_.pick(state,['uuid','width','height']));
     DB.create(state.dbTables[0], state.fields, function (state, dispatch, data, sLog, commit) {
         sLog(commit,'Insert device registration data');
         let reqData = _.omit(data,['id','created_at','updated_at']), insData = _.map(reqData,(detail,name) => _.zipObject(['name','detail'],[name,detail]));
