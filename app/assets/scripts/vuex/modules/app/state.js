@@ -1,7 +1,7 @@
 export default {
     dbTables:['app','user'], fields:'name,detail',
     tasks: { 'Init state data':false, 'Request device registration data':false, 'Create app table':false,
-        'Insert device registration data':false, 'Create user table':false,'Initialize app':false,
+        'Insert device registration data':false,'Initialize app':false, 'Create user table':false,
         'Reset client on server':false, 'Get DB tables':false,'Create and sync tables':false },
     message: '', uuid: '', height: '', width:'',
     code: '', name: null, image: null, brief: null,
