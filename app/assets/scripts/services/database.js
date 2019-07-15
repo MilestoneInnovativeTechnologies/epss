@@ -38,7 +38,7 @@ class Database {
     insert(tbl,data,callback,...args){
         sLog(this.table(tbl).tbl + ' -> Insert');
         let insert = this.dataToInsert(data);
-        let query = `INSERT INTO ${this.tbl} (${ insert.names.join(',') }) VALUES ${ insert.values.join(',') }`;
+        let query = sql.format(`INSERT INTO ?? (??) VALUES ?`,[tbl,insert.names,insert.values]);
         this.query(query,callback,...args);
     }
 
@@ -46,7 +46,7 @@ class Database {
         sLog(this.table(tbl).tbl + ' -> Update');
         let update = this.dataToUpdate(data);
         condition = this.correctCondition(condition);
-        let query = `UPDATE ${this.tbl} SET ${update} WHERE ${condition}`;
+        let query = sql.format(`UPDATE ?? SET ? WHERE ${condition}`,[tbl,update]);
         this.query(query,callback,...args);
     }
 
@@ -123,26 +123,27 @@ class Database {
 
     dataToInsert(data){
         data = _.isArray(data) ? data : [data];
-        let names = ['`created_at`','`updated_at`']; let values = [];
+        let names = ['created_at','updated_at'], nameObj = { created_at:0,updated_at:1 }, values = [];
         _.forEach(data,(record) => {
             let time = parseInt(new Date().getTime()/1000);
             let value = [time,time];
-            _.forEach(record,(val,key) => { key = `\`${key}\``;
-                let idx = _.indexOf(names,key); if(idx === -1) idx = names.push(key)-1;
-                _.set(value,idx,`"${val}"`)
+            _.forEach(record,(val,key) => {
+                let idx = nameObj[key]; if(idx === null || idx === undefined) { idx = names.push(key)-1; nameObj[key] = idx; }
+                let sVal = (_.includes(val,"'") || _.includes(val,'"')) ? val.replace(/['"]/g,() => ' ') : val;
+                _.set(value,idx,sVal);
             });
-            values.push('(' + value.join(',') + ')')
+            values.push(value)
         });
         return { names:names,values:values }
     }
 
     dataToUpdate(data) {
         let time = parseInt(new Date().getTime()/1000);
-        let sets = [`\`updated_at\` = ${time}`];
+        let sets = { updated_at:time };
         _.forEach(data, (val, key) => {
-            sets.push(`\`${key}\` = "${val}"`)
+            _.set(sets,key,val);
         });
-        return sets.join(',');
+        return sets;
     }
 
     isSimpleArray(array){ return _.every(array,(element) => (_.isNumber(element) || _.isString(element)) ); }
