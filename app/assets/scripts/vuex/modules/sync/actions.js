@@ -1,6 +1,11 @@
 import {
-    table_information_db_table_name, sync_recheck_timeout_seconds,
-    app_user_create_date_for_fetch, setup_sync_table_after, init_sync_table_after, init_sync_user_table_after
+    table_information_db_table_name,
+    sync_recheck_timeout_seconds,
+    app_user_create_date_for_fetch,
+    setup_sync_table_after,
+    init_sync_table_after,
+    init_sync_user_table_after,
+    sync_create_chunk_length
 } from '../../../constants';
 import {
     add_new_table_for_sync, add_to_app_sync_queue,
@@ -17,7 +22,7 @@ export function deleteClient({ dispatch,getters,rootGetters }) {
 }
 
 export function init({ dispatch,commit,state,rootGetters }) {
-    DB.get(table_information_db_table_name,null,function (commit,dispatch,state) {
+    DB.get(table_information_db_table_name,null,function (commit,dispatch) {
         if(this.error) return log('Error getting app table information to sync');
         _.forEach(this.result,function (tblObj) {
             if (tblObj.type === 'APP' || !!(rootGetters.user)){
@@ -158,11 +163,12 @@ export function updateRecords({ commit }, {table, records}) {
     });
 }
 
-export function createRecords({ commit }, {table, records}) {
-    if(records.length < 1) return;
-    DB.insert(table,records,function(commit,table){
-        commit(update_table_timing,{ table,type:'sync',time:now() })
-    },commit,table);
+export function createRecords({ commit,dispatch }, {table, records, chunk}) {
+    if(chunk === undefined || chunk === null || isNaN(chunk)) return dispatch('createRecords',{table,records,chunk:0});
+    let recStart = chunk * sync_create_chunk_length, recEnd = recStart + sync_create_chunk_length, insRecords = records.slice(recStart,recEnd);
+    if(insRecords.length > 0) dispatch('_insert',{ table,data:insRecords },{ root:true }).then(() => {
+        dispatch('createRecords',{table,records,chunk:chunk+1});
+    });
 }
 
 export function updateSetup({ commit }, {table, records}) {
