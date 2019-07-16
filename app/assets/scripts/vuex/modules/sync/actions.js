@@ -101,7 +101,7 @@ export function prepareSyncTable_USER({ dispatch,getters,rootGetters,commit,stat
         sync = _.toSafeInteger(_.get(times,`${table}.sync`,0)), create = _.toSafeInteger(_.get(times,`${table}.create`,0)), update = _.toSafeInteger(_.get(times,`${table}.update`,0));
     if (sync < create || sync <= update){
         Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
-            activity = _.filter(activity); if (true || _.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
+            activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
             FD.init(params,function(dispatch,url){
                 dispatch('file',{ url,params:this.vParams,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true })
             },dispatch,url).file(activity,table);
