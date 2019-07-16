@@ -6,4 +6,5 @@ export function api_config(state,getters,rootState) {
     config.data._user = user.id;
     return config;
 }
-
+export function isFile(state) { return !!state.processing.request.url; }
+export function processing_url(state) { return state.processing.url || state.processing.request.url; }
