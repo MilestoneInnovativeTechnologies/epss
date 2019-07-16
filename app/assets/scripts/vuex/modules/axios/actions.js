@@ -64,15 +64,15 @@ export function processQueue({ state,getters,dispatch }) {
 
 }
 
-export function initProcessQueue({ commit,dispatch,state }) {
+export function initProcessQueue({ commit,dispatch,getters }) {
     commit(start_process_queue);
-    log('Processing queue, ' + state.processing.url);
+    log('Processing queue, ' + getters.processing_url);
     dispatch('proceedProcessing')
 }
 
-export function proceedProcessing({ commit,dispatch,state }) {
+export function proceedProcessing({ commit,dispatch,getters }) {
     commit(initiate_processing_transfer);
-    return _.has(state.processing,'url') ? dispatch('doAxiosRequest') : dispatch('doBackHttpRequest');
+    return getters.isFile ? dispatch('doBackHttpRequest') : dispatch('doAxiosRequest');
 }
 
 export function doAxiosRequest({ state,dispatch }) {
