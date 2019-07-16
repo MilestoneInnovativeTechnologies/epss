@@ -19,7 +19,7 @@ export function init({ commit,dispatch }) {
 }
 
 export function queue({ dispatch,commit },{ config,success,fail }) {
-    if(_.isEmpty(config.url)) return;
+    if(_.isEmpty(config.url) && _.isEmpty(config.request.url)) return;
     commit(add_configuration_to_server_queue, { config,success,fail });
     dispatch('processQueue');
 }
