@@ -5,7 +5,9 @@ import {
     setup_sync_table_after,
     init_sync_table_after,
     init_sync_user_table_after,
-    sync_create_chunk_length
+    sync_create_chunk_length,
+    sync_success_response_global_action,
+    sync_failure_response_global_action
 } from '../../../constants';
 import {
     add_new_table_for_sync, add_to_app_sync_queue,
@@ -84,46 +86,62 @@ export function prepareSyncTable_APP({ dispatch,getters },table){
     let params = { format: 'json',  type: 'data' },
         url = getters.tableSyncUrl(table);
     log('Sync request delivered for, '+table);
-    dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
+    dispatch('post',{ url,params,success:sync_success_response_global_action,fail:sync_failure_response_global_action },{ root:true });
 }
 
 export function prepareSyncTable_APPUSER({ dispatch,getters,rootGetters },table){
     if (!(rootGetters.user)) return dispatch('syncDataReceived_APPUSER',[]);
     let params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client, created:app_user_create_date_for_fetch },
         url = getters.tableSyncUrl(table);
-    dispatch('post',{ url,params,success:'Sync/syncDataReceived_APPUSER',fail:'Sync/syncDataFail' },{ root:true });
+    dispatch('post',{ url,params,success:sync_success_response_global_action + '_APPUSER',fail:sync_failure_response_global_action },{ root:true });
 }
 
 export function prepareSyncTable_USER({ dispatch,getters,rootGetters,commit,state },table){
-    if (!(rootGetters.user)) return dispatch('syncDataReceived',[]);
-    let params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client },
-        url = getters.tableSyncUrl(table), times = state.time,
-        sync = _.toSafeInteger(_.get(times,`${table}.sync`,0)), create = _.toSafeInteger(_.get(times,`${table}.create`,0)), update = _.toSafeInteger(_.get(times,`${table}.update`,0));
-    if (sync < create || sync <= update){
-        Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
-            activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
-            FD.init(params,function(dispatch,url){
-                dispatch('file',{ url,params:this.vParams,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true })
-            },dispatch,url).file(activity,table);
-        });
-    } else {
-        dispatch('post',{ url,params,success:'Sync/syncDataReceived',fail:'Sync/syncDataFail' },{ root:true });
-    }
+    if (!(rootGetters.user)) return dispatch('syncDataReceived_USER',[]);
+    let times = state.time[table];
+    if(times && haveNewerActivity(times)) return dispatch('uploadNewerActivities',table);
+    let params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client }, url = getters.tableSyncUrl(table);
+    dispatch('post',{ url,params,success:sync_success_response_global_action + '_USER',fail:sync_failure_response_global_action },{ root:true });
+}
+
+export function uploadNewerActivities({ state,getters,rootGetters,dispatch,commit }, table) {
+    let times = state.time[table]; if (!times || !haveNewerActivity(times)) return;
+    let sync = _.toSafeInteger(times.sync), url = getters.tableSyncUrl(table), params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client };
+    Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
+        activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:sync_success_response_global_action + '_USER',fail:sync_success_response_global_action },{ root:true });
+        FD.init(params,function(dispatch,commit,table,url){
+            dispatch('file',{ url,params:this.vParams,success:sync_success_response_global_action + '_USER',fail:sync_failure_response_global_action },{ root:true });
+            commit(update_table_timing,{ table,type:'sync',time:now() })
+        },dispatch,commit,table,url).file(activity,table);
+    });
 }
 
 export function syncDataReceived({ commit,dispatch,state },data){
-    let table = state.processing.table; commit(update_table_timing,{ table,type:'sync',time:now() });
-    log('Syncing data received for, ' + table);
+    let table = state.processing.table; log('Syncing data received for, ' + table);
     if(!_.isEmpty(data)) dispatch('processSyncReceivedData',data);
+    else commit(update_table_timing,{ table,type:'sync',time:now() });
     log('Finishing process queue, ' + table); commit(finish_processing_queue);
     commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
     dispatch('requeueSync',table);
 }
 
 export function syncDataReceived_APPUSER({ commit,dispatch,state },data){
-    let table = state.processing.table; commit(update_table_timing,{ table,type:'sync',time:now() });
-    log('Syncing data received for, ' + table); dispatch('deleteRecords',table);
+    let table = state.processing.table; log('Syncing data received for, ' + table);
+    dispatch('deleteRecords',table);
     if(!_.isEmpty(data)) dispatch('processSyncReceivedData',data);
+    else commit(update_table_timing,{ table,type:'sync',time:now() });
+    log('Finishing process queue, ' + table); commit(finish_processing_queue);
+    commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
+    dispatch('requeueSync',table);
+}
+
+export function syncDataReceived_USER({ commit,dispatch,state },data){
+    let table = state.processing.table; log('Syncing data received for, ' + table);
+    if(!_.isEmpty(data)){
+        if(state.time[table] && haveNewerActivity(state.time[table])) dispatch('uploadNewerActivities',table);
+        dispatch('processSyncReceivedData',data);
+    }
+    else commit(update_table_timing,{ table,type:'sync',time:now() });
     log('Finishing process queue, ' + table); commit(finish_processing_queue);
     commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
     dispatch('requeueSync',table);
@@ -167,6 +185,7 @@ export function createRecords({ commit,dispatch }, {table, records, chunk}) {
     if(chunk === undefined || chunk === null || isNaN(chunk)) return dispatch('createRecords',{table,records,chunk:0});
     let recStart = chunk * sync_create_chunk_length, recEnd = recStart + sync_create_chunk_length, insRecords = records.slice(recStart,recEnd);
     if(insRecords.length > 0) dispatch('_insert',{ table,data:insRecords },{ root:true }).then(() => {
+        commit(update_table_timing,{ table,type:'sync',time:now() });
         dispatch('createRecords',{table,records,chunk:chunk+1});
     });
 }
@@ -196,8 +215,8 @@ export function deleteRecords({ commit }, table) {
 function now(){ return __.now(); }
 
 function getTableRecordsForUpdate(table,sync){
-    return new Promise(function(resolve, reject){
-        DB.get(table,[{ updated_at:sync,operator:'>=' },{ created_at:sync,operator:'<=' }],function (resolve){
+    return new Promise(function(resolve){
+        DB.get(table,[{ updated_at:sync,operator:'>=' },{ created_at:sync,operator:'<' }],function (resolve){
             if (!this.result.length) return resolve(null);
             resolve({ table:this.table(),primary_key:['id'],mode:'update',data:this.result });
         },resolve)
@@ -205,10 +224,15 @@ function getTableRecordsForUpdate(table,sync){
 }
 
 function getTableRecordsForCreate(table,sync){
-    return new Promise(function(resolve, reject){
+    return new Promise(function(resolve){
         DB.get(table,[{ created_at:sync,operator:'>' }],function (resolve){
             if (!this.result.length) return resolve(null);
             resolve({ table:this.table(),primary_key:['id'],mode:'create',data:this.result });
         },resolve)
     })
+}
+
+function haveNewerActivity({sync, create, update}) {
+    sync = _.toSafeInteger(sync); create = _.toSafeInteger(create); update = _.toSafeInteger(update);
+    return (create > sync || update >= sync)
 }
