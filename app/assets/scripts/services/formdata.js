@@ -16,8 +16,7 @@ class AppFormData {
         return this;
     }
     request(url){
-        sLog('FD config');
-        return { url,method:'POST', headers: { "Content-Type": "application/octet-stream" },description:'Activity Upload' }
+        return { url,method:'POST', headers: { "Content-Type": "application/octet-stream" },description:'Activity Upload',androidDisplayNotificationProgress:false,androidAutoDeleteAfterUpload:true,utf8:true }
     }
 }
 
