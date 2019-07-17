@@ -16,3 +16,5 @@ export const sync_recheck_timeout_seconds = 3;
 export const gap_between_sync_queue_seconds = 3;
 export const app_user_create_date_for_fetch = '1900-01-01 00:00:01';
 export const sync_create_chunk_length = 500;
+export const sync_success_response_global_action = 'Sync/syncDataReceived';
+export const sync_failure_response_global_action = 'Sync/syncDataFail';
