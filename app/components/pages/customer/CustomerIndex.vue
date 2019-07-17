@@ -10,7 +10,6 @@
 
     export default {
         name: "CustomerIndex",
-        props: ['id'],
         data(){ return {
             key: 'list', path: '',
             layout: { Name:'name', Phone:'phone' }
