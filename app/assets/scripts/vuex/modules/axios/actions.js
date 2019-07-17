@@ -86,7 +86,7 @@ export function doBackHttpRequest({ state,dispatch }) {
     let processing = state.processing;
     let task = session.multipartUpload(processing.params,processing.request);
     task.on("responded", function(e){
-        let response = { data: _.isEmpty(_.trim(e.data)) ? [] : JSON.parse(e.data), responseCode:e.responseCode, task:e.task };
+        let response = { data: _.isEmpty(_.trim(e.data.replace(/\0/g,''))) ? [] : JSON.parse(e.data), responseCode:e.responseCode, task:e.task };
         dispatch('doHandleRequestResponse',response);
     });
     task.on("error", function (e) {
