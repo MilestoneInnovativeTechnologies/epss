@@ -94,8 +94,8 @@ export function doBackHttpRequest({ state,dispatch }) {
     })
 }
 
-export function doHandleRequestResponse({ state,dispatch,commit }, response) {
-    log('Response..., ' + (state.processing.url || state.processing.request.url)); state.last_response = response;
+export function doHandleRequestResponse({ state,dispatch,commit,getters }, response) {
+    log('Response..., ' + getters.processing_url); state.last_response = response;
     if(!_.isEmpty(state.success)) dispatch(state.success,response.data,{ root: true });
     commit(finalize_processing_transfer);
     setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
