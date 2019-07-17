@@ -1,23 +1,18 @@
 const { knownFolders } = require('tns-core-modules/file-system');
 
 class AppFormData {
-    constructor() { this.root = knownFolders.temp().getFolder('activity'); sLog('FD Constructor'); }
+    constructor() { this.root = knownFolders.temp().getFolder('activity'); FDLog('FD Constructor'); }
     init(data,callback,...args){
         this.vParams = []; this.callback = callback; this.args = args;
-        sLog('FD params');
         _.forEach(data,(value,name) => this.vParams.push({ name,value }));
-        sLog('FD params after');
         return this;
     }
     file(data,name){
-        sLog('FD File');
         name = name || 'table'; let file = this.root.getFile(name + '.json');
         file.writeText(JSON.stringify(data)).then(() => {
-            sLog('File write success',file.path);
             this.vParams.push({ name:'file',filename:file.path,mimeType:'application/json' });
             this.callback.apply(this,this.args)
-        }).catch((err) => { sLog('File write error',err) });
-        sLog('FD file after');
+        }).catch((err) => { FDLog('File write error',err,file.path) });
         return this;
     }
     request(url){
@@ -26,9 +21,9 @@ class AppFormData {
     }
 }
 
-function sLog(text) {
+function FDLog(text,...args) {
     if (TNS_ENV === 'production') return;
-    console.log('FormData: '+ text);
+    console.log('FormData: '+ text,...args);
 }
 
 export const FD = new AppFormData();
