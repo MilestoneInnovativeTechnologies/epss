@@ -110,8 +110,8 @@ export function uploadNewerActivities({ state,getters,rootGetters,dispatch,commi
     Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
         activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:sync_success_response_global_action + '_USER',fail:sync_success_response_global_action },{ root:true });
         FD.init(params,function(dispatch,commit,table,url){
+            log('Upload request delivered for, '+table);
             dispatch('file',{ url,params:this.vParams,success:sync_success_response_global_action + '_USER',fail:sync_failure_response_global_action },{ root:true });
-            commit(update_table_timing,{ table,type:'sync',time:now() })
         },dispatch,commit,table,url).file(activity,table);
     });
 }
