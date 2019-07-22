@@ -19,3 +19,6 @@ export const customersales = require('./customersales').FormElementMixinCustomer
 export const label = require('./label').FormElementMixinLabel;
 export const returnsaleproducts = require('./returnsaleproduct').FormElementMixinReturnSaleProduct;
 export const paymentmode = require('./paymentmode').FormElementMixinPaymentMode;
+export const email = require('./email').FormElementMixinEmail;
+export const textarea = require('./textarea').FormElementMixinTextArea;
+export const area = require('./area').FormElementMixinArea;
