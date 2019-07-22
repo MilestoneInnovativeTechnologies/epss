@@ -1,5 +1,5 @@
 <template>
-    <App title="Customers">
+    <App title="Customers" action="Add New Customer" @add-new-customer="$navigateTo(require('./CustomerNew').default)">
         <AppList :source="list" :layout="layout" detail="customer/CustomerDetail"></AppList>
     </App>
 </template>
@@ -12,6 +12,7 @@
         name: "CustomerIndex",
         data(){ return {
             key: 'list', path: '',
+            add:'new customer',
             layout: { Name:'name', Phone:'phone' }
         } },
         computed: {
