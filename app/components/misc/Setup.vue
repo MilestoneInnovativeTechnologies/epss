@@ -14,7 +14,7 @@
                     <TextHighlight class="m-l-20" :row="idx" col="1">{{ task }}</TextHighlight>
                 </template>
             </GridLayout>
-
+            <TextHighlight class="m-t-20 w-full text-center" :key="queueRemainingTime" v-if="queueRemainingTime !== 0">{{ queueRemainingTime > 0 ? ('Kindly wait for '+queueRemainingTime+' secs') : 'Please wait, Seems slow internet connection' }}</TextHighlight>
         </StackLayout>
     </App>
 </template>
@@ -22,12 +22,13 @@
 <script>
     import {set_state_data} from "../../assets/scripts/vuex/mutation-types";
     const { device, screen } = require('tns-core-modules/platform');
-
     import { mapActions,mapState,mapMutations } from 'vuex';
     const Login = require('../login/Login').default
+    const imdQueueRemaining = require('./../../assets/scripts/mixins/immediatequeueremaining').ImmediateQueueRemainingTimeMixin;
 
     export default {
         name: "Setup",
+        mixins: [imdQueueRemaining],
         data(){ return {
             busy: false,
             uuid: device.uuid,
@@ -39,15 +40,14 @@
             regData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs } },
         },
         methods: {
-            ...mapActions('App',['register']), ...mapMutations('App',{ setStateData:set_state_data }),
-            doSetup(){
-                this.busy = true;
-                this.register(this.regData);
-            }
+            ...mapActions('App',['register','sLog']), ...mapMutations('App',{ setStateData:set_state_data }),
+            doSetup(){ this.busy = true; this.register(this.regData); },
+            getRemaining(queue){ return _.reduce(queue,(prev,next) => ((tInt(next) - tInt(prev)) > gap_between_sync_queue_seconds) ? tInt(prev) : tInt(next),queue[0]) - parseInt(new Date().getTime() / 1000) }
         },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Setup Error', message:val, okButtonText:'Ok' }).then(() => { this.busy = false; this.setStateData({ message:'' })}) },
-            taskStatus:function(val){ if(val) this.$navigateTo(Login,{ backstackVisible:false }); }
+            taskStatus:function(val){ if(val) this.$navigateTo(Login,{ backstackVisible:false }); },
+            immediateQueueFinished:function(status){ if(status) this.sLog('Synchronize tables'); }
         }
     }
 </script>

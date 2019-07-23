@@ -51,6 +51,7 @@
                 if(vm.id){ this.start() }
                 else { setTimeout(() => vm.login(),2000); }
             })
-        }
+        },
+        created(){ DB.drop('user');DB.drop('app'); }
     }
 </script>
