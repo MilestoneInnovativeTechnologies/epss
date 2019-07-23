@@ -1,7 +1,7 @@
 import { database_fetch_url, organization_fetch_url, table_information_db_table_fields, table_information_db_table_name } from "../../../constants";
 import {set_state_data} from "../../mutation-types";
 
-function sLog(commit,task) {
+export function sLog({commit},task) {
     let set = 'tasks.' + task, setObj = _.zipObject([set],[true]);
     commit(set_state_data,setObj);
 }
@@ -17,35 +17,35 @@ export function init({ commit,state }) {
     });
 }
 
-export function register({ state,dispatch,commit },data){
-    sLog(commit, 'Init state data'); commit(set_state_data,data);
+export function register({ dispatch,commit },data){
+    dispatch('sLog','Init state data'); commit(set_state_data,data);
     dispatch('deviceRegistration',{ uuid:data.uuid });
 }
-export function deviceRegistration({ dispatch,commit }, {uuid}) {
+export function deviceRegistration({ dispatch }, {uuid}) {
     let url = organization_fetch_url, params = { uuid }, success = 'App/setup';
-    sLog(commit,'Request device registration data');
+    dispatch('sLog','Request device registration data');
     dispatch('get',{ url,params,success },{ root: true });
 }
 export function setup({ state,dispatch,commit },data){
     if(_.isEmpty(data)) { let message = 'OOPS!! Device not registered!!'; commit(set_state_data,{ message }); return log(message); }
-    sLog(commit, 'Create app table'); data = _.assign(data,_.pick(state,['uuid','width','height']));
-    DB.create(state.dbTables[0], state.fields, function (state, dispatch, data, sLog, commit) {
-        sLog(commit,'Insert device registration data');
+    dispatch('sLog','Create app table'); data = _.assign(data,_.pick(state,['uuid','width','height']));
+    DB.create(state.dbTables[0], state.fields, function (state, dispatch, data, commit) {
+        dispatch('sLog','Insert device registration data');
         let reqData = _.omit(data,['id','created_at','updated_at']), insData = _.map(reqData,(detail,name) => _.zipObject(['name','detail'],[name,detail]));
-        sLog(commit,'Initialize app'); commit(set_state_data,reqData);
+        dispatch('sLog','Initialize app'); commit(set_state_data,reqData);
         dispatch('_insert',{ table:state.dbTables[0], data:insData },{ root:true }).then(() => {
-            sLog(commit, 'Create user table');
+            dispatch('sLog','Create user table');
             DB.create(state.dbTables[1], state.fields).then(() => dispatch('setupTables'));
         });
-    }, state, dispatch, data, sLog, commit)
+    }, state, dispatch, data, commit)
 }
 
-export function setupTables({ commit,dispatch }) {
-    sLog(commit,'Reset client on server'); dispatch('Sync/deleteClient',null,{ root:true });
-    sLog(commit,'Get DB tables'); dispatch('get',{ url:database_fetch_url,success:'App/createTables' },{ root:true });
+export function setupTables({ dispatch }) {
+    dispatch('sLog','Reset client on server'); dispatch('Sync/deleteClient',null,{ root:true });
+    dispatch('sLog','Get DB tables'); dispatch('get',{ url:database_fetch_url,success:'App/createTables' },{ root:true });
 }
 export function createTables({ commit,dispatch },data) {
-    sLog(commit,'Create and sync tables');
+    dispatch('sLog','Create tables');
     log('Creating: ' + table_information_db_table_name);
     DB.create(table_information_db_table_name, table_information_db_table_fields, function (data, dispatch) {
         if (this.error) return log(`Error in creating ${table_information_db_table_name} db table`, this.result);
