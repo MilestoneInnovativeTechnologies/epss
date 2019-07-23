@@ -14,7 +14,7 @@
                     <TextHighlight class="m-l-20" :row="idx" col="1">{{ task }}</TextHighlight>
                 </template>
             </GridLayout>
-            <TextHighlight class="m-t-20 w-full text-center" :key="queueRemainingTime" v-if="queueRemainingTime !== 0">{{ queueRemainingTime > 0 ? ('Kindly wait for '+queueRemainingTime+' secs') : 'Please wait, Seems slow internet connection' }}</TextHighlight>
+            <TextHighlight class="m-t-20 w-full text-center" :key="queueRemainingTime" v-if="queueRemainingTime !== 0">{{ queueRemainingTime > 0 ? ('Kindly wait for '+queueRemainingTime+' secs') : ('Please wait, Seems slow internet connection ('+queueRemainingTime+')') }}</TextHighlight>
         </StackLayout>
     </App>
 </template>
