@@ -1,3 +1,4 @@
 export default {
-    dbTables: ['users']
+    dbTables: ['users'],
+    newUserFields: ['name','email','phone','address']
 }

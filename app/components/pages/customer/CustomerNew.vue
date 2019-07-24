@@ -1,6 +1,6 @@
 <template>
     <App title="Add New Customer" action="Save" @save="save">
-        <AppForm :fields="appFields" :values="values" @final="setValues"></AppForm>
+        <AppForm :fields="appFields" @final="setValues"></AppForm>
     </App>
 </template>
 
@@ -13,17 +13,15 @@
         mixins: [feMX.common, feMX.area, feMX.text, feMX.email, feMX.textarea],
         data(){ return {
             fields: { name:'Text',area:'Area',phone:'Text',email:'Email',address:'Textarea' },
-            values: { name:'',phone:'',address:'',area:'',email:'' }, id: ''
+            values: { name:'',phone:'',address:'',area:'',email:'' },
         }},
         computed: {
             appFields(){ let fields = this.appFormFields(this.fields); return _.mapValues(fields,(field,name) => { field.label = _.startCase(name); return field; }) },
         },
         methods: {
-            ...mapActions(['_insert']),
+            ...mapActions('Users',['addNew']),
             setValues(data){ this.values = Object.assign({},this.values,data); },
-            save(){ this._insert({ table:'users',data:_.omit(this.values,'area'),success:this.addArea,vm:this }) },
-            addArea(id){ this._insert({ table:'area_users',data:{ user:this.id = id, area:this.values.area },success:this.saved,vm:this }); },
-            saved(){ alert('New customer saved').then(() => this.$navigateTo(require('./CustomerDetail').default,{ props:{ id:this.id }})); }
+            save(){ this.addNew(this.values).then((id) => alert('Saved new customer').then(() => this.$navigateTo(require('./CustomerDetail').default,{ props:{ id }}))) },
         }
     }
 </script>
