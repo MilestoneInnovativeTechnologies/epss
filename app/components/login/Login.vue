@@ -75,7 +75,7 @@
             },
         },
         mounted(){
-            this.$nextTick(() => this.checkLogin())
+            this.$nextTick(() => { this.immediateQueueFinished = false; this.queueBatchLastItem = null; this.checkLogin(); })
         },
         watch: {
             message(message){ if(_.isEmpty(message)) return; alert({ title:'Login Error',message,okButtonText:"Ok" }).then(() => this[set_state_data]({ message:'' })) },
