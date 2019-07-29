@@ -14,7 +14,7 @@
                     <TextHighlight class="m-l-20" :row="idx" col="1">{{ task }}</TextHighlight>
                 </template>
             </GridLayout>
-            <TextHighlight class="m-t-20 w-full text-center" :key="queueRemainingTime" v-if="!immediateQueueFinished">{{ 'Kindly wait for '+queueRemainingTime+' secs' }}</TextHighlight>
+            <TextHighlight class="m-t-20 w-full text-center" :key="queueRemainingTime" v-if="!immediateQueueFinished && queueRemainingItems > -1">{{ 'Kindly wait for '+queueRemainingTime+' secs' }}</TextHighlight>
         </StackLayout>
     </App>
 </template>
@@ -42,7 +42,6 @@
         methods: {
             ...mapActions('App',['register','sLog']), ...mapMutations('App',{ setStateData:set_state_data }),
             doSetup(){ this.busy = true; this.register(this.regData); },
-            getRemaining(queue){ return _.reduce(queue,(prev,next) => ((tInt(next) - tInt(prev)) > gap_between_sync_queue_seconds) ? tInt(prev) : tInt(next),queue[0]) - parseInt(new Date().getTime() / 1000) }
         },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Setup Error', message:val, okButtonText:'Ok' }).then(() => { this.busy = false; this.setStateData({ message:'' })}) },

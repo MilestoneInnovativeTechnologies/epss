@@ -36,6 +36,7 @@
             ...mapActions('User',['doLogin','doLoginActions']), ...mapMutations('User',[set_state_data]),
             pTxt(txt){ this.pTexts.push(txt) },
             authenticate(){
+                this.immediateQueueFinished = false; this.queueBatchLastItem = null;
                 this.pTxt('Authenticating with server....');
                 this.doLogin();
             },
@@ -52,11 +53,9 @@
                 setTimeout(() => this.$navigateTo(require('../Home').default,{ clearHistory:true }),after*1000);
             },
             populateUserData(data){
-                console.log('POPULATE DATA: ',data);
                 this.pTxt('User data found, populating..');
                 let kData =_(data).keyBy('name').mapValues(({ detail }) => detail).value();
                 this.pTxt('Doing post login actions..');
-                // this.doLoginActions(kData).then(() => this.redirectToHome(this.delay()));
                 this.doLoginActions(kData).then(() => this.waitNotification = true);
             },
             initLogin(){
@@ -67,15 +66,10 @@
                 this.busy = true; this.loginForm = false;
                 this.pTxt(`Login Success!! User data Synching in progress`);
                 this.waitNotification = true;
-                //setTimeout(() => this.redirectToHome(this.delay()),3000);
-            },
-            delay(){
-                let qi = this.queue_index;
-                return _(qi).map(i => parseInt(i) - __.now()).filter(i => i<this.maxHomeNavDelay).max() || 1;
-            },
+            }
         },
         mounted(){
-            this.$nextTick(() => { this.immediateQueueFinished = false; this.queueBatchLastItem = null; this.checkLogin(); })
+            this.$nextTick(() => this.checkLogin());
         },
         watch: {
             message(message){ if(_.isEmpty(message)) return; alert({ title:'Login Error',message,okButtonText:"Ok" }).then(() => this[set_state_data]({ message:'' })) },
