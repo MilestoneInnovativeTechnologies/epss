@@ -29,7 +29,7 @@
             waitNotification: false,
         }},
         computed: {
-            ...mapState('User',['message','validating','id']),
+            ...mapState('User',['message','validating','id']), ...mapState('Axios',['connection']),
             authenticated(){ let id = this.id; return !(_.isNil(id)) }
         },
         methods: {
@@ -56,7 +56,7 @@
                 this.pTxt('User data found, populating..');
                 let kData =_(data).keyBy('name').mapValues(({ detail }) => detail).value();
                 this.pTxt('Doing post login actions..');
-                this.doLoginActions(kData).then(() => this.waitNotification = true);
+                this.doLoginActions(kData).then(() => { this.waitNotification = true; if(!this.connection) this.redirectToHome(2); });
             },
             initLogin(){
                 this.pTxt('No data found, try loging in using form..');
