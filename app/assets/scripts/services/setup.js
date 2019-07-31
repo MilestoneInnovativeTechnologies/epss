@@ -22,4 +22,5 @@ export class SSSetup {
         return _.mapValues(Obj,(value,name) => _.includes(castKeys,name) ? this[rule[name]](value) : value)
     }
     now(){ return parseInt(new Date().getTime()/1000) }
+    dtz(dt){ return parseInt(moment(dt).format('X')) }
 }
