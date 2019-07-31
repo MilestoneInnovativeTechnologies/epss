@@ -8,6 +8,7 @@ export function create({ rootGetters,dispatch },data){
             { fncode,user,docno,_ref,status:'Active' }
         );
         dispatch('_insert',{ table:'receipts',data:insData },{ root:true }).then(id => {
+            dispatch('Sync/priorSyncQueue',['receipts'],{ root:true });
             dispatch('Reserves/incReserve',{ fncode,store:data.store },{ root:true });
             resolve(_ref);
         })
