@@ -1,13 +1,6 @@
 import {
-    table_information_db_table_name,
-    sync_recheck_timeout_seconds,
-    app_user_create_date_for_fetch,
-    setup_sync_table_after,
-    init_sync_table_after,
-    init_sync_user_table_after,
-    sync_create_chunk_length,
-    sync_success_response_global_action,
-    sync_failure_response_global_action
+    table_information_db_table_name, sync_recheck_timeout_seconds, app_user_create_date_for_fetch, setup_sync_table_after, init_sync_table_after,
+    init_sync_user_table_after, sync_create_chunk_length, sync_success_response_global_action, sync_failure_response_global_action, gap_between_sync_queue_seconds
 } from '../../../constants';
 import {
     add_new_table_for_sync, add_to_app_sync_queue,
