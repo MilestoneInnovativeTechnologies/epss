@@ -104,6 +104,7 @@ export function uploadNewerActivities({ state,getters,rootGetters,dispatch,commi
         activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:sync_success_response_global_action + '_USER',fail:sync_success_response_global_action },{ root:true });
         FD.init(params,function(dispatch,commit,table,url){
             log('Upload request delivered for, '+table);
+            commit(update_table_timing,{ table,type:'sync',time:now() });
             dispatch('file',{ url,params:this.vParams,success:sync_success_response_global_action + '_USER',fail:sync_failure_response_global_action },{ root:true });
         },dispatch,commit,table,url).file(activity,table);
     });
@@ -112,7 +113,6 @@ export function uploadNewerActivities({ state,getters,rootGetters,dispatch,commi
 export function syncDataReceived({ commit,dispatch,state },data){
     let table = state.processing.table; log('Syncing data received for, ' + table);
     if(!_.isEmpty(data)) dispatch('processSyncReceivedData',data);
-    else commit(update_table_timing,{ table,type:'sync',time:now() });
     log('Finishing process queue, ' + table); commit(finish_processing_queue);
     commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
     dispatch('requeueSync',table);
@@ -122,7 +122,6 @@ export function syncDataReceived_APPUSER({ commit,dispatch,state },data){
     let table = state.processing.table; log('Syncing data received for, ' + table);
     dispatch('deleteRecords',table);
     if(!_.isEmpty(data)) dispatch('processSyncReceivedData',data);
-    else commit(update_table_timing,{ table,type:'sync',time:now() });
     log('Finishing process queue, ' + table); commit(finish_processing_queue);
     commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
     dispatch('requeueSync',table);
@@ -134,7 +133,6 @@ export function syncDataReceived_USER({ commit,dispatch,state },data){
         if(state.time[table] && haveNewerActivity(state.time[table])) dispatch('uploadNewerActivities',table);
         dispatch('processSyncReceivedData',data);
     }
-    else commit(update_table_timing,{ table,type:'sync',time:now() });
     log('Finishing process queue, ' + table); commit(finish_processing_queue);
     commit(set_new_sync_time_out,setTimeout(function(dispatch){ dispatch('doSyncProcess') },sync_recheck_timeout_seconds * 1000,dispatch));
     dispatch('requeueSync',table);
@@ -148,9 +146,10 @@ export function syncDataFail({ commit,dispatch,state }){
     dispatch('requeueSync',table);
 }
 
-export function processSyncReceivedData({ dispatch },data) {
+export function processSyncReceivedData({ dispatch,commit },data) {
     _.forEach(data,(activity) => {
-        let table = activity.table, mode = activity.mode, type = mode + ((table === 'setup') ? 'Setup' : 'Records'), payload = { type, table, records:activity.data };
+        let table = activity.table, mode = activity.mode, type = mode + ((table === 'setup') ? 'Setup' : 'Records'), payload = { type, table, records:activity.data }, time = __.dtz(activity.datetime);
+        commit(update_table_timing,{ table,type:'sync',time });
         dispatch(payload); dispatch('redrawModules',table,{ root:true });
     })
 }
@@ -161,9 +160,9 @@ export function requeueSync({ state,dispatch },table) {
     dispatch('requeueSyncImmediate',{ table,type,after });
 }
 
-export function requeueSyncImmediate({ state,commit,dispatch },{ table,after,type }) {
+export function requeueSyncImmediate({ state,dispatch },{ table,after,type }) {
     let at = now() + _.toSafeInteger(after); type = type || _.get(state.tables,[table,'type']);
-    commit(add_to_app_sync_queue,{ table,type,at }); dispatch('doSyncProcess');
+    dispatch('doAddToAppSyncQueue',{ table,at,type });
 }
 
 export function doAddToAppSyncQueue({state, commit, dispatch}, {table, at, type}) {
