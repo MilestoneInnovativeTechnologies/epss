@@ -173,6 +173,17 @@ export function requeueSyncImmediate({ state,commit,dispatch },{ table,after,typ
     commit(add_to_app_sync_queue,{ table,type,at }); dispatch('doSyncProcess');
 }
 
+export function doAddToAppSyncQueue({state, commit, dispatch}, {table, at, type}) {
+    at = _.toSafeInteger(at); type = type || _.get(state.tables,[table,'type']);
+    commit(add_to_app_sync_queue,{ table,type,at }); dispatch('doSyncProcess');
+}
+
+export function priorSyncQueue({state, commit, dispatch}, qTables) {
+    let tables = Array.isArray(qTables) ? qTables : [qTables], at = parseInt(state.queue_index[0] || now()) - (tables.length * gap_between_sync_queue_seconds);
+    _.forEach(tables,(table) => commit(add_to_app_sync_queue,{ table,type:_.get(state.tables,[table,'type']),at }));
+    dispatch('doSyncProcess');
+}
+
 export function updateRecords({ commit }, {table, records}) {
     let lastRecIndex = records.length - 1; if(lastRecIndex < 0) return;
     _.forEach(records,(record,idx) => {
