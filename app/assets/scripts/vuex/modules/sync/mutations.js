@@ -17,6 +17,7 @@ export default {
         }
     },
     [add_to_app_sync_queue](state, { table,at,type }) {
+        if(state.processing['table'] === table) return;
         let cTime = _.toSafeInteger(_.findKey(state.queue,['table',table]));
         if (cTime) { if (cTime <= _.toSafeInteger(at)) return;
             state.queue_index = _.without(state.queue_index,cTime);
@@ -24,7 +25,7 @@ export default {
         }
         let token = getNextPossibleQueueTokenAfter(at,state.queue_index);
         state.queue_index.push(token); state.queue_index.sort();
-        Object.assign(state.queue,_.fromPairs([[token,{ table,type }]]));
+        state.queue = Object.assign({},state.queue,_.fromPairs([[token,{ table,type }]]));
         DB.update(table_information_db_table_name,{ table },{ next:token });
     },
     [processing_queue](state, { item,index }) {
