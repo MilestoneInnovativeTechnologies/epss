@@ -11,6 +11,7 @@ import {
     initiate_processing_transfer,
     finalize_processing_transfer, finalize_failed_transfer, set_connectivity_availability,
 } from './../../mutation-types'
+import {maximum_processing_seconds} from "../../../constants";
 
 const queueCheckSeconds = 5; let timeOutVariable = 0;
 
@@ -61,6 +62,7 @@ export function processQueue({ state,getters,dispatch }) {
             log('Request queue recheck, ' + new Date().getTime());
             dispatch('processQueue')
         }, queueCheckSeconds * 1000, dispatch);
+        dispatch('checkForFailedProcessing')
     }
 
 }
@@ -109,11 +111,16 @@ export function doHandleRequestResponse({ state,dispatch,commit,getters }, respo
     setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
 }
 
-export function doHandleFailedResponse({ state,dispatch,commit }) {
-    log('Failed.., ' + (state.processing.url || state.processing.request.url));
+export function doHandleFailedResponse({ state,getters,dispatch,commit }) {
+    log('Failed.., ' + (getters.processing_url));
     if(!_.isEmpty(state.fail)) dispatch(state.fail,null,{ root: true });
     commit(finalize_failed_transfer);
     setTimeout(function(dispatch){ dispatch('processQueue'); },queueCheckSeconds * 1000,dispatch);
+}
+
+export function checkForFailedProcessing({ state,dispatch }) {
+    if((__.now() - _.toSafeInteger(state.process_time)) > maximum_processing_seconds)
+        return dispatch('doHandleFailedResponse')
 }
 
 export const api = {

@@ -2,6 +2,7 @@ export default {
     connection: true,
     queue: [],
     processing: {},
+    process_time: 0,
     status: '',
     transfer: false,
     config: { responseType:'json' },
