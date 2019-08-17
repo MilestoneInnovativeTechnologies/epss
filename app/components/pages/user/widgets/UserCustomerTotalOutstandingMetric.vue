@@ -8,14 +8,14 @@
     export default {
         name: "UserCustomerTotalOutstandingMetric",
         data(){ return {
-            metricTemplate: ['normal','overdue','critical'],
-            metricIcons: ['attach_money','error_outline','warning'],
+            metricTemplate: ['outstanding','overdue'],
+            metricIcons: ['attach_money','warning'],
             size:25, coloured: true,
             itemKeys: ['coloured','size','icon','text','title']
         } },
         computed: {
             ...mapState('Customer',['list']),
-            itemText(){ return _.mapValues(_.zipObject(this.metricTemplate,this.metricTemplate),(type) => this.getSum('outstanding_'+type) ) },
+            itemText(){ return _.mapValues(_.zipObject(this.metricTemplate,this.metricTemplate),(type) => this.getSum(type) ) },
             items(){ let vm = this; return _.map(this.metricTemplate,(title,idx) => _.zipObject(vm.itemKeys,[vm.coloured,vm.size,vm.metricIcons[idx],__.amount(vm.itemText[title]),title])) }
         },
         methods: {
