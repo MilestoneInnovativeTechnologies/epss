@@ -1,5 +1,5 @@
 export default {
-    dbTables:['products','pricelist','productgroups'],
+    dbTables:['products','pricelist'],
     transactions:{},
     list: [],
 }
