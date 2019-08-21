@@ -1,4 +1,15 @@
-import {mutate_sync_data, update_table_timing} from "./mutation-types";
+import {mutate_sync_data, set_connectivity_availability, update_table_timing, add_connection_monitor, add_module, bind_table_module} from "./mutation-types";
+import { connectionType,startMonitoring } from "tns-core-modules/connectivity";
+
+export function init({ dispatch,commit },modulesMap){
+    _.forEach(modulesMap, ({ _rawModule }, Module) => {
+        let module = _.trim(Module, '/'); commit(add_module, module);
+        if (_rawModule.state.dbTables) commit(bind_table_module, { table: _rawModule.state.dbTables,  module });
+        if (_.has(_rawModule.actions,'init')) dispatch(Module+'init').then(null);
+        if (_.has(_rawModule.actions,'onConnectionChange')) commit(add_connection_monitor,Module+'onConnectionChange')
+    });
+    dispatch('connectionMonitor');
+}
 
 export function redrawModules({state, commit, rootState}, table) {
     if (!_.has(state.table_modules, table)) return;
@@ -38,4 +49,16 @@ export function _update({ dispatch,commit },{ table,data,id,pk,condition }){
             res(result);
         }, table, update_table_timing, commit, dispatch,res);
     });
+}
+
+export function connectionMonitor({ commit,dispatch }) {
+    startMonitoring((type) => {
+        commit(set_connectivity_availability,type !== connectionType.none);
+        dispatch('triggerConnectionChange');
+    });
+}
+
+export function triggerConnectionChange({state,dispatch}) {
+    if(_.isEmpty(state.connection_monitors)) return;
+    _.forEach(state.connection_monitors,action => dispatch(action,state.connection,{ root:true }))
 }
