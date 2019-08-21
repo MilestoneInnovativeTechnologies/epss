@@ -8,6 +8,7 @@ import {
     update_table_timing, set_new_sync_time_out
 } from './../../mutation-types';
 import {SSSetup} from "../../../services/setup";
+import { SSE } from 'nativescript-sse';
 
 export function deleteClient({ dispatch,getters,rootGetters }) {
     let client = rootGetters.client,
@@ -37,6 +38,7 @@ export function initUserTables({ dispatch,commit }) {
                 dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
             });
             resolve(this.result);
+            // dispatch('startSSEMonitor');
         },commit,dispatch,resolve)
     });
 }
@@ -102,9 +104,9 @@ export function uploadNewerActivities({ state,getters,rootGetters,dispatch,commi
     let sync = _.toSafeInteger(times.sync), url = getters.tableSyncUrl(table), params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client };
     Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
         activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:sync_success_response_global_action + '_USER',fail:sync_success_response_global_action },{ root:true });
+        commit(update_table_timing,{ table,type:'sync',time:now() });
         FD.init(params,function(dispatch,commit,table,url){
             log('Upload request delivered for, '+table);
-            commit(update_table_timing,{ table,type:'sync',time:now() });
             dispatch('file',{ url,params:this.vParams,success:sync_success_response_global_action + '_USER',fail:sync_failure_response_global_action },{ root:true });
         },dispatch,commit,table,url).file(activity,table);
     });
@@ -146,10 +148,10 @@ export function syncDataFail({ commit,dispatch,state }){
     dispatch('requeueSync',table);
 }
 
-export function processSyncReceivedData({ dispatch,commit },data) {
+export function processSyncReceivedData({ dispatch,commit,state },data) {
     _.forEach(data,(activity) => {
         let table = activity.table, mode = activity.mode, type = mode + ((table === 'setup') ? 'Setup' : 'Records'), payload = { type, table, records:activity.data }, time = __.dtz(activity.datetime);
-        commit(update_table_timing,{ table,type:'sync',time });
+        if(state.tables[table].type !== 'USER') commit(update_table_timing,{ table,type:'sync',time });
         dispatch(payload); dispatch('redrawModules',table,{ root:true });
     })
 }
@@ -213,6 +215,18 @@ export function createSetup({ commit }, {table, records}) {
 
 export function deleteRecords({ commit }, table) {
     DB.delete(table);
+}
+
+let eventSource = null;
+export function onConnectionChange({ dispatch },status){
+    if(eventSource !== null) eventSource.close();
+    if(status) return dispatch('reStartSSEMonitor');
+}
+export function reStartSSEMonitor({ state,getters }) {
+    let tables = _.keys(state.tables), joinStr = '&tables[]=', url = getters.SSEUrl + joinStr.replace('&','?') + tables.join(joinStr);
+    eventSource = new SSE(url);
+    eventSource.events.on('onMessage', (data) => { console.log(data.object.message.data) });
+    eventSource.events.on('onError', (data) => { if(eventSource !== null) eventSource.close(); eventSource = null; dispatch('reStartSSEMonitor'); });
 }
 
 function now(){ return __.now(); }
