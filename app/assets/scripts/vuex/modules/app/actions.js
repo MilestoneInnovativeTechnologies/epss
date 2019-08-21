@@ -6,14 +6,14 @@ export function sLog({commit},task) {
     commit(set_state_data,setObj);
 }
 
-export function init({ commit,state }) {
+export function init({ commit,dispatch,state }) {
     return new Promise((resolve) => {
         DB.get(state.dbTables[0],null,function(commit,resolve){
             if (this.error) return log(`Error in getting data from App table..`);
             let data = _(this.result).keyBy('name').mapValues(item => item.detail).value();
-            commit(set_state_data,data);
+            commit(set_state_data,data); dispatch('redrawModules','app',{ root:true });
             resolve(this.result);
-        },commit,resolve)
+        },commit,dispatch,resolve)
     });
 }
 
