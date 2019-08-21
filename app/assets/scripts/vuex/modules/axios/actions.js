@@ -3,20 +3,17 @@ const backHttp = require("nativescript-background-http");
 const session = backHttp.session("activity-upload");
 const { File } = require('tns-core-modules/file-system');
 
-import { connectionType,startMonitoring } from "tns-core-modules/connectivity";
-
 import {
     add_configuration_to_server_queue,
     start_process_queue,
     initiate_processing_transfer,
-    finalize_processing_transfer, finalize_failed_transfer, set_connectivity_availability,
+    finalize_processing_transfer, finalize_failed_transfer,
 } from './../../mutation-types'
 import {maximum_processing_seconds} from "../../../constants";
 
 const queueCheckSeconds = 5; let timeOutVariable = 0;
 
 export function init({ commit,dispatch }) {
-    startMonitoring((type) => { commit(set_connectivity_availability,type !== connectionType.none) });
     dispatch('processQueue');
 }
 
@@ -54,7 +51,7 @@ export const file = {
 };
 
 export function processQueue({ state,getters,dispatch }) {
-    if(state.connection && !state.transfer && getters.queue_count > 0 && _.isEmpty(state.processing))
+    if(getters.connection && !state.transfer && getters.queue_count > 0 && _.isEmpty(state.processing))
         return dispatch('initProcessQueue');
     if(getters.queue_count > 0) {
         clearTimeout(timeOutVariable);

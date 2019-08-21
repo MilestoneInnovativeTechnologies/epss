@@ -3,11 +3,10 @@ import {
     start_process_queue,
     initiate_processing_transfer,
     finalize_processing_transfer,
-    finalize_failed_transfer, set_connectivity_availability
+    finalize_failed_transfer
 } from '../../mutation-types';
 
 export default {
-    [set_connectivity_availability](state,status) { state.connection = status },
     [add_configuration_to_server_queue](state, { config,success,fail }) {  state.queue.push(_.assign(config,state.config,{ success,fail })); },
     [start_process_queue](state) { state.processing = state.queue.shift(); state.process_time = __.now(); state.success = state.processing.success; delete state.processing.success; state.fail = state.processing.fail; delete state.processing.fail },
     [initiate_processing_transfer](state) { state.transfer = true; },
