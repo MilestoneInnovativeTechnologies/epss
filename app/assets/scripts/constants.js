@@ -1,5 +1,6 @@
 export const organization_fetch_url = 'http://milestoneit.net/api/ss/device';
 export const database_fetch_url = 'http://milestoneit.net/api/ss/setup';
+export const sse_monitor_path = 'sse/info';
 
 //Module Common
 export const stock_load_cache_refresh_on_each_nth_query = 0;
