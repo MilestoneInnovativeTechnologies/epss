@@ -28,18 +28,13 @@ Vue.filter('fonticon', fonticon);
 
 require('./components/index');
 
-import {add_module, bind_table_module} from "./assets/scripts/vuex/mutation-types";
-
 new Vue({
-  store,
-  render: h => h('frame', [h(Home)]),
-  mounted(){
-	let vuex = this.$store, actions = [];
-	_.forEach(vuex._modulesNamespaceMap,(Obj,Module) => {
-		let module =_.trim(Module,'/'); vuex.commit(add_module,Module);
-		if(vuex.state[module].dbTables) vuex.commit(bind_table_module,{ table:vuex.state[module].dbTables, module });
-		let init = Module + 'init'; if(vuex._actions[init]) actions.push(init);
-	});
-	_.forEach(actions,(action) => vuex.dispatch(action).then(null));
-  },
+    store,
+    render: h => h('frame', [h(Home)]),
+    mounted() {
+        let vuexStore = this.$store;
+        this.$nextTick(function () {
+            vuexStore.dispatch('init', _.cloneDeep(vuexStore._modulesNamespaceMap)).then(null);
+        });
+    },
 }).$start();
