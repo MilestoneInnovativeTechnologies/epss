@@ -1,6 +1,7 @@
 //Root
 export const add_module = 'addModule';
 export const bind_table_module = 'bindTableModule';
+export const add_connection_monitor = 'addConnectionMonitor';
 
 //App
 
