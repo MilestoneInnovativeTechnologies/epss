@@ -6,16 +6,30 @@ import {
     set_repeat_failed_timeout,
     update_table_timing,
     set_new_sync_time_out,
+    add_to_sync_download_queue,
+    remove_first_sync_download_queue_item,
+    increment_sync_download_failure_count,
 } from '../../mutation-types';
 import {gap_between_sync_queue_seconds, table_information_db_table_name} from '../../../constants';
 
 export default {
-    [add_new_table_for_sync](state, { table,up,down,type,sync,create,update }) {
-        if(table && !_.has(state.tables,table)) {
-            let tSI = _.toSafeInteger;
-            state.tables = Object.assign({},state.tables,_.zipObject([table],[{ up:tSI(up),down:tSI(down),type }]));
-            state.time = Object.assign({},state.time,_.set(state.time,table,_.zipObject(['sync','update','create'],_.map([sync,update,create],tSI))));
-        }
+    [add_new_table_for_sync](state, tblObj) {
+        state.tables = Object.assign({},state.tables,_.set({},tblObj.table,_.pick(tblObj,['type','direction'])));
+        state.times = Object.assign({},state.times,_.set({},tblObj.table,_.pick(tblObj,['create','update','download','upload'])));
+    },
+    [add_to_sync_download_queue](state, table) {
+        let tables = Array.isArray(table) ? table : [table], sTables = state.queue_download;
+        for(let x in tables) if(sTables.indexOf(tables[x]) === -1) state.queue_download.push(tables[x]);
+    },
+    [remove_first_sync_download_queue_item](state) {
+        state.queue_download.shift();
+    },
+    [increment_sync_download_failure_count](state,table) {
+        state.failure_count = Object.assign({},state.failure_count,_.set({},table,_.toSafeInteger(_.get(state.failure_count,table))+1))
+    },
+    [update_table_timing](state,{ table,type,time }) {
+        time = time || now(); state.times[table][type] = time;
+        DB.update(table_information_db_table_name,{ table },_.zipObject([type],[time]));
     },
     [add_to_app_sync_queue](state, { table,at,type }) {
         if(state.processing['table'] === table) return;
@@ -39,11 +53,6 @@ export default {
     },
     [set_repeat_failed_timeout](state,tm) {
         state.set_repeat_failed_timeout = tm;
-    },
-    [update_table_timing](state,{ table,type,time }) {
-        time = time || now();
-        _.set(state.time,[table,type],time);
-        DB.update(table_information_db_table_name,{ table },_.zipObject([type],[time]));
     },
     [set_new_sync_time_out](state,timeout) {
         clearTimeout(state.time_out); state.time_out = timeout;
