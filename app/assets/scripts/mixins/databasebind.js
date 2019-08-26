@@ -12,8 +12,8 @@ export default {
                 let path = '';
                 if (_.includes(key, '.')) { let kParts = key.split('.'); key = kParts[0]; path = _.tail(kParts).join('.'); }
                 state[key] = (_.isEmpty(path) || _.isNumber(path))
-                    ? (_.isObject(value) ? Object.assign({}, state[key], value) : value)
-                    : state[key] = Object.assign({}, state[key], _.set({}, path, value));
+                    ? (_.isPlainObject(value) ? Object.assign({}, state[key], value) : value)
+                    : Object.assign({}, state[key], _.set({}, path, value));
             })
         },
         [mutate_sync_data](state, { table,data } ) {
