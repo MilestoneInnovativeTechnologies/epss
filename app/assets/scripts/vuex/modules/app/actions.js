@@ -8,12 +8,12 @@ export function sLog({commit},task) {
 
 export function init({ commit,dispatch,state }) {
     return new Promise((resolve) => {
-        DB.get(state.dbTables[0],null,function(commit,resolve){
+        DB.get(state.dbTables[0],null,function(state,commit,dispatch,resolve){
             if (this.error) return log(`Error in getting data from App table..`);
             let data = _(this.result).keyBy('name').mapValues(item => item.detail).value();
-            commit(set_state_data,data); dispatch('redrawModules','app',{ root:true });
+            commit(set_state_data,data); dispatch('redrawModules',state.dbTables[0],{ root:true });
             resolve(this.result);
-        },commit,dispatch,resolve)
+        },state,commit,dispatch,resolve)
     });
 }
 
@@ -30,7 +30,7 @@ export function deviceRegistration({ dispatch }, {uuid}) {
 export function setup({ state,dispatch,commit },data){
     if(_.isEmpty(data)) { let message = 'OOPS!! Device not registered!!'; commit(set_state_data,{ message }); return log(message); }
     data = _.assign(data,_.pick(state,['uuid','width','height']));
-    Promise.all([..._.map(state.dbTables,(tbl,idx) => createTable(tbl,state.dbFields[idx],state.dbSLog[idx]))]).then((resArray) => {
+    Promise.all([..._.map([...state.dbTables,...state.appTables],(tbl,idx) => createTable(tbl,state.dbFields[idx],state.dbSLog[idx]))]).then((resArray) => {
         _.forEach(resArray,(slog) => dispatch('sLog',slog));
         let reqData = _.omit(data,['id','created_at','updated_at']), insData = _.map(reqData,(detail,name) => _.zipObject(['name','detail'],[name,detail]));
         dispatch('sLog','Initialize app'); commit(set_state_data,reqData);
