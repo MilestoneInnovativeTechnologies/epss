@@ -4,6 +4,7 @@ export default {
     'Connection': require('./modules/connection/index').default,
     'Axios': require('./modules/axios/index').default,
     'Sync': require('./modules/sync/index').default,
+    'Upload': require('./modules/upload/index').default,
     'SSE': require('./modules/sse/index').default,
     'User': require('./modules/user/index').default,
     'Menu': require('./modules/menu/index').default,
