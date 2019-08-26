@@ -14,7 +14,7 @@
                     <TextHighlight class="m-l-20" :row="idx" col="1">{{ task }}</TextHighlight>
                 </template>
             </GridLayout>
-            <TextHighlight class="m-t-20 w-full text-center" :key="queueRemainingTime" v-if="!immediateQueueFinished && queueRemainingItems > -1">{{ 'Kindly wait for '+queueRemainingTime+' secs' }}</TextHighlight>
+            <TextHighlight class="m-t-20 w-full text-center" :key="percentage" v-if="tasks['Init synchronizing app records']">{{ 'Downloading records. Completed: '+percentage+'%' }}</TextHighlight>
         </StackLayout>
     </App>
 </template>
@@ -24,20 +24,21 @@
     const { device, screen } = require('tns-core-modules/platform');
     import { mapActions,mapState,mapMutations } from 'vuex';
     const Login = require('../login/Login').default
-    const imdQueueRemaining = require('./../../assets/scripts/mixins/immediatequeueremaining').ImmediateQueueRemainingTimeMixin;
 
     export default {
         name: "Setup",
-        mixins: [imdQueueRemaining],
         data(){ return {
             busy: false,
             uuid: device.uuid,
+            downloads: null,
+            completed: 0
         }},
         computed: {
-            ...mapState('App',['message','tasks']),
+            ...mapState('App',['message','tasks']),...mapState('Sync',['queue_download']),
             taskRows(){ return _.fill(Array(_.size(this.tasks)),'auto').join(','); },
             taskStatus(){ let tasks = this.tasks; return _.every(tasks) },
             regData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs } },
+            percentage(){ return _.toSafeInteger(this.completed*100/_.toSafeInteger(this.downloads)) }
         },
         methods: {
             ...mapActions('App',['register','sLog']), ...mapMutations('App',{ setStateData:set_state_data }),
@@ -46,7 +47,16 @@
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Setup Error', message:val, okButtonText:'Ok' }).then(() => { this.busy = false; this.setStateData({ message:'' })}) },
             taskStatus:function(val){ if(val) this.$navigateTo(Login,{ backstackVisible:false }); },
-            immediateQueueFinished:function(status){ if(status) this.sLog('Synchronize tables'); }
+            queue_download:function(tbls){
+                if(this.downloads === null){
+                    if(!this.tasks['Init synchronizing app records']) return;
+                    if(tbls.length === 0) this.sLog('Completed!')
+                    else this.downloads = tbls.length;
+                } else {
+                    this.completed++;
+                    if(this.completed >= this.downloads) this.sLog('Completed!');
+                }
+            },
         }
     }
 </script>
