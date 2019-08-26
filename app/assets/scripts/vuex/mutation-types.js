@@ -33,6 +33,9 @@ export const set_connectivity_availability = 'setConnectivityAvailable';
 
 //Sync
 export const add_new_table_for_sync = 'newTable';
+export const add_to_sync_download_queue = 'addSyncDownloadItems';
+export const remove_first_sync_download_queue_item = 'removeSyncDownloadFirstItem';
+export const increment_sync_download_failure_count = 'incrementSyncDownloadFailureCount';
 export const add_to_app_sync_queue = 'addToAppQueue';
 export const processing_queue = 'processQueue';
 export const finish_processing_queue = 'finishProcessingSync';
