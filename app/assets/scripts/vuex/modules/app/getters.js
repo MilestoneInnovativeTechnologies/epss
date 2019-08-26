@@ -1,4 +1,4 @@
-export function get(state,{ _tableDataByField }){
-    let data = _tableDataByField('app','name');
-    return (name) => data[name].detail
+export function get({ dbTables },{ _tableDataByField }){
+    let data = _tableDataByField(dbTables[0],'name');
+    return (name) => (data && _.has(data,name)) ? data[name].detail : null
 }
