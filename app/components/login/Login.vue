@@ -7,7 +7,6 @@
             <StackLayout row="2" class="m-t-8 w-full">
                 <ActivityIndicator :busy="busy" class="m-t-10"></ActivityIndicator>
                 <TextHighlight class="w-full text-center" :text="pTexts[pTexts.length-1]" :key="'ull'+pTexts.length"></TextHighlight>
-                <TextHighlight class="m-t-10 w-full text-center" :key="queueRemainingTime" v-if="waitNotification">{{ 'Kindly wait for '+queueRemainingTime+' secs' }}</TextHighlight>
             </StackLayout>
         </GridLayout>
     </App>
@@ -16,11 +15,9 @@
 <script>
     import { mapGetters,mapActions,mapState,mapMutations } from 'vuex';
     import {set_state_data} from "../../assets/scripts/vuex/mutation-types";
-    const imdQueueRemaining = require('./../../assets/scripts/mixins/immediatequeueremaining').ImmediateQueueRemainingTimeMixin;
 
     export default {
         name: 'Login',
-        mixins: [imdQueueRemaining],
         data(){ return {
             busy: false,
             loginForm: false,
@@ -74,7 +71,6 @@
         watch: {
             message(message){ if(_.isEmpty(message)) return; alert({ title:'Login Error',message,okButtonText:"Ok" }).then(() => this[set_state_data]({ message:'' })) },
             authenticated(status){ if(status === true) this.postFormLogin() },
-            immediateQueueFinished(status){ if(status && this.authenticated) this.redirectToHome(2); }
         }
     }
 </script>
