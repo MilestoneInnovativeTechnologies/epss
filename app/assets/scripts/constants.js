@@ -5,21 +5,20 @@ export const sse_monitor_path = 'sse/info';
 //Module Common
 export const stock_load_cache_refresh_on_each_nth_query = 0;
 
-//database
-export const table_information_db_table_name = 'table_information';
-export const table_information_db_table_fields = 'table,fields,type,up,down,sync,next,update,create';
+//app
+export const table_information_db_table_name = 'epss_tblinfo';
+export const table_information_db_table_fields = 'table,fields,type,direction,create,update,download,upload';
 
 //sync
-export const setup_sync_table_after = 1;
-export const init_sync_table_after = 10;
-export const init_sync_user_table_after = 1;
-export const sync_recheck_timeout_seconds = 3;
-export const gap_between_sync_queue_seconds = 3;
-export const approx_time_for_a_sync = 3;
+export const download_common_params = { format: 'json',  type: 'data' };
+export const max_sync_download_retry_count = 1;
 export const app_user_create_date_for_fetch = '1900-01-01 00:00:01';
 export const sync_create_chunk_length = 500;
 export const sync_success_response_global_action = 'Sync/syncDataReceived';
 export const sync_failure_response_global_action = 'Sync/syncDataFail';
+export const approx_time_for_a_sync = 1;
+export const gap_between_sync_queue_seconds = 1;
+export const init_sync_user_table_after = 1;
 
 //axios
 export const maximum_processing_seconds = 30;
