@@ -7,6 +7,7 @@
             <StackLayout row="2" class="m-t-8 w-full">
                 <ActivityIndicator :busy="busy" class="m-t-10"></ActivityIndicator>
                 <TextHighlight class="w-full text-center" :text="pTexts[pTexts.length-1]" :key="'ull'+pTexts.length"></TextHighlight>
+                <TextHighlight class="m-t-20 w-full text-center" :key="" v-if="waitNotification">{{ 'Synchronizing records. Completed: '+percentage+'%' }}</TextHighlight>
             </StackLayout>
         </GridLayout>
     </App>
@@ -24,22 +25,26 @@
             pTexts: [],
             maxHomeNavDelay: 15,
             waitNotification: false,
+            downloads: null,
+            downloaded: 0,
+            autoNavigate: null,
         }},
         computed: {
-            ...mapState('User',['message','validating','id']), ...mapState('Axios',['connection']),
-            authenticated(){ let id = this.id; return !(_.isNil(id)) }
+            ...mapState('User',['message','validating','id']), ...mapState('Connection',{ connection:'status' }),...mapState('Sync',['queue_download']),
+            authenticated(){ let id = this.id; return !(_.isNil(id)) },
+            percentage() { return _.toSafeInteger(this.downloaded*100/_.toSafeInteger(this.downloads)); }
         },
         methods: {
-            ...mapActions('User',['doLogin','doLoginActions']), ...mapMutations('User',[set_state_data]),
+            ...mapActions('User',['doLogin','doPostLoginActions']), ...mapMutations('User',[set_state_data]),
             pTxt(txt){ this.pTexts.push(txt) },
             authenticate(){
-                this.immediateQueueFinished = false; this.queueBatchLastItem = null;
+                if(!this.connection) alert('No internet connection');
                 this.pTxt('Authenticating with server....');
                 this.doLogin();
             },
             checkLogin(){
                 this.pTxt('Checking loging details in Database..'); this.busy = true;
-                DB.get('user',null,function(vm){
+                DB.get('epss_user',null,function(vm){
                     if(this.error) return setTimeout((vm) => vm.$navigateTo(require('../misc/Setup').default,{ backstackVisible:false }),500,vm);
                     if(_.isEmpty(this.result)) return vm.initLogin();
                     vm.populateUserData(this.result)
@@ -53,7 +58,7 @@
                 this.pTxt('User data found, populating..');
                 let kData =_(data).keyBy('name').mapValues(({ detail }) => detail).value();
                 this.pTxt('Doing post login actions..');
-                this.doLoginActions(kData).then(() => { this.waitNotification = true; if(!this.connection) this.redirectToHome(2); });
+                this.doPostLoginActions(kData).then(() => { this.waitNotification = true; if(!this.connection) this.redirectToHome(2); });
             },
             initLogin(){
                 this.pTxt('No data found, try loging in using form..');
@@ -63,6 +68,7 @@
                 this.busy = true; this.loginForm = false;
                 this.pTxt(`Login Success!! User data Synching in progress`);
                 this.waitNotification = true;
+                this.autoNavigate = setTimeout(function(vm){ vm.redirectToHome(2) },5000,this)
             }
         },
         mounted(){
@@ -71,6 +77,17 @@
         watch: {
             message(message){ if(_.isEmpty(message)) return; alert({ title:'Login Error',message,okButtonText:"Ok" }).then(() => this[set_state_data]({ message:'' })) },
             authenticated(status){ if(status === true) this.postFormLogin() },
+            queue_download(tbls){
+                if(!this.waitNotification) return;
+                if(this.autoNavigate) { clearTimeout(this.autoNavigate); this.autoNavigate = null; }
+                if(this.downloads === null) {
+                    if(tbls.length === 0) this.redirectToHome(2);
+                    this.downloads = tbls.length;
+                } else {
+                    this.downloaded++;
+                    if(this.downloaded >= this.downloads) this.redirectToHome(2);
+                }
+            }
         }
     }
 </script>
