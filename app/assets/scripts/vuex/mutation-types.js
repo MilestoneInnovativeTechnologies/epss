@@ -27,10 +27,6 @@ export const initiate_processing_transfer = 'initTransfer';
 export const finalize_processing_transfer = 'finalizeTransfer';
 export const finalize_failed_transfer = 'failedTransfer';
 
-//Axios
-export const set_connectivity_availability = 'setConnectivityAvailable';
-
-
 //Sync
 export const add_new_table_for_sync = 'newTable';
 export const add_to_sync_download_queue = 'addSyncDownloadItems';
@@ -46,4 +42,3 @@ export const set_new_sync_time_out = 'setTimeOut';
 //User
 export const set_user_pin = 'setPin';
 
-export const MUTATE = 'DEMO';
