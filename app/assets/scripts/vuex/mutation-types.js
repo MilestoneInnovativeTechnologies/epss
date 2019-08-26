@@ -1,7 +1,13 @@
 //Root
 export const add_module = 'addModule';
 export const bind_table_module = 'bindTableModule';
-export const add_connection_monitor = 'addConnectionMonitor';
+export const create_event_subscription = 'createEventSubscription';
+export const add_event_subscriber = 'addEventSubscriber';
+export const remove_event_subscriber = 'removeEventSubscriber';
+
+//Connection
+export const add_connection_monitor = 'addConnectionMonitorAction';
+export const set_connectivity_availability = 'setConnectivityAvailable';
 
 //App
 

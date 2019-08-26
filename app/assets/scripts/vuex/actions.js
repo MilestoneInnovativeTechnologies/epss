@@ -7,18 +7,16 @@ export function init({ dispatch,commit },modulesMap){
         let module = _.trim(Module, '/'); commit(add_module, module);
         if (_rawModule.state.dbTables) commit(bind_table_module, { table: _rawModule.state.dbTables,  module });
         if (_.has(_rawModule.actions,'init')) dispatch(Module+'init').then(null);
-        if (_.has(_rawModule.actions,'onConnectionChange')) commit(add_connection_monitor,Module+'onConnectionChange')
+        if (_rawModule.state.subscribeEvents && _rawModule.state.subscribeEvents.length)
+            _rawModule.state.subscribeEvents.forEach(sEvent => commit(create_event_subscription,{ event:sEvent }))
     });
-    dispatch('connectionMonitor');
+    dispatch('addEventSubscribers',modulesMap)
 }
 
 export function redrawModules({state, commit, rootState}, table) {
     if (!_.has(state.table_modules, table)) return;
     DB.get(table, null, function (modules, commit) {
         if (this.error) return;
-        // let firstModule = _.head(modules);
-        // let mutation = firstModule + '/' + mutate_sync_data;
-        // commit(mutation, {table: this.table(), data: this.result}, {root: true});
         _.forEach(modules, (module) => {
             let mutation = module + '/' + mutate_sync_data;
             commit(mutation, {table: this.table(), data: this.result}, {root: true});
@@ -58,16 +56,18 @@ export function postDBAction({ commit,dispatch }, {table, type}) {
     dispatch('redrawModules',table,{ root:true });
 }
 
-export function connectionMonitor({ commit,dispatch }) {
-    startMonitoring((type) => {
-        commit(set_connectivity_availability,type !== connectionType.none);
-        dispatch('triggerConnectionChange');
+export function addEventSubscribers({state,commit},modulesMap) {
+    let subscribableEvents = _.keys(state.actionEvents);
+    _.forEach(modulesMap, ({ _rawModule }, Module) => {
+        let module = _.trim(Module, '/'), moduleActions = _.keys(_rawModule.actions), events = _.intersection(subscribableEvents,moduleActions);
+        if (events.length) events.forEach(event => commit(add_event_subscriber,{ module,event }))
     });
 }
 
-export function triggerConnectionChange({state,dispatch}) {
-    if(_.isEmpty(state.connection_monitors)) return;
-    _.forEach(state.connection_monitors,action => dispatch(action,state.connection,{ root:true }))
+export function triggerEventSubscribers({state,dispatch},{ event,payload }) {
+    if(_.has(state.actionEvents,event) && state.actionEvents[event].length !== 0){
+        state.actionEvents[event].forEach(module => dispatch(module+'/'+event,payload,{ root:true }))
+    }
 }
 
 function getActivity(table, data, mode, primary_key) {
