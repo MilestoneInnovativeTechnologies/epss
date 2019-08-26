@@ -20,7 +20,7 @@
 </template>
 
 <script>
-    import {set_state_data} from "../../assets/scripts/vuex/mutation-types";
+    import {set_state_data,remove_event_subscriber} from "../../assets/scripts/vuex/mutation-types";
     const { device, screen } = require('tns-core-modules/platform');
     import { mapActions,mapState,mapMutations } from 'vuex';
     const Login = require('../login/Login').default
@@ -41,8 +41,9 @@
             percentage(){ return _.toSafeInteger(this.completed*100/_.toSafeInteger(this.downloads)) }
         },
         methods: {
-            ...mapActions('App',['register','sLog']), ...mapMutations('App',{ setStateData:set_state_data }),
+            ...mapActions('App',['register','sLog']), ...mapMutations('App',{ setStateData:set_state_data }), ...mapMutations([remove_event_subscriber]),
             doSetup(){ this.busy = true; this.register(this.regData); },
+            completeSetup(){ this[remove_event_subscriber]({ event:'syncTableChanged',module:'App' }); this.sLog('Completed!'); }
         },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Setup Error', message:val, okButtonText:'Ok' }).then(() => { this.busy = false; this.setStateData({ message:'' })}) },
@@ -50,11 +51,11 @@
             queue_download:function(tbls){
                 if(this.downloads === null){
                     if(!this.tasks['Init synchronizing app records']) return;
-                    if(tbls.length === 0) this.sLog('Completed!')
+                    if(tbls.length === 0) this.completeSetup();
                     else this.downloads = tbls.length;
                 } else {
                     this.completed++;
-                    if(this.completed >= this.downloads) this.sLog('Completed!');
+                    if(this.completed >= this.downloads) this.completeSetup();
                 }
             },
         }
