@@ -28,28 +28,34 @@ export function redrawModules({state, commit, rootState}, table) {
     }, state.table_modules[table], commit);
 }
 
-export function _insert({ dispatch,commit,state },{ table,data,success,vm }){
-    return new Promise((res) => {
-        DB.insert(table,data,function (table,callback,vm,mutation,commit,dispatch,res) {
-            let result = this.result;
-            commit('Sync/' + mutation,{ table,type:'create' },{ root:true });
-            dispatch('redrawModules',table,{ root:true });
-            if(callback) if(_.isFunction(callback)) callback.call(vm,result); else vm[callback].call(vm,result);
-            res(result);
-        },table,success,vm,update_table_timing,commit,dispatch,res)
+export function _insert({ dispatch },{ table,data,success,vm }){
+    return new Promise((resolve) => {
+        let records = Array.isArray(data) ? data : [data], totalRecords = records.length;
+        DB.insert(table,records,function (totalRecords,table,resolve,callback,vm) {
+            let lastID = this.result, id = _.range(_.toSafeInteger(lastID),lastID-totalRecords); DB.get(table,id,function(resolve,table){
+                resolve(getActivity(table,this.result,'create'));
+            },resolve,table);
+            dispatch('postDBAction',{ table,type:'create' });
+            if(callback) if(_.isFunction(callback)) callback.call(vm,id); else vm[callback].call(vm,id);
+        },totalRecords,table,resolve,success,vm)
     });
 }
 
 export function _update({ dispatch,commit },{ table,data,id,pk,condition }){
     condition = condition || (_.zipObject([(pk || 'id')],[id]));
-    return new Promise((res, rej) => {
-        DB.update(table, condition, data, function (table, mutation, commit, dispatch, res) {
-            let result = this.result;
-            commit('Sync/' + mutation, {table, type: 'update'}, {root: true});
-            dispatch('redrawModules', table, {root: true});
-            res(result);
-        }, table, update_table_timing, commit, dispatch,res);
+    return new Promise((resolve) => {
+        let now = __.now(); DB.update(table,condition,data,function (now,table,resolve,dispatch) {
+            DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table){
+                resolve(getActivity(table,this.result,'update'));
+            },resolve,table);
+            dispatch('postDBAction',{ table,type:'update' });
+        },now,table,resolve,dispatch);
     });
+}
+
+export function postDBAction({ commit,dispatch }, {table, type}) {
+    commit('Sync/' + update_table_timing,{ table,type },{ root:true });
+    dispatch('redrawModules',table,{ root:true });
 }
 
 export function connectionMonitor({ commit,dispatch }) {
@@ -62,4 +68,9 @@ export function connectionMonitor({ commit,dispatch }) {
 export function triggerConnectionChange({state,dispatch}) {
     if(_.isEmpty(state.connection_monitors)) return;
     _.forEach(state.connection_monitors,action => dispatch(action,state.connection,{ root:true }))
+}
+
+function getActivity(table, data, mode, primary_key) {
+    mode = mode || 'create'; primary_key = (primary_key) ? (Array.isArray(primary_key) ? primary_key : [primary_key]) : ['id'];
+    return { table,primary_key,mode,data };
 }
