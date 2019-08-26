@@ -1,5 +1,6 @@
-import {mutate_sync_data, set_connectivity_availability, update_table_timing, add_connection_monitor, add_module, bind_table_module} from "./mutation-types";
-import { connectionType,startMonitoring } from "tns-core-modules/connectivity";
+import {
+    mutate_sync_data, update_table_timing, add_module, bind_table_module, create_event_subscription, add_event_subscriber
+} from "./mutation-types";
 
 export function init({ dispatch,commit },modulesMap){
     _.forEach(modulesMap, ({ _rawModule }, Module) => {

@@ -1,8 +1,12 @@
-import {add_module, bind_table_module, add_connection_monitor, set_connectivity_availability} from './mutation-types';
+import {
+    add_module,
+    bind_table_module,
+    add_connection_monitor,
+    create_event_subscription, add_event_subscriber, remove_event_subscriber
+} from './mutation-types';
 
 export default {
     [add_module](state, mod) { state.modules.push(mod); },
-    [set_connectivity_availability](state,status) { state.connection = status },
     [add_connection_monitor](state, action) { state.connection_monitors.push(action); },
     [bind_table_module](state, { module,table }) {
         if(!_.has(state.module_tables,module)) Object.assign(state.module_tables,_.zipObject([module],[[]]));
