@@ -42,3 +42,6 @@ export const set_new_sync_time_out = 'setTimeOut';
 //User
 export const set_user_pin = 'setPin';
 
+//Upload
+export const set_latest_upload_queue_id = 'setUploadQueueLatest';
+export const increment_upload_retry_count = 'incrementUploadRetryCount';
