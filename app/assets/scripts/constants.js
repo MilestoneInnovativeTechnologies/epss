@@ -22,3 +22,6 @@ export const init_sync_user_table_after = 1;
 
 //axios
 export const maximum_processing_seconds = 30;
+
+//upload
+export const maximum_upload_retry_count = 3;
