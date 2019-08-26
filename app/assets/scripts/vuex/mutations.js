@@ -1,8 +1,5 @@
 import {
-    add_module,
-    bind_table_module,
-    add_connection_monitor,
-    create_event_subscription, add_event_subscriber, remove_event_subscriber
+    add_module, bind_table_module, add_connection_monitor, create_event_subscription, add_event_subscriber, remove_event_subscriber
 } from './mutation-types';
 
 export default {
