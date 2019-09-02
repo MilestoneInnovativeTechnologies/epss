@@ -45,3 +45,4 @@ export const set_user_pin = 'setPin';
 //Upload
 export const set_latest_upload_queue_id = 'setUploadQueueLatest';
 export const increment_upload_retry_count = 'incrementUploadRetryCount';
+export const set_upload_data = 'setUploadData';
