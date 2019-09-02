@@ -1,15 +1,21 @@
 import {
-    mutate_sync_data, update_table_timing, add_module, bind_table_module, create_event_subscription, add_event_subscriber
+    mutate_sync_data,
+    update_table_timing,
+    add_module,
+    bind_table_module,
+    create_event_subscription,
+    add_event_subscriber,
 } from "./mutation-types";
 
 export function init({ dispatch,commit },modulesMap){
     let initActions = [];
     _.forEach(modulesMap, ({ _rawModule }, Module) => {
         let module = _.trim(Module, '/'); commit(add_module, module);
+        if (_.has(_rawModule.actions,'init')) initActions.push(Module+'init');
         if (_rawModule.state.dbTables) commit(bind_table_module, { table: _rawModule.state.dbTables,  module });
-        if (_.has(_rawModule.actions,'init')) dispatch(Module+'init').then(null);
-        if (_rawModule.state.subscribeEvents && _rawModule.state.subscribeEvents.length)
-            _rawModule.state.subscribeEvents.forEach(sEvent => commit(create_event_subscription,{ event:sEvent }))
+        if (_rawModule.state.subscribeEvents && _rawModule.state.subscribeEvents.length) {
+            _rawModule.state.subscribeEvents.forEach(sEvent => commit(create_event_subscription, {event: sEvent}))
+        }
     });
     dispatch('addEventSubscribers',modulesMap)
 }
