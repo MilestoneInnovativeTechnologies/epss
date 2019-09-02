@@ -59,6 +59,7 @@
     "emulator": "F:\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_V1S -netdelay none -netspeed full -gpu off",
     "devtool": "vue-devtools",
     "android": "tns debug android --bundle",
-    "db": "adb pull /data/user/0/net.milestoneit.epss/files/database/epss.db"
+    "db": "adb pull /data/user/0/net.milestoneit.epss/files/database/epss.db",
+    "build": "tns build android --release --key-store-path epss.keystore --key-store-password metalic --key-store-alias epss --key-store-alias-password metalic"
   }
 }
