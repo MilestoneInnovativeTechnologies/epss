@@ -3,7 +3,7 @@ import Home from './components/Home'
 import {TNSFontIcon, fonticon} from 'nativescript-fonticon';
 
 global._ = require('lodash'); global.moment = require('moment'); global.__ = {}; global.sql = require('sqlstring');
-global.DB = require('./assets/scripts/services/database').DB; global.FD = require('./assets/scripts/services/formdata').FD;
+global.DB = require('./assets/scripts/services/database').DB;
 
 import "./app.scss";
 import "./app.css";
