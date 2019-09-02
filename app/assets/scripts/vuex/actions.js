@@ -17,7 +17,8 @@ export function init({ dispatch,commit },modulesMap){
             _rawModule.state.subscribeEvents.forEach(sEvent => commit(create_event_subscription, {event: sEvent}))
         }
     });
-    dispatch('addEventSubscribers',modulesMap)
+    dispatch('addEventSubscribers',modulesMap).then(() => initActions.forEach(action => dispatch(action)) );
+    dispatch('initRedrawData');
 }
 
 export function redrawModules({state, commit, rootState}, table) {
@@ -31,6 +32,9 @@ export function redrawModules({state, commit, rootState}, table) {
                 rootState[module]['list'] = [];
         });
     }, state.table_modules[table], commit);
+}
+export function initRedrawData({state,dispatch}) {
+    _.forEach(state.table_modules,(modules,table) => dispatch('redrawModules',table));
 }
 
 export function _insert({ dispatch },{ table,data,success,vm }){
