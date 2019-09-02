@@ -1,7 +1,4 @@
 import axios from 'axios';
-const backHttp = require("nativescript-background-http");
-const session = backHttp.session("activity-upload");
-const { File } = require('tns-core-modules/file-system');
 
 import {
     add_configuration_to_server_queue,
@@ -41,15 +38,6 @@ export const post = {
     }
 };
 
-export const file = {
-    root:true,
-    handler({ dispatch },{ url,params,success,fail }) {
-        let config = { params, request:FD.request(url) };
-        dispatch('queue',{ config,success,fail });
-        log('Queued post, '+url);
-    }
-};
-
 export function processQueue({ state,getters,dispatch }) {
     if(getters.connection && !state.transfer && getters.queue_count > 0 && _.isEmpty(state.processing))
         return dispatch('initProcessQueue');
@@ -70,9 +58,9 @@ export function initProcessQueue({ commit,dispatch,getters }) {
     dispatch('proceedProcessing')
 }
 
-export function proceedProcessing({ commit,dispatch,getters }) {
+export function proceedProcessing({ commit,dispatch }) {
     commit(initiate_processing_transfer);
-    return getters.isFile ? dispatch('doBackHttpRequest') : dispatch('doAxiosRequest');
+    return dispatch('doAxiosRequest');
 }
 
 export function doAxiosRequest({ state,dispatch }) {
@@ -80,25 +68,6 @@ export function doAxiosRequest({ state,dispatch }) {
     axios.request(state.processing).then((response) => {
         dispatch('doHandleRequestResponse',response);
     }).catch(() => dispatch('doHandleFailedResponse'))
-}
-
-export function doBackHttpRequest({ state,dispatch }) {
-    let processing = _.cloneDeep(state.processing);
-    try {
-        let task = session.multipartUpload(processing.params,processing.request);
-        task.on("responded", function(e){
-            let response = { data: _.isEmpty(_.trim(e.data.replace(/\0/g,''))) ? [] : JSON.parse(e.data), responseCode:e.responseCode, task:e.task };
-            dispatch('doHandleRequestResponse',response);
-        });
-        task.on("error", function (e) {
-            dispatch('doHandleFailedResponse')
-        })
-    } catch (e) {
-        log('Upload Failed, Trying posting data');
-        postDataUsingBase64(processing)
-            .then((response) => dispatch('doHandleRequestResponse',response))
-            .catch(() => dispatch('doHandleFailedResponse'));
-    }
 }
 
 export function doHandleRequestResponse({ state,dispatch,commit,getters }, response) {
@@ -131,31 +100,3 @@ export const api = {
         });
     }
 };
-
-function postDataUsingBase64({ params,request }){
-    let url = request.url, data = {};
-    _.forEach(params,({ name,value,filename }) => data[name === 'file' ? 'content' : name] = (name === 'file') ? filename : value );
-    return new Promise(function (resolve, reject) {
-        getBase64ContentFromFilePath(data.content).then((content) => {
-            data['content'] = content;
-            axios.post(url,data)
-                .then(response => resolve(response))
-                .catch(e => reject(e));
-        })
-    })
-}
-
-function getBase64ContentFromFilePath(path) {
-    return new Promise(((resolve, reject) => {
-        if(!File.exists(path)) return resolve('');
-        File.fromPath(path).readText().then(data => {
-            resolve(base64Encode(data).replace(/\r?\n|\r/g,''))
-        });
-    }))
-}
-
-function base64Encode(value) {
-    let text = new java.lang.String(value);
-    let data = text.getBytes("UTF-8");
-    return android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT);
-}

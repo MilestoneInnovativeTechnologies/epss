@@ -6,6 +6,5 @@ export function api_config(state,getters,rootState) {
     config.data._user = user.id;
     return config;
 }
-export function isFile(state) { return _.has(state,'processing.request.url'); }
-export function processing_url(state,getters) { return (getters.isFile) ? state.processing.request.url : state.processing.url; }
+export function processing_url(state) { return state.processing.url; }
 export function connection(state,getters,rootState) { return rootState['Connection'].status }
