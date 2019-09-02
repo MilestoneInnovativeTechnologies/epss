@@ -9,9 +9,9 @@
         name: "CustomerOutstandingMetric",
         props: ['id'],
         data(){ return {
-            query: `SELECT outstanding_normal outstanding, outstanding_overdue overdue, outstanding_critical critical FROM users WHERE id = ${this.id}`,
-            metricTemplate: ['outstanding','overdue','critical'],
-            metricIcons: ['attach_money','error_outline','warning'],
+            query: `SELECT outstanding, overdue FROM users WHERE id = ${this.id}`,
+            metricTemplate: ['outstanding','overdue'],
+            metricIcons: ['attach_money','warning'],
             size:25, coloured: true, itemKeys: ['coloured','size','icon','text','title']
         }},
         computed:{
