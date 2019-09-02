@@ -3,6 +3,7 @@ import {
 } from "./mutation-types";
 
 export function init({ dispatch,commit },modulesMap){
+    let initActions = [];
     _.forEach(modulesMap, ({ _rawModule }, Module) => {
         let module = _.trim(Module, '/'); commit(add_module, module);
         if (_rawModule.state.dbTables) commit(bind_table_module, { table: _rawModule.state.dbTables,  module });
@@ -30,9 +31,10 @@ export function _insert({ dispatch },{ table,data,success,vm }){
     return new Promise((resolve) => {
         let records = Array.isArray(data) ? data : [data], totalRecords = records.length;
         DB.insert(table,records,function (totalRecords,table,resolve,callback,vm) {
-            let lastID = this.result, id = _.range(_.toSafeInteger(lastID),lastID-totalRecords); DB.get(table,id,function(resolve,table){
-                resolve(getActivity(table,this.result,'create'));
-            },resolve,table);
+            let lastID = this.result, id = _.range(_.toSafeInteger(lastID),lastID-totalRecords); DB.get(table,id,function(resolve,table,dispatch){
+                let activity = getActivity(table,this.result,'create');
+                resolve(activity); dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
+            },resolve,table,dispatch);
             dispatch('postDBAction',{ table,type:'create' });
             if(callback) if(_.isFunction(callback)) callback.call(vm,id); else vm[callback].call(vm,id);
         },totalRecords,table,resolve,success,vm)
@@ -43,9 +45,10 @@ export function _update({ dispatch,commit },{ table,data,id,pk,condition }){
     condition = condition || (_.zipObject([(pk || 'id')],[id]));
     return new Promise((resolve) => {
         let now = __.now(); DB.update(table,condition,data,function (now,table,resolve,dispatch) {
-            DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table){
-                resolve(getActivity(table,this.result,'update'));
-            },resolve,table);
+            DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table,dispatch){
+                let activity = getActivity(table,this.result,'update');
+                resolve(activity); dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
+            },resolve,table,dispatch);
             dispatch('postDBAction',{ table,type:'update' });
         },now,table,resolve,dispatch);
     });
