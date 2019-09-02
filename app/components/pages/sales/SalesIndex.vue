@@ -1,5 +1,5 @@
 <template>
-    <App title="Sales" action="New Sale" @new-sale="$navigateTo(newSale)">
+    <App title="Sales" action="New Sale" @new-sale="$navigateTo(require('./SaleNew').default)">
         <AppMetric :items="metricOne"></AppMetric>
         <AppMetric :items="metricTwo"></AppMetric>
         <AppList :source="source" :layout="layout" :links="links" detail="sales/SaleDetail" :title="title" class="m-t-15"></AppList>
@@ -22,7 +22,6 @@
             cast: { date:'docdate' },
             limit: 10, max: 30, root:'transactions',path:'SL',
             links: { customer:['customer/CustomerDetail',{ id:'cid' }] },
-            newSale: require('./SaleNew').default,
         }},
         computed: {
             ...mapState('Sales',['transactions','metric']), ...mapState('User',['id']),
