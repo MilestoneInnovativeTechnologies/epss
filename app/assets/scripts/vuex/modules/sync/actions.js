@@ -1,7 +1,6 @@
 import {
     table_information_db_table_name,
     app_user_create_date_for_fetch,
-    init_sync_user_table_after,
     sync_create_chunk_length,
     sync_success_response_global_action,
     sync_failure_response_global_action,
@@ -41,11 +40,16 @@ export function SSEMonitor({ state,dispatch },tables) {
 }
 
 export function syncDataReceived({ dispatch }, data) {
-    if(_.isEmpty(data)) return; dispatch('processSyncReceivedData',data);
+    if(!Array.isArray(data) || _.isEmpty(data)) return;
+    dispatch('processSyncReceivedData',data);
 }
 
-export function processSyncReceivedData({ dispatch,commit,state },data) {
+export function processSyncReceivedData({ dispatch,commit },data) {
     commit(remove_first_sync_download_queue_item);
+    dispatch('doProcessSyncData',data);
+}
+
+export function doProcessSyncData({ dispatch,commit,state },data) {
     _.forEach(data,(activity) => {
         if(activity.table === 'setup') return processSetupActivity(activity);
         let table = activity.table, mode = activity.mode, type = mode === 'update' ? '_update' : '_insert', data = activity.data, time = __.dtz(activity.datetime);
@@ -71,33 +75,15 @@ export function queueTableRecordDownload({ rootGetters,getters,commit,dispatch},
     dispatch('post',{ url,params,success:sync_success_response_global_action,fail:sync_failure_response_global_action },{ root:true });
 }
 
-export function initUserTables({ dispatch,commit }) {
+export function initUserTables({ dispatch,commit,state }) {
     return new Promise((resolve) => {
-        DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (commit,dispatch,resolve) {
+        DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (state,commit,dispatch,resolve) {
             if(this.error) return log('Error getting user table information to sync');
-            _.forEach(this.result,function (tblObj) {
-                dispatch('addNewSyncTable',tblObj);
-                dispatch('requeueSyncImmediate',{ table:tblObj.table,after:init_sync_user_table_after });
-            });
-            resolve(this.result);
-        },commit,dispatch,resolve)
+            _.forEach(this.result,function (tblObj) { commit(add_new_table_for_sync,_.omit(tblObj,['created_at','updated_at'])); });
+            resolve(this.result); dispatch('triggerEventSubscribers',{ event:state.subscribeEvents[0],payload:Object.keys(state.tables) },{ root:true })
+        },state,commit,dispatch,resolve)
     });
 }
-
-/*
-export function uploadNewerActivities({ state,getters,rootGetters,dispatch,commit }, table) {
-    let times = state.time[table]; if (!times || !haveNewerActivity(times)) return;
-    let sync = _.toSafeInteger(times.sync), url = getters.tableSyncUrl(table), params = { format: 'json',  type: 'data', _user:rootGetters.user, client:rootGetters.client };
-    Promise.all([getTableRecordsForUpdate(table,sync),getTableRecordsForCreate(table,sync)]).then(activity => {
-        activity = _.filter(activity); if (_.isEmpty(activity)) return dispatch('post',{ url,params,success:sync_success_response_global_action + '_USER',fail:sync_success_response_global_action },{ root:true });
-        commit(update_table_timing,{ table,type:'sync',time:now() });
-        FD.init(params,function(dispatch,commit,table,url){
-            log('Upload request delivered for, '+table);
-            dispatch('file',{ url,params:this.vParams,success:sync_success_response_global_action + '_USER',fail:sync_failure_response_global_action },{ root:true });
-        },dispatch,commit,table,url).file(activity,table);
-    });
-}
-*/
 
 function getDownloadParams(type, rGetters) {
     let params = download_common_params;
