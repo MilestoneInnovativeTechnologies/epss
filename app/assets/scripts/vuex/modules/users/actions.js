@@ -1,9 +1,10 @@
 export function addNew({ state,dispatch },cusObj){
-    let data = _.pick(cusObj,state.newUserFields);
-    return new Promise((resolve, reject) => {
-        dispatch('_insert',{ table:'users'
-            ,data,vm:this
-            ,success:(user) => dispatch('_insert',{ table:'area_users',data:{ area:cusObj.area,user},success:() => resolve(user) },{ root:true })
-        },{ root:true })
+    let data = _.pick(cusObj,state.newUserFields), area = cusObj.area;
+    data['outstanding'] = 0; data['overdue'] = 0;
+    return new Promise(resolve => {
+        dispatch('_insert',{ table:'users',data },{ root:true }).then(activity => {
+            let user = activity.data[0].id, data = { area,user };
+            dispatch('_insert',{ table:'area_users',data },{ root:true }).then(() => resolve(user));
+        });
     });
 }
