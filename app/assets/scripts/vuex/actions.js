@@ -37,30 +37,31 @@ export function initRedrawData({state,dispatch}) {
     _.forEach(state.table_modules,(modules,table) => dispatch('redrawModules',table));
 }
 
-export function _insert({ dispatch },{ table,data,success,vm }){
+export function _insert({ dispatch },{ table,data,success,vm,upload }){
     return new Promise((resolve) => {
-        let records = Array.isArray(data) ? data : [data], totalRecords = records.length;
-        DB.insert(table,records,function (totalRecords,table,resolve,callback,vm) {
-            let lastID = this.result, id = _.range(_.toSafeInteger(lastID),lastID-totalRecords); DB.get(table,id,function(resolve,table,dispatch){
+        let records = Array.isArray(data) ? data : [data], totalRecords = records.length; upload = (upload === undefined) ? true : upload;
+        DB.insert(table,records,function (totalRecords,table,resolve,callback,vm,actUpload) {
+            let lastID = this.result, id = _.range(_.toSafeInteger(lastID),lastID-totalRecords); DB.get(table,id,function(resolve,table,dispatch,actUpload){
                 let activity = getActivity(table,this.result,'create');
-                resolve(activity); dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
-            },resolve,table,dispatch);
+                resolve(activity); if(actUpload) dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
+            },resolve,table,dispatch,actUpload);
             dispatch('postDBAction',{ table,type:'create' });
             if(callback) if(_.isFunction(callback)) callback.call(vm,id); else vm[callback].call(vm,id);
-        },totalRecords,table,resolve,success,vm)
+        },totalRecords,table,resolve,success,vm,upload)
     });
 }
 
-export function _update({ dispatch,commit },{ table,data,id,pk,condition }){
+export function _update({ dispatch,commit },{ table,data,id,pk,condition,upload }){
     condition = condition || (_.zipObject([(pk || 'id')],[id]));
     return new Promise((resolve) => {
-        let now = __.now(); DB.update(table,condition,data,function (now,table,resolve,dispatch) {
-            DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table,dispatch){
+        let now = __.now(); upload = (upload === undefined) ? true : upload;
+        DB.update(table,condition,data,function (now,table,resolve,dispatch,actUpload) {
+            DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table,dispatch,actUpload){
                 let activity = getActivity(table,this.result,'update');
-                resolve(activity); dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
-            },resolve,table,dispatch);
+                resolve(activity); if(actUpload) dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
+            },resolve,table,dispatch,actUpload);
             dispatch('postDBAction',{ table,type:'update' });
-        },now,table,resolve,dispatch);
+        },now,table,resolve,dispatch,upload);
     });
 }
 
