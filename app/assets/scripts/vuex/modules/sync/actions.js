@@ -57,7 +57,7 @@ export function doProcessSyncData({ dispatch,commit,state },data) {
             commit(update_table_timing,{ table,type:'download',time });
             if(state.tables[table].type === 'APPUSER') deleteTableRecords(table);
             for(let i = 0; i < data.length; i += sync_create_chunk_length)
-                dispatch(type,{ table,data:data.slice(i,sync_create_chunk_length) },{ root:true })
+                dispatch(type,{ table,data:data.slice(i,sync_create_chunk_length),upload:false },{ root:true })
                     .then(activity => commit(update_table_timing,{ table,type:mode,time:_.get(_.last(activity.data),mode+'d_at') }))
         }
     })
