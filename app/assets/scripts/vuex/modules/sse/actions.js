@@ -18,7 +18,7 @@ export function processEventSource({dispatch}, url) {
         dispatch('triggerEventSubscribers',{ event:'SSEMonitor',payload:tables },{ root:true });
     });
     eventSource.events.on('onError', (data) => {
-        dispatch('restartEventSource')
+        setTimeout(function (dispatch) { dispatch('restartEventSource') },3000,dispatch)
     });
 }
 
