@@ -1,6 +1,6 @@
 .applist-title { }
 .applist-thead {
-    border-bottom-color: #FFA656;
+    border-bottom-color: #EF6D3B;
     border-bottom-width: 2;
 }
 .applist-thead-row {
@@ -31,11 +31,11 @@
 .applist-tbody {
     background-color: #FFFFFF;
     color: black;
-    border-bottom-color: #FFA656;
+    border-bottom-color: #EF6D3B;
     border-bottom-width: 1;
 }
 .applist-tbody-row {
-    border-bottom-color: #FFA656;
+    border-bottom-color: #EF6D3B;
     border-bottom-width: 1;
 }
 .applist-tbody-column {
