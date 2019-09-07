@@ -4,9 +4,9 @@
         <UserStoresInfoWithIcon width="90%"></UserStoresInfoWithIcon>
         <UserAreasInfoWithIcon width="90%"></UserAreasInfoWithIcon>
         <TextTitleSub width="90%" class="m-t-20 cp">Outstandings</TextTitleSub>
-        <UserCustomerTotalOutstandingMetric width="90%"></UserCustomerTotalOutstandingMetric>
+        <UserCustomerTotalOutstandingMetric width="90%" :key="'ctos'+uKey"></UserCustomerTotalOutstandingMetric>
         <TextTitleSub width="90%" class="m-t-20 cp">Sales Orders</TextTitleSub>
-        <SalesOrderPendingMetric width="90%" class="m-b-10"></SalesOrderPendingMetric>
+        <SalesOrderPendingMetric width="90%" class="m-b-10" :key="'cspm'+uKey"></SalesOrderPendingMetric>
         <template v-for="(items,caption,sidx) in menus">
             <TextTitleSub class="m-t-12 m-b-8 m-l-2">{{ caption }}</TextTitleSub>
             <GridMenuRow :menus="items"></GridMenuRow>
@@ -26,7 +26,9 @@
     export default {
         name: "Home",
         mixins: [logoutMixin],
-        data(){ return {}},
+        data(){ return {
+            uKey: 0,
+        }},
         computed: {
             ...mapGetters('Menu', ['menus']), ...mapState('User', ['id','name']),
         },
@@ -39,7 +41,8 @@
             }),
             start(){
                 let methodQuery = { store: user_assigned_stores, area: user_assigned_store_areas, customer: user_assigned_area_customers, so: user_assigned_customer_sales_orders }
-                _.forEach(methodQuery, (query, method) => this[method + 'Stock']({ query: sql.format(query, this.id) }))
+                _.forEach(methodQuery, (query, method) => this[method + 'Stock']({ query: sql.format(query, this.id) }));
+                setTimeout((vm) => { vm.uKey = __.now(); },1500,this)
             },
             login(){
                 this.$navigateTo(require('./login/Login').default,{ backstackVisible:false });
