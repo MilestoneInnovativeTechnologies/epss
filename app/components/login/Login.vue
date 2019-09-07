@@ -68,7 +68,7 @@
                 this.busy = true; this.loginForm = false;
                 this.pTxt(`Login Success!! User data Synching in progress`);
                 this.waitNotification = true;
-                this.autoNavigate = setTimeout(function(vm){ vm.redirectToHome(2) },5000,this)
+                this.autoNavigate = setTimeout(function(vm){ vm.redirectToHome(2) },12000,this)
             }
         },
         mounted(){
