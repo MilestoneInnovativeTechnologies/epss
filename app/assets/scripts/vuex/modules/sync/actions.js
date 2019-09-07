@@ -39,13 +39,9 @@ export function SSEMonitor({ state,dispatch },tables) {
     }
 }
 
-export function syncDataReceived({ dispatch }, data) {
-    if(!Array.isArray(data) || _.isEmpty(data)) return;
-    dispatch('processSyncReceivedData',data);
-}
-
-export function processSyncReceivedData({ dispatch,commit },data) {
+export function syncDataReceived({ dispatch,commit }, data) {
     commit(remove_first_sync_download_queue_item);
+    if(!Array.isArray(data) || _.isEmpty(data)) return;
     dispatch('doProcessSyncData',data);
 }
 
