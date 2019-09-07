@@ -38,7 +38,7 @@
             ...mapActions('User',['doLogin','doPostLoginActions']), ...mapMutations('User',[set_state_data]),
             pTxt(txt){ this.pTexts.push(txt) },
             authenticate(){
-                if(!this.connection) alert('No internet connection');
+                if(!this.connection) return alert('No internet connection');
                 this.pTxt('Authenticating with server....');
                 this.doLogin();
             },
