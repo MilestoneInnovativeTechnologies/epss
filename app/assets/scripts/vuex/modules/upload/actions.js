@@ -44,12 +44,14 @@ export function insert({ getters,dispatch,commit },data) {
 
 export function processQueue({ state,dispatch,commit }) {
     if(timeOut) clearTimeout(timeOut);
-    if(!state.processing && state.completed < state.latest){
-        commit(set_state_data,{ key:'processing',value:true });
-        dispatch('doProcessQueue');
-    } else {
+    if(state.processing){
         if(considerFailed(state.init_time)) return dispatch('makeProcessingFailed');
-        timeOut = setTimeout(function(dispatch){ dispatch('processQueue') },15000,dispatch);
+        timeOut = setTimeout(function(dispatch){ dispatch('processQueue') },5000,dispatch);
+    } else {
+        if(state.completed < state.latest){
+            commit(set_state_data,{ key:'processing',value:true });
+            dispatch('doProcessQueue');
+        }
     }
 }
 
