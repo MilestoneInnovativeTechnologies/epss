@@ -7,7 +7,7 @@
             <StackLayout row="2" class="m-t-8 w-full">
                 <ActivityIndicator :busy="busy" class="m-t-10"></ActivityIndicator>
                 <TextHighlight class="w-full text-center" :text="pTexts[pTexts.length-1]" :key="'ull'+pTexts.length"></TextHighlight>
-                <TextHighlight class="m-t-20 w-full text-center" :key="" v-if="waitNotification">{{ 'Synchronizing records. Completed: '+percentage+'%' }}</TextHighlight>
+                <TextHighlight class="m-t-20 w-full text-center" :key="percentage" v-if="waitNotification">{{ 'Synchronizing records. Completed: '+percentage+'%' }}</TextHighlight>
             </StackLayout>
         </GridLayout>
     </App>
