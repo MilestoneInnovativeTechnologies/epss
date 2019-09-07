@@ -24,5 +24,5 @@ export const init_sync_user_table_after = 1;
 export const maximum_processing_seconds = 30;
 
 //upload
-export const maximum_upload_retry_count = 3;
+export const maximum_upload_retry_count = 1;
 export const maximum_upload_processing_time = 35;
