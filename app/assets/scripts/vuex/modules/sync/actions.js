@@ -87,8 +87,8 @@ export function initUserTables({ dispatch,commit,state }) {
 
 function getDownloadParams(type, rGetters) {
     let params = download_common_params;
-    if(type !== 'APP') _.assign(params,{ _user:rGetters.user, client:rGetters.client });
-    if(type === 'APPUSER') _.assign(params,{ created:app_user_create_date_for_fetch });
+    if(type !== 'APP') params = _.assign({},params,{ _user:rGetters.user, client:rGetters.client });
+    if(type === 'APPUSER') params = _.assign({},params,{ created:app_user_create_date_for_fetch });
     return params;
 }
 
