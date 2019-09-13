@@ -33,8 +33,10 @@ export function redrawModules({state, commit, rootState}, table) {
         });
     }, state.table_modules[table], commit);
 }
-export function initRedrawData({state,dispatch}) {
-    _.forEach(state.table_modules,(modules,table) => dispatch('redrawModules',table));
+export function initRedrawData({state,rootState,dispatch}) {
+    DB.get(rootState['App'].dbTables[0],1,function(modules,dispatch){
+        if(!this.error) _.forEach(modules,(modules,table) => dispatch('redrawModules',table));
+    },state.table_modules,dispatch)
 }
 
 export function _insert({ dispatch },{ table,data,success,vm,upload }){
