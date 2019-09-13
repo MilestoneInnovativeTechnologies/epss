@@ -1,0 +1,1 @@
+export function customer(state,{ _tableDataItem }) { return (id) => _tableDataItem(state.dbTables[0],id) }
