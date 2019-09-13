@@ -1,7 +1,13 @@
 export function user(state){ return state['User'].id }
 export function client(state){ return state['App'].uuid }
 export function uuid(state){ return state['App'].uuid }
-export function _ref(state){ return () => ['U',state['User'].id,'T',moment().format('xS')].join('') }
+export function _ref(state){
+    return (n) => {
+        n = n || 1; let user = state['User'].id, start = parseInt(moment().format('xS')), end = start + n;
+        let _refs = _.map(_.range(start,end),T => ['U',user,'T',T].join(''));
+        return (n === 1) ? _refs[0] : _refs;
+    }
+}
 export function date(){ return () => moment().format('YYYY-MM-DD') }
 export function datetime(){ return () => moment().format('YYYY-MM-DD HH:mm:ss') }
 export function startOfDay(){ return moment().startOf('day').format('X') }
