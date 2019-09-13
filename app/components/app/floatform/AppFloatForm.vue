@@ -1,6 +1,6 @@
 <template>
     <StackLayout class="appff-container">
-        <GridLayout :rows="rows" columns="*" style="border-width:5; border-color: #FFA656;">
+        <GridLayout :rows="rows" columns="*" style="border-width:5; border-color: #EF6D3B;">
             <GridLayout v-for="(columns,row) in fieldRow" :row="row" col="0" rows="auto" :columns="columns.join(',')" :key="['ff',unique,'fr',row].join('-')">
                 <AppForm v-for="(column,col) in columns" :col="col" :fields="getField(posNum(row,col))" :values="getFieldValue(posNum(row,col))" @final="setFinal" :key="['ff',unique,'fr',row,'frc',col].join('-')"></AppForm>
             </GridLayout>
