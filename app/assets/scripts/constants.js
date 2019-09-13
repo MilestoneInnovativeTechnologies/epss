@@ -1,6 +1,8 @@
 export const organization_fetch_url = 'http://milestoneit.net/api/ss/device';
 export const database_fetch_url = 'http://milestoneit.net/api/ss/setup';
 export const sse_monitor_path = 'sse/info';
+export const no_image_file = '~/assets/images/no-image.jpg';
+export const product_image_path = 'image/item';
 
 //Module Common
 export const stock_load_cache_refresh_on_each_nth_query = 0;
@@ -26,3 +28,10 @@ export const maximum_processing_seconds = 30;
 //upload
 export const maximum_upload_retry_count = 1;
 export const maximum_upload_processing_time = 35;
+
+//Product
+export const product_image_cache_max_request = 10;
+
+//Drawer Component
+export const drawer_content_size_percent = 10;
+export const drawer_content_size_max = 400;
