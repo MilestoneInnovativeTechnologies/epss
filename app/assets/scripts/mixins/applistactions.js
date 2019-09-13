@@ -1,6 +1,7 @@
 export const AppListAction = {
     props: {
-        action: { validator:(value) => ['remove','select','pick'].indexOf(value) > -1 }
+        action: { validator:(value) => ['remove','select','pick'].indexOf(value) > -1 },
+        selected: { type:null,default:() => [] }
     },
     data(){ return {
         dataCollection: [],
@@ -17,7 +18,7 @@ export const AppListAction = {
         listActionExecutePick({ row }){ this.dataCollection = _.concat(row); },
         listActionExecuteAll(){ if(this.dataCollection.length === this.dataItems.length) this.dataCollection.splice(0); else this.dataCollection = _.range(0,this.dataItems.length); },
         listActionExecuteSelect({ row }){ this.dataCollection = _.xor(this.dataCollection,_.concat(row)); },
-        emitCollection(){ this.$emit('collection',_.map(_.pick(this.dataItems,this.dataCollection)))}
+        emitCollection(){ this.$emit('collection',_.map(_.pick(this.dataItems,this.dataCollection))); }
     },
     mounted(){
         if(this.action === 'remove') this.dataCollection = _.range(0,this.dataItems.length);
@@ -25,5 +26,6 @@ export const AppListAction = {
     },
     watch: {
         source(nSrc){ if(this.action === 'remove') this.dataCollection = _.range(0,nSrc.length); this.emitCollection() },
+        selected: { immediate:true, handler:function(data){ this.dataCollection = Array.isArray(data) ? data : [data]; this.emitCollection() } }
     }
 };
