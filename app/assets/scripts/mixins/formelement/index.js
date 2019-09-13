@@ -22,3 +22,4 @@ export const paymentmode = require('./paymentmode').FormElementMixinPaymentMode;
 export const email = require('./email').FormElementMixinEmail;
 export const textarea = require('./textarea').FormElementMixinTextArea;
 export const area = require('./area').FormElementMixinArea;
+export const discounttype = require('./discounttype').FormElementMixinDiscountType;
