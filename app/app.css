@@ -39,7 +39,10 @@
 .text-underline { text-decoration: underline; }
 .cp { color: #EF6D3B; }
 .bcp { background-color: #EF6D3B; }
+.bordercp { border-color: #EF6D3B; }
 
+.cg01 { color: #F5F5F5; }
+.bcg01 { background-color: #F5F5F5; }
 
 PropertyEditor {
     margin-top: 6;
@@ -47,7 +50,7 @@ PropertyEditor {
 }
 
 DataFormEditorLabel {
-    color:#FFA656;
+    color:#EF6D3B;
     font-family: "Fira Sans Italic", FiraSans-Italic;
     font-size: 16;
 }
