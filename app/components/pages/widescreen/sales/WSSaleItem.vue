@@ -15,7 +15,7 @@
         name: "WSSaleItem",
         props: ['item'],
         computed: {
-            name(){ return this.item.name },
+            name(){ return this.item.narration },
             rate(){ return __.rate(this.item.price) },
         },
         methods: {
