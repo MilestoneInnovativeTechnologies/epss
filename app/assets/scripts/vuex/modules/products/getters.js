@@ -40,7 +40,7 @@ export function list02({ dbTables },{ _tableDataFilter }){
 export function listProducts({dbTables}, {_tableDataFilter}) {
     return (lg1,g1,lg2,g2) => {
         let Products = _tableDataFilter(dbTables[2],'g'+lg1,g1);
-        if(lg2 && g2) {
+        if(lg2 && g2 && _.toSafeInteger(g2) > 0) {
             let key = 'g'+lg2;
             Products = _.filter(Products,(product) => product[key] == g2)
         }
