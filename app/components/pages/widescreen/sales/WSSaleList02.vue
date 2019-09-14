@@ -27,14 +27,14 @@
         },
         computed: {
             ...mapGetters({ getList02Id:'Product/list02',listDetail:'Product/groups' }),
-            listIds(){ return this.getList02Id(this.list,this.list01,this.list01num) },
+            listIds(){ let list = this.list01, listNum = this.list01num; return this.getList02Id(this.list,list,listNum) },
             listNames(){ let ids = this.listIds; return _.mapValues(_.pick(this.listDetail,ids),'name') },
         },
         methods: {
             setSelected(idx){ this.selected = idx; EB.$emit('wssale-selected-list02',[this.list,this.selected]) }
         },
         created(){
-            EB.$on('wssale-selected-list01',(data) => { this.list01 = data[0]; this.list01num = data[1]; this.selected = 0 });
+            EB.$on('wssale-selected-list01',(data) => { this.list01 = data[0]; this.list01num = data[1]; this.setSelected(0); });
             this.setSelected(0);
         },
 
