@@ -7,7 +7,7 @@
             <CalculateDiscount :total="totalAmount" @discount="setDiscount" v-if="totalAmount > 0 && false" class="m-t-20"></CalculateDiscount>
             <PayableAmount :total="totalAmount" :tax="getSumOf('tax')" :discount="finalDiscount" class="m-t-20"></PayableAmount>
         </StackLayout>
-        <WSSaleItemActions  row="2" col="0" @delete="deleteSelectedItem" @edit="editSelectedItem" class="m-t-20"></WSSaleItemActions>
+        <WSSaleItemActions  row="2" col="0" @delete="deleteSelectedItem" @edit="editItemProp" class="m-t-20"></WSSaleItemActions>
         <AppButton  row="3" col="0" class="c-white btn-active m-t-20" width="100%" @tap.native="save">SAVE</AppButton>
     </GridLayout>
 </template>
@@ -33,14 +33,24 @@
         methods: {
             addItem(item){
                 let product = item.id; if(!_.has(item,'_ref')) item._ref = this.getTransReferenceId(); if(!_.has(item,'discount')) item.discount = 0;
-                if(!_.has(this.iProducts,product)) { this.iProducts = Object.assign({},this.iProducts,_.zipObject([product],[this.items.push(item)-1])); }
-                else this.updateItemQuantity(this.iProducts[product],item.quantity || 1);
-                this.selectedIndex = this.iProducts[product];
+                if(!_.has(this.iProducts,product)) { this.iProducts = Object.assign({},this.iProducts,_.zipObject([product],[this.items.push(item)-1])); this.selectedIndex = this.iProducts[product]; }
+                else {
+                    let index = this.iProducts[item.id], sItem = this.items[index], quantity = _.toNumber(sItem.quantity)+1;
+                    this.setItemProp(index,'quantity',quantity);
+                }
+
             },
-            updateItemQuantity(index,qty,set){
-                let item = this.items[index]; if(!item) return;  let quantity = set ? _.toNumber(qty) : (_.toNumber(item.quantity) + _.toNumber(qty)),
-                    total = this.calculateTotal(item.rate,quantity,item.tax);
-                this.items[index].quantity = quantity; this.items[index].total = total;
+            editItemProp(prop){
+                let index = this.iProducts[this.selectedItem.id]; if(!index) return;
+                let item = this.items[index]; if(!item) return;
+                let vm = this, title = 'Edit ' + _.startCase(prop), message = 'Enter new ' + prop + ' for '+ item.name, defaultText = item[prop];
+                dialogs.prompt({ title, message, okButtonText:'Update', cancelButtonText:'Cancel', defaultText })
+                    .then(({ result,text }) => (result) ? vm.setItemProp(index,prop,text) : null)
+                    .catch(() => prompt('Enter new value').then(({ result,text }) => (result) ? vm.setItemProp(index,prop,text) : null));
+            },
+            setItemProp(index,prop,value){
+                let item = this.items[index]; if(!item) return;
+                this.items[index][prop] = value; this.items[index]['total'] = this.calculateTotal(item.rate,item.quantity,item.tax);
             },
             getSumOf(key){  let items = this.items; return _.sumBy(items,(item) => _.toNumber(item[key]) )  },
             setSelectedItem(rows){ this.selectedItem = rows[0]; },
@@ -48,13 +58,6 @@
             deleteSelectedItem(){ if(!this.selectedItem || _.isNil(this.iProducts[this.selectedItem.id])) return;
                 this.items.splice(this.iProducts[this.selectedItem.id],1); this.iProducts = _.invert(_.map(this.items,'id'));
                 this.selectedItem = null; this.selectedIndex = (this.items.length < 1) ? null : this.items.length-1;
-            },
-            editSelectedItem(){ if(!this.selectedItem || _.isNil(this.iProducts[this.selectedItem.id])) return;
-                let si = this.selectedItem, vm = this, title = 'Edit Quantity', message = 'Enter new quantity for '+ si.name, defaultText = si.quantity;
-                dialogs.prompt({ title, message, okButtonText:'Update', cancelButtonText:'Cancel', defaultText })
-                    .then(({ result,text }) => { if(result) vm.updateItemQuantity(vm.iProducts[si.id],text,true) },() => {
-                        prompt('Enter new quantity').then(({ result,text }) => { if(result) vm.updateItemQuantity(vm.iProducts[si.id],text,true) });
-                    })
             },
             save(){
                 if(!this.customer) return alert('Please select customer and sale details');
