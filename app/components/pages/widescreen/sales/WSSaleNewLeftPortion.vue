@@ -44,8 +44,8 @@
             editItemProp(prop){
                 let index = this.iProducts[this.selectedItem.id]; if(!index) return;
                 let item = this.items[index]; if(!item) return;
-                let vm = this, title = 'Edit ' + _.startCase(prop), message = 'Enter new ' + prop + ' for '+ item.name, defaultText = item[prop];
-                dialogs.prompt({ title, message, okButtonText:'Update', cancelButtonText:'Cancel', defaultText })
+                let vm = this, title = 'Edit ' + _.startCase(prop), message = 'Enter new ' + prop + ' for '+ item.name, defaultText = item[prop], inputType = dialogs.inputType.decimal;
+                dialogs.prompt({ title, message, okButtonText:'Update', cancelButtonText:'Cancel', defaultText, inputType })
                     .then(({ result,text }) => (result) ? vm.setItemProp(index,prop,text) : null)
                     .catch(() => prompt('Enter new value').then(({ result,text }) => (result) ? vm.setItemProp(index,prop,text) : null));
             },
@@ -54,7 +54,7 @@
                 this.items[index][prop] = value; this.items[index]['total'] = this.calculateTotal(item.rate,item.quantity,item.tax);
             },
             getSumOf(key){  let items = this.items; return _.sumBy(items,(item) => _.toNumber(item[key]) )  },
-            setSelectedItem(rows){ this.selectedItem = rows[0]; },
+            setSelectedItem(rows){ this.selectedItem = rows[0] },
             setDiscount(discount){ this.finalDiscount = _.toNumber(discount) },
             deleteSelectedItem(){ if(!this.selectedItem || _.isNil(this.iProducts[this.selectedItem.id])) return;
                 this.items.splice(this.iProducts[this.selectedItem.id],1); this.iProducts = _.invert(_.map(this.items,'id'));
@@ -74,7 +74,7 @@
             });
             EB.$on('wssale-item-selected',(item) => {
                 let taxDetails = this.getProductTax(item.id,this.fncode);
-                item = Object.assign({},item,{ quantity:1, rate:item.price, taxcode:taxDetails[0], tax:taxDetails[1], total:this.calculateTotal(item.price,1,taxDetails[1]) });
+                item = Object.assign({},item,{ quantity:1, rate:item.price, taxcode:taxDetails[0], tax:(item.price*taxDetails[1]/100), total:this.calculateTotal(item.price,1,taxDetails[1]) });
                 this.addItem(item);
             })
         },
