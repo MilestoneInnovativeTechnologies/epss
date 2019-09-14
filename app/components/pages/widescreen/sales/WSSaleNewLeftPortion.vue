@@ -3,7 +3,7 @@
         <WSSaleCustomer row="0" col="0"></WSSaleCustomer>
         <StackLayout row="1" col="0">
             <CustomerPendingSOList v-if="customer" :customer="customer" :key="customer" class="m-t-20"></CustomerPendingSOList>
-            <AppList title="Items" :layout="layout" :source="items" :key="['SI',totalAmount].join('-')" class="m-t-20" action="pick" @collection="setSelectedItem" :selected="selectedIndex"></AppList>
+            <AppList title="Items" :layout="layout" :source="items" :cast="cast" :key="['SI',totalAmount].join('-')" class="m-t-20" action="pick" @collection="setSelectedItem" :selected="selectedIndex"></AppList>
             <CalculateDiscount :total="totalAmount" @discount="setDiscount" v-if="totalAmount > 0 && false" class="m-t-20"></CalculateDiscount>
             <PayableAmount :total="totalAmount" :tax="getSumOf('tax')" :discount="finalDiscount" class="m-t-20"></PayableAmount>
         </StackLayout>
@@ -23,6 +23,7 @@
         data(){ return {
             customer: null, fncode: null,
             layout: { ITEM:'name',QUANTITY:'quantity',AMOUNT:'total' },
+            cast: { total:'amount',quantity:'quantity' },
             items: [], selectedItem: null, finalDiscount: 0, selectedIndex: null,
             iProducts: {}
         } },
