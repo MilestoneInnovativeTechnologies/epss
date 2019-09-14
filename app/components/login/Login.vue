@@ -28,6 +28,7 @@
             downloads: null,
             downloaded: 0,
             autoNavigate: null,
+            autoNavigateDelay: 12000,
         }},
         computed: {
             ...mapState('User',['message','validating','id']), ...mapState('Connection',{ connection:'status' }),...mapState('Sync',['queue_download']),
@@ -55,6 +56,7 @@
                 setTimeout(() => this.$navigateTo(require('../Home').default,{ clearHistory:true }),after*1000);
             },
             populateUserData(data){
+                this.autoNavigateDelay = 1000;
                 this.pTxt('User data found, populating..');
                 let kData =_(data).keyBy('name').mapValues(({ detail }) => detail).value();
                 this.pTxt('Doing post login actions..');
@@ -65,10 +67,10 @@
                 this.loginForm = true; this.busy = false;
             },
             postFormLogin(data){
-                this.busy = true; this.loginForm = false;
+                this.busy = true; this.loginForm = false; this.autoNavigateDelay = 12000;
                 this.pTxt(`Login Success!! User data Synching in progress`);
                 this.waitNotification = true;
-                this.autoNavigate = setTimeout(function(vm){ vm.redirectToHome(2) },12000,this)
+                this.autoNavigate = setTimeout(function(vm){ vm.redirectToHome(2) },this.autoNavigateDelay,this)
             }
         },
         mounted(){
