@@ -15,6 +15,7 @@ export function doInsertLoginData({ dispatch },data){
     return new Promise((resolve) => {
         dispatch('_insert',{ table:'epss_user',data:data,upload:false },{ root:true }).then((activity) => {
             dispatch('doPostLoginActions',getNameDetailObject(activity.data));
+            setTimeout(function(dispatch){ dispatch('Sync/forceDownloadUserTables',null,{ root:true }) },12000,dispatch);
         });
     })
 }
