@@ -1,12 +1,14 @@
 <template>
-    <FlexboxLayout flexDirection="row" class="c-bg-white">
-        <StackLayout width="110" :class="selected === 0 ? 'bcg01' : ''" verticalAlignment="middle" key="list02-0" @tap="setSelected(0)">
-            <TextHighlightBold class="text-center p-x-5" textWrap="true">All</TextHighlightBold>
-        </StackLayout>
-        <StackLayout width="110" :class="selected === l2Id ? 'bcg01' : ''" verticalAlignment="middle" v-for="(name,l2Id) in listNames" :key="'list02-'+l2Id" @tap="setSelected(l2Id)">
-            <TextHighlightBold class="text-center p-x-5" textWrap="true">{{ name }}</TextHighlightBold>
-        </StackLayout>
-    </FlexboxLayout>
+    <ScrollView  orientation="horizontal">
+        <FlexboxLayout flexDirection="row" class="c-bg-white">
+            <StackLayout width="110" :class="selected === 0 ? 'bcg01' : ''" verticalAlignment="middle" key="list02-0" @tap="setSelected(0)">
+                <TextHighlightBold class="text-center p-x-5" textWrap="true">All</TextHighlightBold>
+            </StackLayout>
+            <StackLayout width="110" :class="selected === l2Id ? 'bcg01' : ''" verticalAlignment="middle" v-for="(name,l2Id) in listNames" :key="'list02-'+l2Id" @tap="setSelected(l2Id)">
+                <TextHighlightBold class="text-center p-x-5" textWrap="true">{{ name }}</TextHighlightBold>
+            </StackLayout>
+        </FlexboxLayout>
+    </ScrollView>
 </template>
 
 <script>
