@@ -23,7 +23,7 @@
             list01(){ return this.list.split('|')[0] },  list02(){ return this.list.split('|')[1] },
         },
         created(){
-            EB.$on('wssale-sale-detail',function(data){ this.fncode = data.type });
+            EB.$on('wssale-sale-detail',(data) => { this.fncode = data.type });
         }
     }
 </script>
