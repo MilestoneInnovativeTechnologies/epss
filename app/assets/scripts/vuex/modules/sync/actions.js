@@ -80,6 +80,14 @@ export function initUserTables({ dispatch,commit,state }) {
         },state,commit,dispatch,resolve)
     });
 }
+export function forceDownloadUserTables({ dispatch }) {
+    DB.get(table_information_db_table_name,{ type:'APPUSER' },function (dispatch) {
+        if(this.error) return log('Error getting app user table information to force download');
+        _.forEach(this.result,function (tblObj) {
+            dispatch('queueTableRecordDownload',{ table:tblObj.table, type:tblObj.type })
+        });
+    },dispatch)
+}
 
 function getDownloadParams(type, rGetters) {
     let params = download_common_params;
