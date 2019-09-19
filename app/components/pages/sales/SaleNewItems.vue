@@ -1,6 +1,6 @@
 <template>
     <App title="NEW SALE - ITEMS" :action="action" @save="save">
-        <GridLayout rows="auto,auto" columns="*">
+        <GridLayout rows="*,auto" columns="*">
             <AppFormDetail row="0" col="0" :source="tblSource" :layout="tblLayout" :fields="appFormFields()" :fieldValues="fieldValues" :labels="labels" :labelValues="labelValues" @ff-active="ffActive = $event" @collection="collection" @done="done" @final="updateLabels" :instance="instance"></AppFormDetail>
             <StackLayout row="1" col="0">
                 <AppInfoWideNumerical class="m-t-20" title="Total Tax" :text="toRate(tTax)"></AppInfoWideNumerical>
