@@ -1,5 +1,5 @@
 <template>
-    <App title="Sales" action="New Sale" @new-sale="$navigateTo(require('./SaleNew').default)">
+    <App title="Sales" action="New Sale" @new-sale="$navigateTo(require('./Sale').default)">
         <AppMetric :items="metricOne"></AppMetric>
         <AppMetric :items="metricTwo"></AppMetric>
         <AppList :source="source" :layout="layout" :links="links" detail="sales/SaleDetail" :title="title" class="m-t-15"></AppList>

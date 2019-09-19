@@ -1,6 +1,6 @@
 export default {
     items: {
-        sales:['SALES','local_grocery_store','pages/sales/Sale','Sales'],
+        sales:['SALES','local_grocery_store','pages/sales/SalesIndex','Sales'],
         sales_return:['RETURN','call_missed','pages/sales/SalesReturnIndex','Sales Return'],
         sales_order:['ORDER','description','pages/sales/SalesOrderIndex','Sales Order'],
         cash_receipt:['CASH','attach_money','pages/receipt/CashReceiptIndex','Cash Receipt'],
