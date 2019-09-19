@@ -42,7 +42,7 @@
 
             },
             editItemProp(prop){
-                let index = this.iProducts[this.selectedItem.id]; if(!index) return;
+                let index = this.iProducts[this.selectedItem.id]; if(_.isNil(index)) return;
                 let item = this.items[index]; if(!item) return;
                 let vm = this, title = 'Edit ' + _.startCase(prop), message = 'Enter new ' + prop + ' for '+ item.name, defaultText = item[prop], inputType = dialogs.inputType.decimal;
                 dialogs.prompt({ title, message, okButtonText:'Update', cancelButtonText:'Cancel', defaultText, inputType })
