@@ -28,7 +28,7 @@
             iProducts: {}
         } },
         computed: {
-            ...mapGetters({ calculateTotal:'total',getProductTax:'Product/tax',getTransReferenceId:'_ref' }),
+            ...mapGetters({ calculateTotal:'FN/total',getProductTax:'Product/tax',getTransReferenceId:'_ref' }),
             totalAmount(){ let items = this.items; return this.getSumOf('total') },
         },
         methods: {
@@ -51,7 +51,7 @@
             },
             setItemProp(index,prop,value){
                 let item = this.items[index]; if(!item) return;
-                this.items[index][prop] = value; this.items[index]['total'] = this.calculateTotal(item.rate,item.quantity,item.tax);
+                this.items[index][prop] = value; this.items[index]['total'] = this.calculateTotal(this.fncode,item.id,item.quantity,{ rate:item.rate,discount:item.discount });
             },
             getSumOf(key){  let items = this.items; return _.sumBy(items,(item) => _.toNumber(item[key]) )  },
             setSelectedItem(rows){ this.selectedItem = rows[0] },
