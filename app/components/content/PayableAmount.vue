@@ -12,7 +12,7 @@
         name: "PayableAmount",
         props: ['total','tax','discount'],
         computed: {
-            payable(){ return _.toNumber(this.total) + _.toNumber(this.tax) - _.toNumber(this.discount) }
+            payable(){ return _.toNumber(this.total)/* + _.toNumber(this.tax) - _.toNumber(this.discount)*/ }
         },
         methods: {
             toRate(number){ return __.rate(number); },
