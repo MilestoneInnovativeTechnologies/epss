@@ -26,8 +26,10 @@ export function abbreviations(state,getters){
     }
 }
 export function total(){
-    return (rate,qty,tax) => {
-        rate = _.toNumber(rate); tax = _.toNumber(tax); qty = _.toNumber(qty); let ttl = rate * qty;
-        return ttl + (ttl*tax);
+    return (rate,qty,tax,discount) => {
+        discount = _.isNil(discount) ? 0 : _.toNumber(discount); tax = _.isNil(tax) ? 0 : _.toNumber(tax);
+        qty = _.isNil(qty) ? 1 : _.toNumber(qty); rate = _.isNil(rate) ? 0 : _.toNumber(rate);
+        let ttl = rate * qty;
+        return ttl + (ttl*tax) - discount;
     }
 }
