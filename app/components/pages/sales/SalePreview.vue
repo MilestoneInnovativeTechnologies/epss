@@ -31,7 +31,7 @@
                 ])
             },
             tableLayout(){
-                return _.fromPairs([['Particulars','particulars'],['Quantity','quantity'],['Rate','rate'],['Tax','tax'],['Total','total']])
+                return _.fromPairs([['Particulars','particulars'],['Qty','quantity'],['Rate','rate'],['Tax','tax'],['Total','total']])
             },
             tableItems(){
                 return _.map(this.transactionDetail,(detail) => {
