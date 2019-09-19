@@ -9,6 +9,13 @@
         name: "PreviewFooter",
         computed: {
             ...mapState('App',['footer_text'])
+        },
+        mounted(){
+            let vm = this;
+            this.$nextTick(() => {
+                let printCmd = [].concat(printer.TEXT(vm.footer_text));
+                vm.$emit('print',printCmd);
+            })
         }
     }
 </script>

@@ -5,6 +5,13 @@
 <script>
     export default {
         name: "PreviewLine",
-        props: ['height']
+        props: ['height'],
+        mounted(){
+            let printCmd = []
+                .concat(printer.HL())
+            ;
+            this.$emit('print',printCmd);
+        }
+
     }
 </script>

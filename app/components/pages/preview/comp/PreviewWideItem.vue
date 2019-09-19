@@ -19,6 +19,16 @@
                 if(this.display !== undefined) { extSty['font-size'] = '35 !important'; extSty['font-weight'] = 'bold'; }
                 return extSty;
             }
+        },
+        mounted(){
+            let printCmd = []
+                .concat(printer.TEXT(this.title.toString().toUpperCase()))
+                .concat(printer.TEXT(': '))
+                .concat(printer.BOLDON())
+                .concat(printer.TEXT(this.mText.toString().toUpperCase()))
+                .concat(printer.BOLDOFF())
+            ;
+            this.$emit('print',printCmd);
         }
     }
 </script>

@@ -14,6 +14,13 @@
         name: "PreviewHead",
         computed: {
             ...mapState('App',['image','print_head_line1','print_head_line2'])
+        },
+        mounted(){
+            let vm = this;
+            this.$nextTick(() => {
+                let printCmd = [].concat(printer.TEXT(vm.print_head_line1),printer.LF(),printer.TEXT(vm.print_head_line2));
+                vm.$emit('print',printCmd);
+            })
         }
     }
 </script>

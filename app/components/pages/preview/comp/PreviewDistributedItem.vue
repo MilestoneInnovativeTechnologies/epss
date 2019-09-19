@@ -12,6 +12,16 @@
         mixins: [require('./../../../../assets/scripts/mixins/typography').default],
         computed: {
             alignClass(){ return (this.right) ? 'text-right' : 'text-left' }
+        },
+        mounted(){
+            let printCmd = []
+                .concat(printer.TEXT(this.title.toString().toUpperCase()))
+                .concat(printer.TEXT(': '))
+                .concat(printer.BOLDON())
+                .concat(printer.TEXT(this.mText.toString().toUpperCase()))
+                .concat(printer.BOLDOFF())
+            ;
+            this.$emit('print',printCmd);
         }
     }
 </script>
