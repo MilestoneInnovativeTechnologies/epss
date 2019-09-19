@@ -29,6 +29,11 @@
                 EB.$emit('wssale-sale-detail',data); EB.$emit('sale-fncode',data.type);
             }
         },
-        created(){ if(!this.customer) this.askCustomerDetail(); },
+        mounted(){
+            let vm = this;
+            this.$nextTick(() => {
+                if(!vm.customer) vm.askCustomerDetail();
+            })
+        }
     }
 </script>
