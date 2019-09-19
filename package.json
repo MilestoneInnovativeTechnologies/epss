@@ -1,6 +1,6 @@
 {
   "name": "epss",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "ePlus Smart Sale Mobile Application",
   "author": "Milestone Innovative Technologies <info@milestoneit.net>",
   "license": "MIT",
@@ -55,7 +55,9 @@
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
-    "emulator": "F:\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_V1S -netdelay none -netspeed full -gpu off",
+    "emulator@v1s": "C:Users\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_V1s -netdelay none -netspeed full -gpu off",
+    "emulator@t2": "C:Users\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_T2 -netdelay none -netspeed full -gpu off",
+    "emulator@t2mini": "C:Users\\Firose\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_T2_Mini -netdelay none -netspeed full -gpu off",
     "devtool": "vue-devtools",
     "android": "tns debug android --bundle",
     "db": "adb pull /data/user/0/net.milestoneit.epss/files/database/epss.db",

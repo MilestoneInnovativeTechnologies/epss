@@ -74,7 +74,7 @@
             });
             EB.$on('wssale-item-selected',(item) => {
                 let taxDetails = this.getProductTax(item.id,this.fncode);
-                item = Object.assign({},item,{ quantity:1, rate:item.price, taxcode:taxDetails[0], tax:(item.price*taxDetails[1]/100), total:this.calculateTotal(item.price,1,taxDetails[1]) });
+                item = Object.assign({},item,{ quantity:1, rate:item.price, taxrule:taxDetails[0], taxfactor:taxDetails[1], tax:(_.toNumber(item.price)*_.toNumber(taxDetails[1])), total:this.calculateTotal(this.fncode,item.id,1,{ rate:item.price }) });
                 this.addItem(item);
             })
         },
