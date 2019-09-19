@@ -18,7 +18,9 @@
         mounted(){
             let vm = this;
             this.$nextTick(() => {
-                let printCmd = [].concat(printer.TEXT(vm.print_head_line1),printer.LF(),printer.TEXT(vm.print_head_line2));
+                let printCmd = [];
+                if(vm.print_head_line1) printCmd = printCmd.concat(printer.TEXT(vm.print_head_line1));
+                if(vm.print_head_line2) printCmd = printCmd.concat(printer.LF(),printer.TEXT(vm.print_head_line2));
                 vm.$emit('print',printCmd);
             })
         }
