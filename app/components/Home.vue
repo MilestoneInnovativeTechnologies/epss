@@ -42,6 +42,7 @@
             start(){
                 let methodQuery = { store: user_assigned_stores, area: user_assigned_store_areas, customer: user_assigned_area_customers, so: user_assigned_customer_sales_orders }
                 _.forEach(methodQuery, (query, method) => this[method + 'Stock']({ query: sql.format(query, this.id) }));
+                setTimeout((vm) => { vm.uKey = __.now(); },1500,this)
             },
             login(){
                 this.$navigateTo(require('./login/Login').default,{ backstackVisible:false });
