@@ -28,7 +28,7 @@
             downloads: null,
             downloaded: 0,
             autoNavigate: null,
-            autoNavigateDelay: 12000,
+            autoNavigateDelay: 3000,
         }},
         computed: {
             ...mapState('User',['message','validating','id']), ...mapState('Connection',{ connection:'status' }),...mapState('Sync',['queue_download']),
@@ -82,11 +82,11 @@
             queue_download(tbls){
                 if(!this.waitNotification) return;
                 if(this.autoNavigate) { clearTimeout(this.autoNavigate); this.autoNavigate = null; }
-                if(this.downloads === null) {
+                if(this.downloads === null || tbls.length > this.downloads) {
                     if(tbls.length === 0) this.redirectToHome(2);
                     this.downloads = tbls.length;
                 } else {
-                    this.downloaded++;
+                    if(this.downloaded < this.downloads) this.downloaded++;
                     if(this.downloaded >= this.downloads) this.redirectToHome(2);
                 }
             }
