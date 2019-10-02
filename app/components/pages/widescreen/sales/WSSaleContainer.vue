@@ -1,8 +1,10 @@
 <template>
-    <GridLayout rows="auto,*,auto" columns="*" class="bcg01 p-x-10">
+    <GridLayout rows="auto,*,auto" columns="*" class="'bcg01 p-x-'+properties.containerPadding">
         <WSSaleItemsFilter col="0" row="0" @filter="filterItems"></WSSaleItemsFilter>
-        <WSSaleItems col="0" row="1" :items="items"></WSSaleItems>
-        <WSSalePagination col="0" row="2" :totPage="totPage" :curPage="curPage" @change-page-to="curPage = $event === '...' ? curPage : $event" class="m-t-5 bordercp" style="border-top: 1"></WSSalePagination>
+        <WSSaleItems :properties="properties" col="0" row="1" :items="items"></WSSaleItems>
+        <HorizontallyMiddle col="0" row="2">
+            <WSSalePagination :totPage="totPage" :curPage="curPage" @change-page-to="curPage = $event === '...' ? curPage : $event" class="m-t-5 bordercp" style="border-top: 1"></WSSalePagination>
+        </HorizontallyMiddle>
     </GridLayout>
 </template>
 
@@ -10,12 +12,11 @@
     import { mapGetters } from 'vuex';
     export default {
         name: "WSSaleContainer",
-        props: [],
+        props: ['properties'],
         data(){ return {
             filter: '',
             list01: [],
             list02: [],
-            perPage: 15,
             curPage: 1,
         } },
         computed: {
@@ -34,6 +35,9 @@
                 let filter = this.filter;
                 return filter ? _.filter(this.productDetails,(product) => this.isProductIn(product,this.filter)) : this.productDetails;
             },
+            perPage(){
+                return _.toSafeInteger(this.properties.itemsPerPage);
+            },
             items(){
                 let items = this.filteredItems, start = (this.curPage-1) * this.perPage, end = start + this.perPage;
                 return items.slice(start,end);
@@ -49,6 +53,9 @@
         created(){
             EB.$on('wssale-selected-list01',(data) => { this.list01 = data; this.curPage = 1 });
             EB.$on('wssale-selected-list02',(data) => { this.list02 = data; this.curPage = 1 });
+        },
+        beforeDestroy(){
+            EB.$off('wssale-selected-list01'); EB.$off('wssale-selected-list02');
         }
     }
 </script>

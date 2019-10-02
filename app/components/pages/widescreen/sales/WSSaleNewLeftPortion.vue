@@ -15,7 +15,6 @@
 <script>
     import { mapGetters } from 'vuex';
     import {SalesOrderToSaleItems} from "../../../../assets/scripts/mixins/salesordertosaleitems";
-    const dialogs = require('tns-core-modules/ui/dialogs');
 
     export default {
         name: "WSSaleNewLeftPortion",
@@ -44,12 +43,11 @@
             editItemProp(prop){
                 let index = this.iProducts[this.selectedItem.id]; if(_.isNil(index)) return;
                 let item = this.items[index]; if(!item) return;
-                let vm = this, title = 'Edit ' + _.startCase(prop), message = 'Enter new ' + prop + ' for '+ item.name, defaultText = item[prop], inputType = dialogs.inputType.decimal;
-                dialogs.prompt({ title, message, okButtonText:'Update', cancelButtonText:'Cancel', defaultText, inputType })
-                    .then(({ result,text }) => (result) ? vm.setItemProp(index,prop,text) : null)
-                    .catch(() => prompt('Enter new value').then(({ result,text }) => (result) ? vm.setItemProp(index,prop,text) : null));
+                let vm = this, title = 'Enter new ' + prop + ' for '+ item.name, defaultText = item[prop];
+                EB.$emit('wssale-number-pad',{ props: { title, okButtonText:'Update', cancelButtonText:'Cancel', defaultText }, index, field:prop });
             },
             setItemProp(index,prop,value){
+                console.log('SETPROP',index,prop,value);
                 let item = this.items[index]; if(!item) return;
                 this.items[index][prop] = value; this.items[index]['total'] = this.calculateTotal(this.fncode,item.id,item.quantity,{ rate:item.rate,discount:item.discount });
             },
@@ -76,7 +74,12 @@
                 let taxDetails = this.getProductTax(item.id,this.fncode);
                 item = Object.assign({},item,{ quantity:1, rate:item.price, taxrule:taxDetails[0], taxfactor:taxDetails[1], tax:(_.toNumber(item.price)*_.toNumber(taxDetails[1])), total:this.calculateTotal(this.fncode,item.id,1,{ rate:item.price }) });
                 this.addItem(item);
-            })
+            });
+            EB.$on('wssale-number-pad-data',({ data,index,field }) => (data.result) ? this.setItemProp(index,field,data.number) : null);
+        },
+        beforeDestroy(){
+            ['wssale-sale-detail','customer-pending-sales-orders-selected','wssale-item-selected','wssale-number-pad-data']
+                .map(event => EB.$off(event));
         },
     }
 </script>

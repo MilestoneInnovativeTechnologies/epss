@@ -20,7 +20,7 @@
             askProps(){ let vm = this; return _.zipObject(this.keys,_.map(this.keys,(key) => vm[key])) }
         },
         methods: {
-            changeDetail(){ console.log('Change Customer details'); this.askCustomerDetail(); },
+            changeDetail(){ this.askCustomerDetail(); },
             askCustomerDetail(){ this.$showModal(require('./WSSaleCustomerModal').default, { fullscreen:true,props:this.askProps })
                 .then(data => { this.setSaleDetail(data) })
             },

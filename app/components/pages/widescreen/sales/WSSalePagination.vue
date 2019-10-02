@@ -1,6 +1,6 @@
 <template>
-    <WrapLayout class="w-full" horizontalAlignment="center">
-        <StackLayout v-for="(pageNum,idx) in combined" :key="'ilp-'+idx" @tap="$emit('change-page-to',pageNum)" width="75" height="75" verticalAlignment="middle" :class="curPage == pageNum ? 'bcp' : ''">
+    <WrapLayout>
+        <StackLayout v-for="(pageNum,idx) in combined" :key="'ilp-'+idx" @tap="$emit('change-page-to',pageNum)" :width="size" :height="size" verticalAlignment="middle" :class="curPage == pageNum ? 'bcp' : ''">
             <Label :text="pageNum" class="text-center fs24 fsb" :class="curPage == pageNum ? 'font-weight-bold c-white' : ''" />
         </StackLayout>
     </WrapLayout>
@@ -12,6 +12,7 @@
         props: ['totPage','curPage'],
         data(){ return {
             sep: '...',
+            size: 75,
         }},
         computed: {
             start(){ return (_.toSafeInteger(this.totPage) <= 3) ? _.range(1,4) : [1,2,3] },

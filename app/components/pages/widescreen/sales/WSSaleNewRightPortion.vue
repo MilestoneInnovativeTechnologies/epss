@@ -1,8 +1,8 @@
 <template>
-    <GridLayout columns="*,110" :rows="rows.join(',')">
+    <GridLayout :columns="['*',properties.list01].join(',')" :rows="rows.join(',')">
         <WSSaleList02 row="0" col="0" v-if="list02" :list="list02"></WSSaleList02>
         <StackLayout row="0" col="1"  v-if="list02"></StackLayout>
-        <WSSaleContainer :row="rows.length-1" col="0"></WSSaleContainer>
+        <WSSaleContainer :properties="properties" :row="rows.length-1" col="0"></WSSaleContainer>
         <WSSaleList01 :row="rows.length-1" col="1" :list="list01"></WSSaleList01>
     </GridLayout>
 </template>
@@ -12,6 +12,7 @@
 
     export default {
         name: "WSSaleNewRightPortion",
+        props: ['properties'],
         data(){ return {
             fncode: null,
             defaultList: '01'

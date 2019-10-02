@@ -1,8 +1,8 @@
 <template>
-    <App title="WIDE SCREEN NEW SALE" width="99%" scroll="false">
-        <GridLayout rows="*" columns="440,*">
+    <App title="NEW SALE" :width="properties.container" scroll="false" :numberPad="numberPad.status" :numberPadProps="numberPad.props" @numberpad="numberPadData">
+        <GridLayout rows="*" :columns="[properties.leftPortion,'*'].join(',')">
             <WSSaleNewLeftPortion row="0" col="0" @save="save"></WSSaleNewLeftPortion>
-            <WSSaleNewRightPortion row="0" col="1" class="m-l-10"></WSSaleNewRightPortion>
+            <WSSaleNewRightPortion :properties="properties" row="0" col="1" :class="['m-l',properties.leftToRightSpace].join('-')"></WSSaleNewRightPortion>
         </GridLayout>
     </App>
 </template>
@@ -12,12 +12,19 @@
     export default {
         name: "WSSaleNew",
         data(){ return {
+            numberPad: { status: false, index:null, field:null, props: { okButtonText:'Update',defaultText:0 } },
+            properties: {
+                container: '99%',
+                leftPortion: 440, leftToRightSpace: 10, containerPadding: 10,
+                list01: 110, widthHeightRation: 1.3,
+                itemsPerPage: 15, itemsPerRow: 5, itemSpacing: 10
+            },
             items: ['transactions','transaction_details','store_product_transactions'],
             transactions: [],
             transaction_details: [],
             store_product_transactions: [],
             transactions_keys: ['user','docno','date','customer','fycode','fncode','payment_type','_ref'],
-            transaction_details_keys: ['transaction','spt','amount','tax','discount','total'],
+            transaction_details_keys: ['transaction','spt','amount','taxrule','tax','discount','total'],
             store_product_transactions_keys: ['store','product','direction','quantity','user','nature','date','type','_ref'],
             key_maps: {
                 user_0:'getUser',docno_0:'getSaleDocNo',fncode_0:'type',payment_type_0:'payment',_ref_0:'getReference',
@@ -30,13 +37,11 @@
             }
         }},
         computed: {
-            ...mapGetters({ appUser:'user',getReferenceId:'_ref',getDocNo:'Sales/docno',tNatures:'TRNS/NameId',tTypes:'TRPS/NameId',getDateTime:'datetime' })
+            ...mapGetters({ appUser:'user',getReferenceId:'_ref',getDocNo:'Sales/docno',tNatures:'TRNS/NameId',tTypes:'TRPS/NameId',getDateTime:'datetime' }),
         },
         created(){
-            EB.$on('wssale-sale-detail',(data) => {
-                this.extra.store = data.store;
-                this.setDataDetails(0,[data])
-            })
+            EB.$on('wssale-sale-detail',(data) => { this.extra.store = data.store; this.setDataDetails(0,[data]); });
+            EB.$on('wssale-number-pad',({ index,field,props }) => { this.numberPad.props = props; this.numberPad.field = field; this.numberPad.index = index; this.numberPad.status = true; });
         },
         methods: {
             ...mapActions({ enterSale:'Sales/sale' }),
@@ -45,6 +50,10 @@
                 _.forEach(dataArray,(data) => {
                     this[this.items[item]].push(this.getRecordDetails(keys,item,data))
                 })
+            },
+            numberPadData(data){
+                this.numberPad.status = false; let numberPad = this.numberPad;
+                EB.$emit('wssale-number-pad-data',{ data,index:numberPad.index,field:numberPad.field });
             },
             getRecordDetails(keys,item,data){
                 let rData = Object.assign({},_.zipObject(keys,[]));
@@ -72,6 +81,10 @@
                 this.enterSale({ transaction:this.transactions[0],details:this.transaction_details,spt:this.store_product_transactions,reserve }).then((_ref) => {
                     this.$navigateTo(require('./../../sales/SaleDetail').default,{ props: { id:_ref }});
                 });
+            },
+            beforeDestroy(){
+                ['wssale-sale-detail','wssale-number-pad']
+                    .map(event => EB.$off(event));
             }
         }
     }

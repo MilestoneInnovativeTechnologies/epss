@@ -1,5 +1,5 @@
 <template>
-    <Image :src="src" decodeWidth="175" decodeHeight="135" loadMode="async" stretch="aspectFill" useCache="true" />
+    <Image :src="src" loadMode="async" stretch="aspectFill" useCache="true" />
 </template>
 
 <script>
@@ -20,9 +20,11 @@
         },
         created(){
             let url = this.url, cache = new Cache(); cache.placeholder = fromFile(no_image_file); cache.maxRequests = product_image_cache_max_request;
-            this.src = cache.placeholder; cache.enableDownload(); const image = cache.get(url);
-            if(image){ this.src = fromNativeSource(image) } else {
+            this.src = cache.placeholder; const image = cache.get(url);
+            if(image){ this.src = fromNativeSource(image) }
+            else {
                 cache.push({ key:url,url:url,completed:(img,key) => { if(url === key) this.src = fromNativeSource(img); } })
+                cache.enableDownload();
             }
             cache.disableDownload();
         }
