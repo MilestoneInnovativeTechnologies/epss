@@ -9,13 +9,16 @@ export class Printer {
         this.ALIGNMODE = { LEFT:0, CENTER:1, RIGHT:2 };
         this.btAdapter = BluetoothAdapter.getDefaultAdapter();
         this.device = this.getDevice();
+        this.status = (!!this.btAdapter && !!this.device);
     }
 
     getDevice(){
-        let btDevices = this.btAdapter.getBondedDevices().toArray();
-        for(let i = 0; i < btDevices.length; i++) {
-            if (btDevices[i].getAddress() === this.ADDRESS)
-                return btDevices[i];
+        if(this.btAdapter){
+            let btDevices = this.btAdapter.getBondedDevices().toArray();
+            for(let i = 0; i < btDevices.length; i++) {
+                if (btDevices[i].getAddress() === this.ADDRESS)
+                    return btDevices[i];
+            }
         }
         return null;
     }
@@ -82,13 +85,21 @@ export class Printer {
         return onApply.concat(text).concat(offApply);
     }
 }
-//
-// export function print(data){
-//     if(arguments.length){
-//         let cmd = printer.INIT(); for(let i = 0; i < arguments.length; i++){
-//             if(Array.isArray(arguments[i])) cmd = cmd.concat(arguments[i]);
-//             else cmd = cmd.concat(printer.TEXT(arguments[i]));
-//         }
-//         printer.print(cmd.concat(Array(4).fill(10)));
-//     }
-// };
+
+global.printer = new Printer();
+
+export function print(data,tried){
+    if(!printer.status){
+        if(tried) return alert('Seems Bluetooth is not turned on OR Printer is not accessible!');
+        global.printer = new Printer();
+        return print(data,true);
+    } else {
+        if(arguments.length){
+            let cmd = printer.INIT(); for(let i = 0; i < arguments.length; i++){
+                if(Array.isArray(arguments[i])) cmd = cmd.concat(arguments[i]);
+                else cmd = cmd.concat(printer.TEXT(arguments[i]));
+            }
+            printer.print(cmd.concat(Array(4).fill(10)));
+        }
+    }
+}
