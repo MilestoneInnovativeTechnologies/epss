@@ -1,0 +1,53 @@
+<template>
+    <StackLayout class="m-t-12" v-if="content" :key="'hmg-'+uKey">
+        <StackLayout v-for="(section,idx) in sections" :key="['hmgs',idx].join('-')">
+            <TextTitleSub class="m-b-8 m-l-2">{{ section }}</TextTitleSub>
+            <GridMenuSectionItems :items="section_items[idx]"></GridMenuSectionItems>
+        </StackLayout>
+    </StackLayout>
+</template>
+
+<script>
+    import { mapState,mapActions,mapMutations } from 'vuex';
+    import {get_all_active_menu_in_order} from "../../assets/scripts/queries";
+    import {set_state_data} from "../../assets/scripts/vuex/mutation-types";
+
+    export default {
+        name: "HomeMenu",
+        data(){ return {
+            uKey:0
+        } },
+        computed: {
+            ...mapState('Menu',['content','sections','section_items']),
+        },
+        methods: {
+            ...mapActions('Menu',{ stockMenu:'_stock' }), ...mapMutations('Menu',[set_state_data]),
+            stockMenuContents(){
+                this.stockMenu({ query: sql.format(get_all_active_menu_in_order), key:'content' })
+                    .then(res => this.populateMenuItems(res));
+            },
+            addToSection(name){
+                let sections = this.sections, idx = sections.push(name);
+                this[set_state_data]({ sections }); return idx-1;
+            },
+            populateMenuItems(res){
+                let vm = this, sIdx = 0;
+                _.forEach(res,(Obj,idx) => {
+                    if(_.last(vm.sections) !== Obj.category_display) sIdx = vm.addToSection(Obj.category_display)-1;
+                    vm.addSectionItem(sIdx,Obj)
+                });
+                this.uKey = new Date().getTime();
+            },
+            addSectionItem(sIdx,Obj){
+                let section_items = this.section_items;
+                if(!section_items[sIdx]) section_items[sIdx] = [];
+                section_items[sIdx].push(Obj);
+                this[set_state_data]({ section_items });
+            },
+        },
+        mounted(){
+            if(!this.content){ this.stockMenuContents(); }
+            else if(_.isEmpty(this.sections)) { this.populateMenuItems(this.content); }
+        }
+    }
+</script>
