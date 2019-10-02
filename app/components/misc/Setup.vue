@@ -41,9 +41,13 @@
             percentage(){ return _.toSafeInteger(this.completed*100/_.toSafeInteger(this.downloads)) }
         },
         methods: {
-            ...mapActions('App',['register','sLog']), ...mapMutations('App',{ setStateData:set_state_data }), ...mapMutations([remove_event_subscriber]),
+            ...mapActions('App',['register','sLog']), ...mapActions('Menu',['distribute']),
+            ...mapMutations('App',{ setStateData:set_state_data }), ...mapMutations([remove_event_subscriber]),
             doSetup(){ this.busy = true; this.register(this.regData); },
-            completeSetup(){ this[remove_event_subscriber]({ event:'syncTableChanged',module:'App' }); this.sLog('Completed!'); }
+            completeSetup(){
+                this[remove_event_subscriber]({ event:'syncTableChanged',module:'App' });
+                this.distribute(); this.sLog('Completed!');
+            }
         },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Setup Error', message:val, okButtonText:'Ok' }).then(() => { this.busy = false; this.setStateData({ message:'' })}) },
