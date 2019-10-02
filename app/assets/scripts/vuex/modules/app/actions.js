@@ -49,11 +49,11 @@ export function setupTables({ dispatch }) {
 }
 export function createTables({ dispatch },data) {
     dispatch('sLog','Create DB tables'); createTable(table_information_db_table_name, table_information_db_table_fields,data).then(data => {
-        Promise.all([..._.map(data,(Ary,table) => createTable(table,Ary[0],getInformationInsertData(table,Ary)))]).then((insArray) => {
-            DB.insert(table_information_db_table_name, insArray, function (dispatch) {
-                dispatch('Sync/init',null,{ root:true });
+        Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],getInformationInsertData(table,Ary)))]).then((insArray) => {
+            DB.insert(table_information_db_table_name, insArray, function (dispatch,menu) {
+                dispatch('Menu/setup',menu,{ root:true }); dispatch('Sync/init',null,{ root:true });
                 setTimeout(function(dispatch){ dispatch('SSE/restartEventSource',null,{ root:true }) },1000,dispatch);
-            },dispatch);
+            },dispatch,data.menu);
         })
     });
 }

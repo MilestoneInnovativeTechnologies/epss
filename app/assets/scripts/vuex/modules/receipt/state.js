@@ -1,4 +1,4 @@
 export default {
-    dbTables: ['receipts'],
+    // dbTables: ['receipts'],
     list: []
 }

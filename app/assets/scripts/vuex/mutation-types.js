@@ -27,17 +27,16 @@ export const initiate_processing_transfer = 'initTransfer';
 export const finalize_processing_transfer = 'finalizeTransfer';
 export const finalize_failed_transfer = 'failedTransfer';
 
+//Menu
+export const add_setup_menu_data = 'addSetupMenuData';
+
 //Sync
 export const add_new_table_for_sync = 'newTable';
+export const update_table_timing = 'updateTableTime';
 export const add_to_sync_download_queue = 'addSyncDownloadItems';
 export const remove_first_sync_download_queue_item = 'removeSyncDownloadFirstItem';
 export const increment_sync_download_failure_count = 'incrementSyncDownloadFailureCount';
-export const add_to_app_sync_queue = 'addToAppQueue';
-export const processing_queue = 'processQueue';
-export const finish_processing_queue = 'finishProcessingSync';
-export const set_repeat_failed_timeout = 'setRepeatFailedTimeout';
-export const update_table_timing = 'updateTableTime';
-export const set_new_sync_time_out = 'setTimeOut';
+export const remove_user_tables_from_sync = 'removeUserTableSync';
 
 //User
 export const set_user_pin = 'setPin';

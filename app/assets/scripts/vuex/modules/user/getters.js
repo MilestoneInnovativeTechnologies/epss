@@ -1,5 +1,5 @@
-export function credentials({ email,password }) {
-    return { email,password };
+export function credentials({ login,password,pLogin }) {
+    return { login:login || pLogin,password };
 }
 export function user_store_areas({ id },{ _tableDataFilter }) {
     return _tableDataFilter('user_store_area','user',id);

@@ -1,4 +1,9 @@
 export default {
+    sMenuData: [],
+    content: null,
+    sections: [],
+    section_items: [],
+
     items: {
         sales:['SALES','local_grocery_store','pages/sales/SalesIndex','Sales'],
         sales_return:['RETURN','call_missed','pages/sales/SalesReturnIndex','Sales Return'],

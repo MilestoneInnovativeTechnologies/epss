@@ -10,7 +10,7 @@ import {
     add_new_table_for_sync,
     add_to_sync_download_queue,
     increment_sync_download_failure_count,
-    remove_first_sync_download_queue_item,
+    remove_first_sync_download_queue_item, remove_user_tables_from_sync,
     update_table_timing,
 } from './../../mutation-types';
 import {SSSetup} from "../../../services/setup";
@@ -79,6 +79,10 @@ export function initUserTables({ dispatch,commit,state }) {
             resolve(this.result); dispatch('triggerEventSubscribers',{ event:state.subscribeEvents[0],payload:Object.keys(state.tables) },{ root:true })
         },state,commit,dispatch,resolve)
     });
+}
+export function delUserSyncTables({ dispatch,commit,state }) {
+    commit(remove_user_tables_from_sync);
+    dispatch('triggerEventSubscribers',{ event:state.subscribeEvents[0],payload:Object.keys(state.tables) },{ root:true });
 }
 export function forceDownloadUserTables({ dispatch }) {
     DB.get(table_information_db_table_name,{ type:'APPUSER' },function (dispatch) {

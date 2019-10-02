@@ -1,4 +1,5 @@
 import {
+    clear_upload_completed_delay,
     maximum_upload_processing_time,
     maximum_upload_retry_count,
 } from "../../../constants";
@@ -7,6 +8,7 @@ import {increment_upload_retry_count, set_state_data, set_upload_data} from "../
 let timeOut = null;
 
 export function init({ dispatch,getters,state,commit }) {
+    setTimeout(() => dispatch('clearCompleted'),clear_upload_completed_delay * 1000);
     DB.get(getters.table,{ progress:state.enums.ADDED },function(commit,dispatch){
         if(!this.error && this.result.length !== 0) commit(set_state_data,{ key:'latest',value:_.get(_.last(this.result),'id') });
         return dispatch('processQueue');
@@ -46,7 +48,7 @@ export function processQueue({ state,dispatch,commit }) {
     if(timeOut) clearTimeout(timeOut);
     if(state.processing){
         if(considerFailed(state.init_time)) return dispatch('makeProcessingFailed');
-        timeOut = setTimeout(function(dispatch){ dispatch('processQueue') },5000,dispatch);
+        timeOut = setTimeout(() => dispatch('processQueue') ,5000);
     } else {
         if(state.completed < state.latest){
             commit(set_state_data,{ key:'processing',value:true });
@@ -110,6 +112,13 @@ export function maxRetryExhausted({ state,commit,dispatch }) {
 
 export function makeProcessingFailed({ dispatch }) {
     dispatch('uploadFailure');
+}
+
+export function clearCompleted({ state,getters,dispatch }) {
+    DB.delete(getters.table,{ progress:state.enums.RESPONDED,status:state.enums.SUCCESS },function(commit,id){
+        if(this.error) log('Clearing completed uploads failed',this.error);
+        setTimeout(() => dispatch('clearCompleted'),clear_upload_completed_delay*1000);
+    });
 }
 
 function base64Encode(value) {

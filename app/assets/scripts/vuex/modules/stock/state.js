@@ -1,5 +1,5 @@
 export default {
-    dbTables:['stock_transfer'],
+    // dbTables:['stock_transfer'],
     list:[],
     detail:{},
 }

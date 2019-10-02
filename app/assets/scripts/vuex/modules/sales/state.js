@@ -1,5 +1,5 @@
 export default {
-    dbTables:['transactions','transaction_details','store_product_transactions'],
+    // dbTables:['transactions','transaction_details','store_product_transactions'],
     customerSaleSummary: {},
     customerReturnSummary: {},
     transactions:{},

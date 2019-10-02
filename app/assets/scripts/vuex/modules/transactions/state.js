@@ -1,4 +1,4 @@
 export default {
-    dbTables: ['transactions','transaction_details'],
+    // dbTables: ['transactions','transaction_details'],
     detail:{},
 }

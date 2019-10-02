@@ -1,4 +1,4 @@
 export default {
-    dbTables:['areas','area_users'],
+    dbTables:['areas'],
     list:[],
 }

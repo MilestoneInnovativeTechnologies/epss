@@ -1,3 +1,3 @@
 export default {
-    dbTables: ['store_product_transactions'],
+    // dbTables: ['store_product_transactions'],
 }

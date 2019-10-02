@@ -1,5 +1,5 @@
 export default {
-    dbTables:['users'],
+    // dbTables:['users'],
     outstanding:{},
     list:[],
     pending_sales_order: {}

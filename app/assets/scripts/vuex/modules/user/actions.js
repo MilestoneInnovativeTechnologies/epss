@@ -1,21 +1,21 @@
-import { set_state_data } from "../../mutation-types";
+import {add_event_subscriber, remove_user_tables_from_sync, set_state_data} from "../../mutation-types";
 
 const userStateKeys = ['name','email','id','api_token','reference'];
 
 export function doLogin({ state,commit,dispatch }){
-    let { email,password } = state; commit(set_state_data,{ validating:true });
-    dispatch('api',{ item:'login', params: { email,password }, success: 'User/loginResponse' },{ root:true })
+    let { login,password } = state; commit(set_state_data,{ validating:true });
+    dispatch('api',{ item:'login', params: { login,password }, success: 'User/loginResponse' },{ root:true })
 }
 
-export function loginResponse({ commit,dispatch }, data) {
+export function loginResponse({ commit,dispatch,state }, data) {
     if(_.isEmpty(data)) return commit(set_state_data,{ validating:false,message:'No email and password matching records found' });
-    dispatch('doInsertLoginData',getNameDetailArray(data))
+    if(data.login != state.pLogin) dispatch('Sync/forceDownloadUserTables',null,{ root:true });
+    dispatch('doInsertLoginData',getNameDetailArray(data));
 }
 export function doInsertLoginData({ dispatch },data){
     return new Promise((resolve) => {
         dispatch('_insert',{ table:'epss_user',data:data,upload:false },{ root:true }).then((activity) => {
             dispatch('doPostLoginActions',getNameDetailObject(activity.data));
-            setTimeout(function(dispatch){ dispatch('Sync/forceDownloadUserTables',null,{ root:true }) },12000,dispatch);
         });
     })
 }
@@ -24,12 +24,14 @@ export function doPostLoginActions({ commit,dispatch },data) {
     dispatch('Sync/initUserTables',null,{ root:true });
     commit(set_state_data,{ validating:false });
 }
-export function logout({ commit },vm) {
+export function logout({ commit,dispatch,state },vm) {
+    commit(set_state_data,{ pLogin:state.login });
     return new Promise((resolve, reject) => {
-        DB.delete('epss_user',null,function(resolve,vm,commit){
+        DB.delete('epss_user',null,function(resolve,vm,commit,dispatch){
             commit(set_state_data,_(userStateKeys).mapKeys(key => key).mapValues(() => null).value());
+            dispatch('Sync/delUserSyncTables',null,{ root:true });
             resolve(vm);
-        },resolve,vm,commit)
+        },resolve,vm,commit,dispatch)
     });
 }
 
