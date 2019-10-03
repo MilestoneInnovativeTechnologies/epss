@@ -190,7 +190,13 @@ class Database {
     }
 
     drop(tbl) { this.table(tbl); return this.query(`DROP TABLE IF EXISTS "${tbl}"`); }
-    create(tbl, fields, callback, ...args) { sLog(tbl+' -> Create'); this.drop(tbl); return this.query(this.create_Q(tbl, fields),callback,...args); }
+    create(tbl, fields, callback, ...args) {
+        let idxFs = '';
+        if(callback && typeof callback !== 'function'){ idxFs = callback; callback = args[0]; args = args.splice(1); }
+        sLog(tbl+' -> Create');
+        this.drop(tbl); let query = [this.create_Q(tbl, fields),this.create_IDXs(tbl,idxFs)].join(' ');
+        return this.query(query,callback,...args);
+    }
     create_idField() { return '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'; }
     create_CAField() { return this.create_I('created_at'); }
     create_UAField() { return this.create_I('updated_at'); }
@@ -198,7 +204,9 @@ class Database {
     create_I(field) { return `"${field}" INTEGER`; }
     create_FS(fields) { return _.map(_.split(fields, ','), (field) => {return this.create_T(field);}) }
     create_AFS(fields) { return _.concat(this.create_idField(), this.create_FS(fields), this.create_CAField(), this.create_UAField()); }
-    create_Q(tbl, fields) { return `CREATE TABLE "${tbl}" ( ${this.create_AFS(fields).join(', ')} )`; }
+    create_Q(tbl, fields) { return `CREATE TABLE "${tbl}" ( ${this.create_AFS(fields).join(', ')} );`; }
+    create_IDXs(tbl,fields){ if(!fields) return ''; return fields.split(',').map(fld => this.create_IDX(tbl,fld)).join(' '); }
+    create_IDX(tbl,fld){ return `CREATE INDEX "${tbl}_${fld}_index" ON "${tbl}" ("${fld}");` }
 
     exeQuery(query){
         this.executedQuery.unshift(query);
