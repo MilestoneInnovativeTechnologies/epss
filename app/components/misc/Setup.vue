@@ -5,8 +5,9 @@
         <TextField class="cp fsi" v-model="uuid" />
         <TextRegular :textWrap="true">Provide this UUID to Milestone to get your device registered for using ePlus Smart Sale</TextRegular>
         <TextRegular :textWrap="true" class="m-t-20">Once your device registered, please proceed to Setup Application</TextRegular>
-        <ActivityIndicator :busy="busy" class="m-t-30"></ActivityIndicator>
-        <StackLayout v-if="busy" style="margin-top: 50; width: 70%">
+        <ActivityIndicator :busy="busy" class="m-t-20"></ActivityIndicator>
+        <StackLayout v-if="busy" class="m-t-20">
+            <TextHighlight class="m-t-20 w-full text-center" :key="percentage" v-if="tasks['Init synchronizing app records']">{{ 'Downloading records. Completed: '+percentage+'%' }}</TextHighlight>
             <TextHeadingSub>Tasks</TextHeadingSub>
             <GridLayout coloums="*,auto" :rows="taskRows">
                 <template v-for="(status,task,idx) in tasks">
@@ -14,7 +15,6 @@
                     <TextHighlight class="m-l-20" :row="idx" col="1">{{ task }}</TextHighlight>
                 </template>
             </GridLayout>
-            <TextHighlight class="m-t-20 w-full text-center" :key="percentage" v-if="tasks['Init synchronizing app records']">{{ 'Downloading records. Completed: '+percentage+'%' }}</TextHighlight>
         </StackLayout>
     </App>
 </template>
