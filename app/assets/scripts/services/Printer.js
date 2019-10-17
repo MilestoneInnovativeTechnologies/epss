@@ -61,6 +61,7 @@ export class Printer {
     SIZEOFF(){ return [29,33,0] };
     CUT(){ return [29,86,65,0] };
     CUTPARTIAL(){ return [29,86,66,0] };
+    DRAWER(){ return [16,20,0,0,0] }
     LEFTON(){ return this.ALIGN(this.ALIGNMODE.LEFT); };
     LEFTOFF(){ return this.ALIGN(this.ALIGNMODE.LEFT); };
     CENTERON(){ return this.ALIGN(this.ALIGNMODE.CENTER); };
@@ -99,7 +100,7 @@ export function print(data,tried){
                 if(Array.isArray(arguments[i])) cmd = cmd.concat(arguments[i]);
                 else cmd = cmd.concat(printer.TEXT(arguments[i]));
             }
-            printer.print(cmd.concat(Array(4).fill(10)));
+            return printer.print(cmd.concat(Array(2).fill(10)).concat(printer.CUTPARTIAL()).concat(printer.DRAWER()));
         }
     }
 }
