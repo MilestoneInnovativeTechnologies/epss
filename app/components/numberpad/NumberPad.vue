@@ -1,20 +1,20 @@
 <template>
-    <GridLayout columns="*" rows="auto,auto,auto,auto" width="420" backgroundColor="#FFFFFF">
+    <GridLayout columns="324" rows="auto,auto,auto,auto" backgroundColor="#FFFFFF">
         <TextTitleSub row="0" class="p-y-15 bcp text-center" style="color: #FFFFFF">{{ title }}</TextTitleSub>
-        <TextTitle row="1" class="text-center fs24 c-bg-white bordercp p-y-15" style="border-width: 1" :key="number">{{ number }}</TextTitle>
-        <GridLayout row="2" rows="auto,auto" columns="3*,*" width="420" class="bordercp" style="border-width: 2">
+        <TextTitle row="1" class="text-center fs24 c-bg-white bordercp p-y-15" style="border-width: 2" :key="number">{{ number }}</TextTitle>
+        <GridLayout row="2" rows="auto,auto" columns="3*,*" width="324" class="bordercp" style="border-width: 2">
             <WrapLayout row="0" col="0">
                 <NumberPadKey v-for="n in 9" :text="n" :key="'cal-key-'+n" @tap.native="app(n)" @doubleTap.native="app(n+''+n)"></NumberPadKey>
             </WrapLayout>
             <WrapLayout row="0" col="1">
-                <NumberPadIcon text="backspace" @tap.native="bks()"></NumberPadIcon>
-                <NumberPadIcon text="exposure" @tap.native="sign()"></NumberPadIcon>
-                <NumberPadIcon text="exposure_plus_1" @tap.native="add(1)" @doubleTap.native="add(2)"></NumberPadIcon>
+                <NumberPadKey icon="backspace" @tap.native="bks()"></NumberPadKey>
+                <NumberPadKey icon="clear_all" @tap.native="clr()"></NumberPadKey>
+                <NumberPadKey icon="exposure_plus_1" @tap.native="add(1)" @doubleTap.native="add(2)"></NumberPadKey>
             </WrapLayout>
             <WrapLayout row="1" col="0" colSpan="2">
-                <NumberPadIcon text="delete_sweep" @tap.native="clr()"></NumberPadIcon>
+                <NumberPadKey icon="exposure" @tap.native="sign()"></NumberPadKey>
                 <NumberPadKey text="." @tap.native="dec()"></NumberPadKey>
-                <NumberPadKey text="0" width="204" @tap.native="app(0)"></NumberPadKey>
+                <NumberPadKey text="0" width="156" @tap.native="app(0)"></NumberPadKey>
             </WrapLayout>
         </GridLayout>
         <StackLayout row="3" orientation="horizontal" class="bcg01">

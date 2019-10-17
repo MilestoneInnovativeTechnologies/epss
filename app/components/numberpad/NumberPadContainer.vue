@@ -1,7 +1,7 @@
 <template>
-    <HorizontallyMiddle>
+    <AlignMiddle>
         <NumberPad :title="title" :defaultText="defaultText" :okButtonText="okButtonText" :cancelButtonText="cancelButtonText"></NumberPad>
-    </HorizontallyMiddle>
+    </AlignMiddle>
 </template>
 
 <script>
