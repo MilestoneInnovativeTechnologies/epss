@@ -5,7 +5,7 @@
             <CustomActionBar :title="title" :back="back" :drawer="drawer"></CustomActionBar>
             <AbsoluteLayout class="w-full">
                 <MainContent top="0" left="0" class="w-full h-full" v-bind="mainContentBind" v-on="$listeners" style="z-index: 1"><slot></slot></MainContent>
-                <AbsoluteFormContainer top="0" left="0" class="w-full h-full transparent" v-if="showForm" v-bind="formProps" style="z-index: 2"></AbsoluteFormContainer>
+                <AbsoluteFormContainer top="0" left="0" class="w-full h-full transparent" v-if="showAbsoluteForm" v-bind="absoluteFormProps" style="z-index: 2"></AbsoluteFormContainer>
                 <NumberPadContainer top="0" left="0" class="w-full h-full transparent" v-if="showNumberPad" v-bind="numberPadProps" style="z-index: 3"></NumberPadContainer>
                 <NavigationSpinner top="0" left="0" class="w-full h-full" v-if="navigationBusy" style="z-index: 4"></NavigationSpinner>
             </AbsoluteLayout>
