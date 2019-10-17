@@ -1,16 +1,16 @@
 <template>
-    <Label :text="items.length" />
-<!--    <GridLayout  rows="auto" :columns="strAry(items.length).join(',')" class="m-b-2">-->
-<!--        <GridMenuSectionItem v-for="(item,idx) in items" :key="'gmi'+idx" class="m-x-2" row="0" :col="idx" :item="item"></GridMenuSectionItem>-->
-<!--    </GridLayout>-->
+    <GridLayout rows="auto" :columns="columns" class="m-b-2">
+        <GridMenuSectionItem v-for="(item,idx) in items" :key="'gmi'+idx" :class="itmCls" row="0" :col="idx" :item="item" :height="height"></GridMenuSectionItem>
+    </GridLayout>
 </template>
 
 <script>
     export default {
         name: "GridMenuSectionItems",
-        props: ['items'],
-        methods: {
-            strAry(n){ return _.fill(_.range(0,n),'*') },
+        props: ['items','height','space'],
+        computed: {
+            columns(){ return _.fill(_.range(0,this.items.length),'*').join(',') },
+            itmCls(){ return ['m','x',this.space].join('-') }
         }
     }
 </script>

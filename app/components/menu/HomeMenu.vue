@@ -1,8 +1,8 @@
 <template>
-    <StackLayout class="m-t-12" v-if="content" :key="'hmg-'+uKey">
-        <StackLayout v-for="(section,idx) in sections" :key="['hmgs',idx].join('-')">
+    <StackLayout class="m-t-12" v-if="section_items.length" :width="width">
+        <StackLayout class="m-b-15" v-for="(section,idx) in sections" :key="['hmgs',idx].join('-')">
             <TextTitleSub class="m-b-8 m-l-2">{{ section }}</TextTitleSub>
-            <GridMenuSectionItems :items="section_items[idx]"></GridMenuSectionItems>
+            <GridMenuSectionItems :items="section_items[idx]" :height="height" :space="spacing"></GridMenuSectionItems>
         </StackLayout>
     </StackLayout>
 </template>
@@ -15,10 +15,15 @@
     export default {
         name: "HomeMenu",
         data(){ return {
-            uKey:0
+            height: 80,
+            spacing: 2,
+            minWidth: 120,
+            maxWidth: 430,
         } },
         computed: {
-            ...mapState('Menu',['content','sections','section_items']),
+            ...mapState('Menu',['content','sections','section_items']), ...mapState('App',{ scrWidth:'width' }),
+            maxItems(){ return _.max(_.map(this.section_items,(sAry) => sAry.length)) },
+            width(){ return (_.toSafeInteger(this.scrWidth) > this.maxWidth) ? this.maxWidth : '100%' }
         },
         methods: {
             ...mapActions('Menu',{ stockMenu:'_stock' }), ...mapMutations('Menu',[set_state_data]),
@@ -33,8 +38,10 @@
             populateMenuItems(res){
                 let vm = this, sIdx = 0;
                 _.forEach(res,(Obj,idx) => {
-                    if(_.last(vm.sections) !== Obj.category_display) sIdx = vm.addToSection(Obj.category_display)-1;
-                    vm.addSectionItem(sIdx,Obj)
+                    //if(_.last(vm.sections) !== Obj.category_display) sIdx = vm.addToSection(Obj.category_display); vm.addSectionItem(sIdx,Obj)
+                    sIdx = vm.sections.indexOf(Obj.category_display);
+                    sIdx = (sIdx < 0) ? vm.addToSection(Obj.category_display) : sIdx;
+                    vm.addSectionItem(sIdx,Obj);
                 });
                 this.uKey = new Date().getTime();
             },
