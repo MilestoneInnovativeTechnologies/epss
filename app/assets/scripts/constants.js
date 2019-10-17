@@ -3,6 +3,7 @@ export const database_fetch_url = 'http://milestoneit.net/api/ss/setup';
 export const sse_monitor_path = 'sse/info';
 export const no_image_file = '~/assets/images/no-image.jpg';
 export const product_image_path = 'image/item';
+export const wide_screen_minimum_width = 900;
 
 //Module Common
 export const stock_load_cache_refresh_on_each_nth_query = 0;
@@ -10,6 +11,7 @@ export const stock_load_cache_refresh_on_each_nth_query = 0;
 //app
 export const table_information_db_table_name = 'epss_tblinfo';
 export const table_information_db_table_fields = 'table,fields,type,direction,create,update,download,upload';
+export const table_information_db_table_indexes = 'table,type,direction';
 
 //sync
 export const download_common_params = { format: 'json',  type: 'data' };
