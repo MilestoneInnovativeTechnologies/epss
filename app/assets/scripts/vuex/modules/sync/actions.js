@@ -48,15 +48,29 @@ export function syncDataReceived({ dispatch,commit }, data) {
 export function doProcessSyncData({ dispatch,commit,state },data) {
     _.forEach(data,(activity) => {
         if(activity.table === 'setup') return processSetupActivity(activity);
-        let table = activity.table, mode = activity.mode, type = mode === 'update' ? '_update' : '_insert', data = activity.data, time = __.dtz(activity.datetime);
+        let table = activity.table, mode = activity.mode, data = activity.data, time = __.dtz(activity.datetime);
         if(state.tables[table].direction !== 'upload'){
             commit(update_table_timing,{ table,type:'download',time });
             if(state.tables[table].type === 'APPUSER') deleteTableRecords(table);
-            for(let i = 0; i < data.length; i += sync_create_chunk_length)
-                dispatch(type,{ table,data:data.slice(i,sync_create_chunk_length + i),upload:false },{ root:true })
-                    .then(activity => commit(update_table_timing,{ table,type:mode,time:_.get(_.last(activity.data),mode+'d_at') }))
+            dispatch( (mode === 'update') ? 'doUpdateSyncData' : 'doInsertSyncData',{ table,data });
         }
     })
+}
+
+export function doInsertSyncData({ commit,dispatch }, { table,data }) {
+    for(let i = 0; i < data.length; i += sync_create_chunk_length){
+        dispatch('_insert',{ table,data:data.slice(i,sync_create_chunk_length + i),upload:false },{ root:true })
+            .then(activity => commit(update_table_timing,{ table,type:'create',time:_.get(_.last(activity.data),'created_at') }))
+    }
+}
+const cFields = { 'APP':'id','USER':'_ref','APPUSER':null };
+export function doUpdateSyncData({ dispatch,state,commit }, { table,data }) {
+    let cField = cFields[state.tables[table].type];
+    for(let i = 0; i < data.length; i++){
+        let condition = cField ? _.pick(data[i],cField) : null;
+        dispatch('_update',{ table,data:data[i],condition,upload:false },{ root:true })
+            .then(activity => commit(update_table_timing,{ table,type:'update',time:_.get(_.last(activity.data),'updated_at') }))
+    }
 }
 
 export function syncDataFail({ state,commit }){
