@@ -1,5 +1,5 @@
 import {
-    add_module, bind_table_module, create_event_subscription, add_event_subscriber, remove_event_subscriber
+    add_module, bind_table_module, create_event_subscription, add_event_subscriber, remove_event_subscriber, set_state_data
 } from './mutation-types';
 
 export default {
@@ -24,5 +24,8 @@ export default {
         if(!state.actionEvents || !state.actionEvents[event] && !state.actionEvents[event].length) return;
         let actionEvents = state.actionEvents, idx = actionEvents[event].indexOf(module); if(idx === -1) return;
         state.actionEvents[event].splice(idx,1);
+    },
+    [set_state_data](state, Obj) {
+        _.forEach(Obj,(value, key) => { state[key] = value; })
     },
 };
