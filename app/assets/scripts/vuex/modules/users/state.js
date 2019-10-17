@@ -1,4 +1,5 @@
 export default {
     // dbTables: ['users'],
-    newUserFields: ['name','email','phone','address']
+    newUserFields: ['name','email','phone','address'],
+    SELogin: [],
 }
