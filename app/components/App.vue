@@ -28,23 +28,20 @@
             width: { type: [String,Number], default: '95%' },
             center: { type: [String,Boolean], default: false },
             actionProps: { type: Object },
-            numberPad: { type: [String,Boolean], default: false },
-            numberPadProps: { type: [String,Object], default: () => { return {} } },
-            form: { type: [String,Boolean], default: false },
-            formProps: { type: [Object], default: () => { return {} } },
         },
         data(){ return {
+            events: ['number-pad','absolute-form'],
             mainContentProps: ['action','scroll','width','center','actionProps'],
             navigationBusy: false,
+            absoluteForm: null,
+            numberPad: false,
         }},
         computed: {
             mainContentBind(){  return _(this.mainContentProps).mapKeys(i => i).mapValues(i => this[i]).value() },
-            showNumberPad(){ return (this.numberPad !== 'false' && this.numberPad !== false) },
-            showForm(){ return (this.form !== 'false' && this.form !== false) },
-        },
-        created(){
-            EB.$on('number-pad-cancelled',() => this.$emit('numberpad',{ result:false,number:_.toNumber(this.numberPadProps.defaultText) || 0 }));
-            EB.$on('number-pad-proceeded',(number) => this.$emit('numberpad',{ result:true,number }));
+            showNumberPad(){ return !!(this.numberPad) },
+            numberPadProps(){ return this.numberPad },
+            showAbsoluteForm(){ return !!(this.absoluteForm) },
+            absoluteFormProps(){ return this.absoluteForm }
         },
         methods: {
             listener0(data){ this.numberPad = data; this.ELOn('number-pad-cancelled',() => { this.numberPad = null; this.ELOff('number-pad-cancelled'); }) },
