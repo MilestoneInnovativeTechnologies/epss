@@ -14,8 +14,11 @@
 </template>
 
 <script>
+    import {EventListeners} from "../assets/scripts/mixins/eventlisteners";
+
     export default {
         name: 'App',
+        mixins: [EventListeners],
         props: {
             title: String,
             back: { type: [String,Boolean], default: true },
@@ -43,9 +46,9 @@
             EB.$on('number-pad-cancelled',() => this.$emit('numberpad',{ result:false,number:_.toNumber(this.numberPadProps.defaultText) || 0 }));
             EB.$on('number-pad-proceeded',(number) => this.$emit('numberpad',{ result:true,number }));
         },
-        beforeDestroy() {
-            ['number-pad-cancelled','number-pad-proceeded']
-                .map(event => EB.$off(event));
-        },
+        methods: {
+            listener0(data){ this.numberPad = data; this.ELOn('number-pad-cancelled',() => { this.numberPad = null; this.ELOff('number-pad-cancelled'); }) },
+            listener1(form){ this.absoluteForm = form; this.ELOn('absolute-form-close',() => { this.absoluteForm = null; this.ELOff('absolute-form-close'); }) },
+        }
     }
 </script>
