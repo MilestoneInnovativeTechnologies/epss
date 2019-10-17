@@ -7,63 +7,55 @@
 </template>
 
 <script>
-    import {PropertyAnnotationValuesProvider} from "../../../assets/scripts/mixins/annotationprovider";
+    const PropertyAnnotationProvider = require("../../../assets/scripts/services/PropertyAnnotationProvider").PropertyAnnotationProvider;
+    const metadata = { isReadOnly:false, commitMode:'Immediate', validationMode:'Immediate' , propertyAnnotations:null };
+    let propertyAnnotations;
 
     export default {
         name: "AppForm",
         props: ['fields', 'values', 'action', 'title'],
-        mixins: [PropertyAnnotationValuesProvider],
         data() {
             return {
-                commit: 'Immediate', validate: 'Immediate', read: false,
-                morph: {label: 'displayName', type: 'editor', values: 'valuesProvider'},
-                valProTypes: ['Picker', 'SegmentedEditor', 'List', 'AutoCompleteInline'],
                 source: {}, final: {},
             }
         },
         computed: {
-            propertyAnnotations() {
-                let fields = this.fields, Annotations = [];
-                _.forEach(fields, (Obj, name) => {
-                    Annotations.push(this.getPropertyAnnotation(name, Obj));
-                });
-                return Annotations;
-            },
-            metadata() {
-                return _.zipObject(['isReadOnly', 'commitMode', 'validationMode', 'propertyAnnotations'], [
-                    this.read, this.commit, this.validate, this.propertyAnnotations
-                ])
-            }
+            metadata() { return propertyAnnotations.metadata; }
         },
         methods: {
-            getPropertyAnnotation(name, Obj) {
-                let morph = this.morph, Annotation = {name};
-                Annotation = _.reduce(Obj, function (Annotation, value, key) {
-                    Annotation[_.has(morph, key) ? morph[key] : key] = value;
-                    return Annotation;
-                }, Annotation);
-                return this.pavpValuesPatchedAnnotation(Annotation);
-            },
             getInitValue(name) {
-                let values = this.values;
-                if (values && !_.isEmpty(values) && _.has(values, name) && !_.isNil(values[name])) return values[name];
-                return (_.includes(this.valProTypes, _.get(this.fields, [name, 'type']))) ? this.pavpGetAnnotationValueConverted(name) : ''
+                let values = this.values, initValue;
+                if (values && !_.isEmpty(values) && _.has(values, name) && !_.isNil(values[name])) initValue = values[name];
+                if(_.includes(propertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
+                    return propertyAnnotations.GetAnnotationNameConverted(name,initValue);
+                return _.isNil(initValue) ? '' : initValue;
+            },
+            getInitSourceValue(name) {
+                let initValue = this.source[name];
+                return (_.includes(propertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
+                    ? propertyAnnotations.GetAnnotationValueConverted(name, initValue)
+                    : initValue;
             },
             submitForm() {
-                this.$refs.radDataForm.nativeView.validateAndCommitAll().then(result => (result) ? this.$emit('submit', this.final) : null)
+                this.$refs['radDataForm'].nativeView.validateAndCommitAll().then(result => (result) ? this.$emit('submit', this.final) : null)
             },
             formPropsCommitted(data) {
                 let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj, field);
-                if (_.includes(this.valProTypes, this.fields[field].type)) value = this.pavpGetAnnotationValueConverted(field, value);
-                this.final = Object.assign({}, this.final, _.fromPairs([[field, value]]));
+                if (_.includes(propertyAnnotations.valuesProviderTypeEditors, this.fields[field].type)) value = propertyAnnotations.GetAnnotationValueConverted(field, value);
+                this.$set(this.final,field,value);
                 this.$emit(field, value); this.$emit('final', this.final);
             }
         },
         created() {
-            _.forEach(this.fields, (nameObj, name) => { this.source[name] = this.getInitValue(name); });
+            propertyAnnotations = new PropertyAnnotationProvider(this.fields);
+            let nObj = Object.create({}), fields = _.keys(this.fields);
+            fields.map(field => this.$set(nObj,field,null));
+            this.source = Object.assign({},this.source,nObj);
+            this.final = Object.assign({},this.final,nObj);
+            fields.map(field => this.$set(this.source,field,this.getInitValue(field)));
         },
         mounted() {
-            _.forEach(this.fields, (nameObj, name) => { this.final[name] = this.getInitValue(name); });
+            _.keys(this.fields).map(field => this.$set(this.final,field,this.getInitSourceValue(field)));
             this.$emit('final', this.final);
         }
     }
