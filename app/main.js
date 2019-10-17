@@ -9,8 +9,8 @@ global.print = require('./assets/scripts/services/Printer.js').print;
 import "./app.scss";
 import "./app.css";
 
-import store from './assets/scripts/vuex/store';
-global.log = function(text,...texts){ store.commit('Log/addQueue',text); if(TNS_ENV !== 'production') console.log(text,...texts); };
+global.VuexStore = require('./assets/scripts/vuex/store').default;
+global.log = function(text,...texts){ VuexStore.commit('Log/addQueue',text); if(TNS_ENV !== 'production') console.log(text,...texts); };
 
 // import VueDevtools from 'nativescript-vue-devtools'
 // if(TNS_ENV !== 'production') {
@@ -30,7 +30,7 @@ Vue.filter('fonticon', fonticon);
 require('./components/index');
 
 new Vue({
-    store,
+    store: VuexStore,
     render: h => h('frame', [h(Home)]),
     mounted() {
         let vuexStore = this.$store;
