@@ -21,6 +21,7 @@ class Database {
         this.database = null;
         this.fileName = 'epss';
         this.tbl = null;
+        this.idxQueries = {};
         this.result = null;
         this.error = false;
         this.success = true;
@@ -189,13 +190,25 @@ class Database {
         if(callback) callback.apply(this,args);
     }
 
+    setIndexes(tbl,fields){
+        if(this.idxQueries[tbl] === undefined) this.idxQueries[tbl] = [];
+        Array.prototype.push.apply(this.idxQueries[tbl],this.create_IDXs(tbl,fields));
+    }
+    runIdxQry(){
+        _.forEach(this.idxQueries,(queries,tbl) => {
+            _.map(queries,(query) => this.query(query));
+            this.idxQueries[tbl] = [];
+        })
+    }
+
     drop(tbl) { this.table(tbl); return this.query(`DROP TABLE IF EXISTS "${tbl}"`); }
     create(tbl, fields, callback, ...args) {
         let idxFs = '';
-        if(callback && typeof callback !== 'function'){ idxFs = callback; callback = args[0]; args = args.splice(1); }
+        if(typeof callback !== 'function'){ idxFs = callback; callback = args[0]; args = args.splice(1); }
         sLog(tbl+' -> Create');
-        this.drop(tbl); let query = [this.create_Q(tbl, fields),this.create_IDXs(tbl,idxFs)].join(' ');
-        return this.query(query,callback,...args);
+        this.drop(tbl); let query = this.create_Q(tbl, fields);
+        if(idxFs) this.setIndexes(tbl,idxFs);
+        return this.query(query,callback,...args).then(() => this.runIdxQry());
     }
     create_idField() { return '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'; }
     create_CAField() { return this.create_I('created_at'); }
@@ -205,7 +218,7 @@ class Database {
     create_FS(fields) { return _.map(_.split(fields, ','), (field) => {return this.create_T(field);}) }
     create_AFS(fields) { return _.concat(this.create_idField(), this.create_FS(fields), this.create_CAField(), this.create_UAField()); }
     create_Q(tbl, fields) { return `CREATE TABLE "${tbl}" ( ${this.create_AFS(fields).join(', ')} );`; }
-    create_IDXs(tbl,fields){ if(!fields) return ''; return fields.split(',').map(fld => this.create_IDX(tbl,fld)).join(' '); }
+    create_IDXs(tbl,fields){ if(!fields) return ''; return fields.split(',').map(fld => this.create_IDX(tbl,fld)); }
     create_IDX(tbl,fld){ return `CREATE INDEX "${tbl}_${fld}_index" ON "${tbl}" ("${fld}");` }
 
     exeQuery(query){
