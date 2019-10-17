@@ -3,7 +3,7 @@ import Home from './components/Home'
 import {TNSFontIcon, fonticon} from 'nativescript-fonticon';
 
 global._ = require('lodash'); global.moment = require('moment'); global.__ = {}; global.sql = require('sqlstring');
-global.DB = require('./assets/scripts/services/database').DB; global.EB = new Vue();
+global.DB = require('./assets/scripts/services/database').DB; global.EB = require('./assets/scripts/services/EventBus').EventBus;
 global.print = require('./assets/scripts/services/Printer.js').print;
 
 import "./app.scss";
