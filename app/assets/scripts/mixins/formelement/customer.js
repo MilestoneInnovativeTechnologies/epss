@@ -14,6 +14,6 @@ export const FormElementMixinCustomer = {
         ...mapActions({ feListFetchCustomer: 'Customer/_stockIfNot' }),
     },
     created() {
-        this.feListFetchCustomer({ query:sql.format(user_assigned_area_customers,this.feUserID),key:'list' })
+        if(this.feCustomerList.length === 0) this.feListFetchCustomer({ query:sql.format(user_assigned_area_customers,this.feUserID),key:'list' });
     }
 };
