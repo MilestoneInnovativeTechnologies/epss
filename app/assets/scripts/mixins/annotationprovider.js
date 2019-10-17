@@ -67,10 +67,26 @@ export const PropertyAnnotationValuesProvider = {
             let { key,label } = this.pavpConverterParams[name];
             return _.get(_.find(this.pavpSourceValues[name],[label,value]),key)
         },
+        pavpNameConverterSame(value){ return value; },
+        pavpNameConverterArray(value,name){ return this.pavpSourceValues[name][value]; },
+        pavpNameConverterObject(value,name){ return this.pavpSourceValues[name][value]; },
+        pavpNameConverterCollection(value,name){
+            let { key,label } = this.pavpConverterParams[name];
+            return _.get(_.find(this.pavpSourceValues[name],[key,value]),label)
+        },
         pavpGetAnnotationValueConverted(name,value){
-            if(!this.pavpValueConverter[name]) return value || '';
+            if(!this.pavpValueConverter[name]) return _.isNil(value) ? '' : value;
             let method = 'pavpValueConverter' + this.pavpValueConverter[name];
             value = _.isNil(value) ? _.head(this.pavpPatchValues[name]) : value;
+            return this[method](value,name);
+        },
+        pavpGetAnnotationNameConverted(name,value){
+            console.warn('pavpGetAnnotationNameConverted',name,this.pavpValueConverter[name]);
+            if(!this.pavpValueConverter[name]) return _.isNil(value) ? '' : value;
+            value = _.isNil(value) ? this.pavpGetAnnotationValueConverted(name,_.head(this.pavpPatchValues[name])) : value;
+            console.warn('pavpGetAnnotationNameConverted 2',name,value);
+            let method = 'pavpNameConverter' + this.pavpValueConverter[name];
+            console.warn('pavpGetAnnotationNameConverted 3',name,value,method);
             return this[method](value,name);
         }
     }
