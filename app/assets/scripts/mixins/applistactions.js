@@ -7,7 +7,12 @@ export const AppListAction = {
         dataCollection: [],
     }},
     methods: {
-        listAction(payload){ let method = 'listActionExecute'+_.upperFirst(payload.action); this[method](payload); this.emitCollection(); },
+        listAction(payload) {
+            let method = 'listActionExecute' + _.upperFirst(payload.action);
+            this.emitAction(payload);
+            this[method](payload);
+            this.emitCollection();
+        },
         listActionExecuteRemove({ row }){ this.dataItems.splice(row,1); },
         listActionExecuteRemoveAll(){
             let title = 'Remove all items', message = "This will remove every items in the list. It's not reversible.";
@@ -18,7 +23,8 @@ export const AppListAction = {
         listActionExecutePick({ row }){ this.dataCollection = _.concat(row); },
         listActionExecuteAll(){ if(this.dataCollection.length === this.dataItems.length) this.dataCollection.splice(0); else this.dataCollection = _.range(0,this.dataItems.length); },
         listActionExecuteSelect({ row }){ this.dataCollection = _.xor(this.dataCollection,_.concat(row)); },
-        emitCollection(){ this.$emit('collection',_.map(_.pick(this.dataItems,this.dataCollection))); }
+        emitCollection(){ this.$emit('collection',_.map(_.pick(this.dataItems,this.dataCollection))); },
+        emitAction({ action,row }){ let item = _.isNumber(row) ? _.pick(this.dataItems,row) : null; this.$emit(action,item); }
     },
     mounted(){
         if(this.action === 'remove') this.dataCollection = _.range(0,this.dataItems.length);
