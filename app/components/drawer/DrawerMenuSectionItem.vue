@@ -1,18 +1,42 @@
 <template>
     <GridLayout style="border-bottom-width: 1px; border-bottom-color: #FFFFFF" columns="4,*">
         <Label text="" col="0"></Label>
-        <GridLayout col="1" rows="35" columns="*" class="p-l-16" backgroundColor="#FF8855" @tap="$navigateTo(require('./../'+items[item][2]).default)">
-            <TextRegular col="0" row="0" verticalAlignment="center" class="text-uppercase">{{ items[item][3] }}</TextRegular>
+        <GridLayout col="1" rows="35" columns="*" class="p-l-16" backgroundColor="#FF8855" @tap="proceedNavigation">
+            <TextRegular col="0" row="0" verticalAlignment="center" class="text-uppercase">{{ itemName }}</TextRegular>
         </GridLayout>
     </GridLayout>
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import {AccountKeyDefaults} from "../../assets/scripts/mixins/accountkeydefaults";
 
     export default {
         name: "DrawerMenuSectionItem",
+        mixins: [AccountKeyDefaults],
         props: ['item'],
-        computed: mapState('Menu',['items'])
+        computed: {
+            itemName(){ return this.item.home_display },
+            itemIcon(){ return this.item.icon },
+            fncode(){ return this.item.fncode },
+            component(){ return require('./../index/'+this.item.component+'.vue').default; },
+            cProps(){ return this.item.props.split(','); },
+            nProps(){ let vm = this, cProps = this.cProps; return _.zipObject(cProps,cProps.map(prp => vm[prp])); },
+        },
+        methods: {
+            proceedNavigation(){
+                this.ELOff('account-defaults-set',this.navigate); this.ELOn('account-defaults-set',this.navigate);
+                this.navigate();
+            },
+            navigate(){
+                this.ELOff('absolute-form-submit',this.listener0);
+                let nProps = _.zipObject(this.cProps,this.cProps.map(prop => this[prop]));
+                if(_.every(nProps)) return this.doNavigate(nProps);
+                this.ACCKDs_requestDefaults();
+            },
+            doNavigate(props){
+                this.ELOff('account-defaults-set');
+                this.$navigateTo(this.component,{ props });
+            },
+        }
     }
 </script>

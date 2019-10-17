@@ -1,6 +1,6 @@
 <template>
-    <StackLayout class="bcp">
-        <DrawerMenuSection v-for="(items,name,idx) in category" :key="['dms',idx].join('-')" :section="name" :items="items" :no="idx"></DrawerMenuSection>
+    <StackLayout class="bcp" v-if="section_items.length">
+        <DrawerMenuSection v-for="(section,idx) in sections" :key="['dmgs',idx].join('-')" :section="section" :items="section_items[idx]" :no="idx"></DrawerMenuSection>
     </StackLayout>
 </template>
 
@@ -9,6 +9,6 @@
 
     export default {
         name: "DrawerMenu",
-        computed: mapState('Menu',['category']),
+        computed: mapState('Menu',['content','sections','section_items'])
     }
 </script>
