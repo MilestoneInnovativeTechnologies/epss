@@ -11,7 +11,7 @@ export function setup({ commit },menu){
 export function distribute({ state,dispatch }){
     if(!state.sMenuData.length) return;
     _.forEach(state.sMenuData, ({ fncode,component,props,status }) => {
-        let condition = { fncode }, table = 'menu', data = { component,props }; if(!status || component.trim() === '') data.status = 'Inactive';
+        let condition = { fncode }, table = 'menu', data = { component,props }; if(!status || component.trim() === '' || status === 'Inactive') data.status = 'Inactive';
         dispatch('_update',{ table,data,condition,upload:false },{ root:true });
     })
 }
