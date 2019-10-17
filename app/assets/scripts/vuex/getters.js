@@ -19,6 +19,7 @@ export function docno(){
         return _.reduce(replaces,(format,key) => object[key] ? format.replace(`[${key}]`,object[key]) : format,format);
     }
 }
+export function toDateTime(){ return (date) => date + ' ' + moment().format('HH:mm:ss') }
 export function abbreviations(state,getters){
     return (store,fycode,fncode) => {
         let str = _.get(getters['Stores/_tableDataById']('stores'),store);
