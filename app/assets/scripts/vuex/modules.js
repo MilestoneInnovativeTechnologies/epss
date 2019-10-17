@@ -22,4 +22,5 @@ export default {
     'FN': require('./modules/fn/index').default,
     'Receipts': require('./modules/receipt/index').default,
     'Stock': require('./modules/stock/index').default,
+    'Transfer': require('./modules/transfer/index').default,
 }
