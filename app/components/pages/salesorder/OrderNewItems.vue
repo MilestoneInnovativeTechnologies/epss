@@ -14,7 +14,7 @@
 <script>
     import { mapActions,mapGetters } from 'vuex';
     import {fetch_all_products, user_assigned_customer_sales_orders} from "../../../assets/scripts/queries";
-    const feMX = require("./../../../assets/scripts/mixins/formelement");
+    const feMX = require("../../../assets/scripts/mixins/formelement");
 
     export default {
         name: "OrderNewItems",

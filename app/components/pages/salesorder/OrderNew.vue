@@ -6,7 +6,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    const feMX = require('./../../../assets/scripts/mixins/formelement');
+    const feMX = require('../../../assets/scripts/mixins/formelement');
 
     export default {
         name: "OrderNew",
