@@ -22,7 +22,7 @@
     export default {
         name: "ReturnNewItems",
         props: ['master','sales','store','transaction'],
-        mixins: [feMX.common,feMX.returnsaleproducts,feMX.quantity,feMX.nature],
+        mixins: [feMX.common,feMX.returnsaleproducts,feMX.quantity],
         data(){ return {
             detailFields: [ 'docno','date','customer','executive','total','tax','discount','product','quantity','amount','rate','taxRate','taxValue','pid' ],
             PPLayout: { Product:'product',Quantity:'quantity',Rate:'rate','Tax/Qty':'tax',Discount:'discount',Total:'total' },
