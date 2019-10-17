@@ -1,5 +1,9 @@
+import {fetch_all_products} from "../../../queries";
+
 export default {
-    // dbTables:['products','pricelist','product_groups','product_group_master'],
-    transactions:{},
+    dbTables: ['products'],
+    dbQuery: { products: fetch_all_products },
+    transactions: {},
     list: [],
+    group: [],
 }
