@@ -1,0 +1,60 @@
+<template>
+    <GridLayout rows="auto" columns="*,*,*,*">
+        <StackLayout @tap="quantity" row="0" col="0" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18 m-r-5" height="80">
+            <FontIcon class="m-t-12">edit</FontIcon>
+            <TextBold class="c-white" style="color: #FFFFFF">Quantity</TextBold>
+        </StackLayout>
+        <StackLayout @tap="discount" row="0" col="1" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18 m-r-5" height="80">
+            <FontIcon class="m-t-12">edit</FontIcon>
+            <TextBold class="c-white" style="color: #FFFFFF">Discount</TextBold>
+        </StackLayout>
+        <StackLayout @tap="rate" row="0" col="2" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18 m-r-5" height="80">
+            <FontIcon class="m-t-12">edit</FontIcon>
+            <TextBold class="c-white" style="color: #FFFFFF">Rate</TextBold>
+        </StackLayout>
+        <StackLayout @tap="remove" row="0" col="3" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18" height="80">
+            <FontIcon class="m-t-12">delete</FontIcon>
+            <TextBold class="c-white" style="color: #FFFFFF">Remove</TextBold>
+        </StackLayout>
+    </GridLayout>
+</template>
+
+<script>
+    import {EventListeners} from "../../../assets/scripts/mixins/eventlisteners";
+
+    const actions = {
+        'edit-quantity': ['Change Quantity', 'add_shopping_cart'],
+        'edit-discount': ['Change Discount', 'edit'],
+        'edit-rate': ['Change Rate', 'attach-money'],
+        'delete': ['Remove Item', 'delete'],
+    };
+
+    export default {
+        name: "TRAItemActions",
+        mixins: [EventListeners],
+        props: ['item'],
+        data(){ return {
+            action: null,
+        } },
+        methods: {
+            quantity(){ this.action = 'quantity'; this.openPad('Quantity',this.item.quantity) },
+            rate(){ this.action = 'rate'; this.openPad('Rate',this.item.rate) },
+            discount(){ this.action = 'discount'; this.openPad('Discount',this.item.discount) },
+            remove(){ this.action = 'remove'; this.updateData(null) },
+            openPad(title,defaultText){
+                this.ELEmit('number-pad',{ title,defaultText,okButtonText:'Update '+title });
+                this.ELOn('number-pad-proceeded',this.updateData);
+                this.ELOn('number-pad-cancelled',this.closePad)
+            },
+            updateData(text){
+                this.$emit('update',{ key:this.action,item:this.item,value:text });
+                this.closePad();
+            },
+            closePad(){
+                this.ELEmit('number-pad',false);
+                this.ELOff('number-pad-proceeded');
+                this.ELOff('number-pad-cancelled');
+            }
+        }
+    }
+</script>
