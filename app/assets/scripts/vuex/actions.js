@@ -23,16 +23,19 @@ export function init({ dispatch,commit },modulesMap){
 
 export function redrawModules({state, commit, rootState}, table) {
     if (!_.has(state.table_modules, table)) return;
-    DB.get(table, null, function (modules, commit) {
-        if (this.error) return;
-        _.forEach(modules, (module) => {
-            let mutation = module + '/' + mutate_sync_data;
+    _.forEach(state.table_modules[table], (module) => {
+        let mutation = module + '/' + mutate_sync_data;
+        let query = (rootState[module]['dbQuery'] && rootState[module]['dbQuery'][table]) ? rootState[module]['dbQuery'][table] : null;
+        if (query) DB.getAllQuery(query, function (table, commit, mutation) {
+            if(this.error) console.error('REDRAW Query Error',table,this.error);
+            commit(mutation, {table,data: this.result}, {root: true});
+        }, [table,commit, mutation]); else DB.get(table, null, function (commit, mutation) {
+            if (this.error) return;
             commit(mutation, {table: this.table(), data: this.result}, {root: true});
-            if(rootState[module] && rootState[module]['list'] && !_.isEmpty(rootState[module]['list']))
-                rootState[module]['list'] = [];
-        });
-    }, state.table_modules[table], commit);
+        }, commit, mutation);
+    });
 }
+
 export function initRedrawData({state,rootState,dispatch}) {
     DB.get(rootState['App'].dbTables[0],1,function(modules,dispatch){
         if(!this.error) _.forEach(modules,(modules,table) => dispatch('redrawModules',table));
@@ -69,7 +72,7 @@ export function _update({ dispatch,commit },{ table,data,id,pk,condition,upload 
 
 export function postDBAction({ commit,dispatch }, {table, type}) {
     commit('Sync/' + update_table_timing,{ table,type },{ root:true });
-    dispatch('redrawModules',table,{ root:true });
+    setTimeout(() => dispatch('redrawModules',table,{ root:true }),4000);
 }
 
 export function addEventSubscribers({state,commit},modulesMap) {
