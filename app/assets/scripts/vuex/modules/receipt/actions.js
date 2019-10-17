@@ -13,3 +13,12 @@ export function create({ rootGetters,dispatch },data){
         })
     });
 }
+export function save({ dispatch },data){
+    let table = 'receipts', { fncode,store } = data;
+    return new Promise(resolve => {
+        dispatch('_insert',{ table,data },{ root:true }).then(activity => {
+            dispatch('Reserves/incReserve',{ fncode,store },{ root:true });
+            resolve(activity['_ref']);
+        })
+    });
+}
