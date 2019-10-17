@@ -16,7 +16,7 @@
     import { mapGetters } from 'vuex';
     export default {
         name: "WSSaleCustomerModal",
-        mixins: [feMX.common,feMX.customer,feMX.store,feMX.salestype,feMX.fiscal,feMX.datepicker,feMX.payment],
+        mixins: [feMX.common,feMX.customer,feMX.store,feMX.fiscal,feMX.datepicker,feMX.payment],
         props: ['customer','store','type','fycode','date','payment'],
         data(){ return {
             fieldLayout: { customer:'Customer',store:'Store',type:'SalesType',fycode:'Fiscal',date:'DatePicker',payment:'Payment' },
