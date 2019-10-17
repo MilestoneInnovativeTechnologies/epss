@@ -1,4 +1,10 @@
-import { database_fetch_url, organization_fetch_url, table_information_db_table_fields, table_information_db_table_name } from "../../../constants";
+import {
+    database_fetch_url,
+    organization_fetch_url,
+    table_information_db_table_fields,
+    table_information_db_table_indexes,
+    table_information_db_table_name
+} from "../../../constants";
 import {set_state_data} from "../../mutation-types";
 
 export function sLog({commit},task) {
@@ -30,7 +36,7 @@ export function deviceRegistration({ dispatch }, {uuid}) {
 export function setup({ state,dispatch,commit },data){
     if(_.isEmpty(data)) { let message = 'OOPS!! Device not registered!!'; commit(set_state_data,{ message }); return log(message); }
     data = _.assign(data,_.pick(state,['uuid','width','height']));
-    Promise.all([..._.map([...state.dbTables,...state.appTables],(tbl,idx) => createTable(tbl,state.dbFields[idx],state.dbSLog[idx]))]).then((resArray) => {
+    Promise.all([..._.map([...state.dbTables,...state.appTables],(tbl,idx) => createTable(tbl,state.dbFields[idx],state.dbIndexes[idx],state.dbSLog[idx]))]).then((resArray) => {
         _.forEach(resArray,(slog) => dispatch('sLog',slog));
         let reqData = _.omit(data,['id','created_at','updated_at']), insData = _.map(reqData,(detail,name) => _.zipObject(['name','detail'],[name,detail]));
         dispatch('sLog','Initialize app'); commit(set_state_data,reqData);
@@ -48,8 +54,8 @@ export function setupTables({ dispatch }) {
     });
 }
 export function createTables({ dispatch },data) {
-    dispatch('sLog','Create DB tables'); createTable(table_information_db_table_name, table_information_db_table_fields,data).then(data => {
-        Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],getInformationInsertData(table,Ary)))]).then((insArray) => {
+    dispatch('sLog','Create DB tables'); createTable(table_information_db_table_name, table_information_db_table_fields,table_information_db_table_indexes,data).then(data => {
+        Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],Ary[3],getInformationInsertData(table,Ary)))]).then((insArray) => {
             DB.insert(table_information_db_table_name, insArray, function (dispatch,menu) {
                 dispatch('Menu/setup',menu,{ root:true }); dispatch('Sync/init',null,{ root:true });
                 setTimeout(function(dispatch){ dispatch('SSE/restartEventSource',null,{ root:true }) },1000,dispatch);
@@ -63,9 +69,9 @@ export function syncTableChanged({ dispatch },tables){
     dispatch('sLog','Init synchronizing app records');
 }
 
-function createTable(name,fields,done){
+function createTable(name,fields,indexes,done){
     return new Promise((resolve, reject) => {
-        DB.create(name,fields,function(resolve,done){
+        DB.create(name,fields,indexes,function(resolve,done){
             return resolve(done);
         },resolve,done)
     })
