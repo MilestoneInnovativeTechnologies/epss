@@ -1,11 +1,11 @@
 export const TransactionQueryBuilder = class {
-    constructor(type){
-        this.fieldMaps = { docno:'TR.`docno`',customer:'U.`name`',date:'TR.`date`',quantity:'SPT.`quantity`',nature:'PTN.`name`',total:'TD.`total`',amount:'TD.`amount`',tax:'TD.`tax`',discount:'TD.`discount`',store:'ST.`name`',product:'P.`narration`',code:'P.`code`',rate:'PL.`price`',taxValue:'P.`taxfactor01`',taxRate:'P.`taxfactor01` * 100',direction:'SPT.`direction`',type:'PTT.`name`',cid:'TR.`customer`',pid:'SPT.`product`',sid:'SPT.`store`',id:'TR.`_ref`',eid:'E.`id`',executive:'E.`name`' };
-        this.tableMap = { TR:'transactions',TD:'transaction_details',SPT:'store_product_transactions',PTN:'product_transaction_natures',PTT:'product_transaction_types',ST:'stores',P:'products',U:'users',E:'users',PL:'pricelist' };
-        this.dependTables = { SPT:['TD'],PTN:['TD','SPT'],PTT:['TD','SPT'],ST:['TD','SPT'],P:['TD','SPT'],PL:['TD','SPT'] };
-        this.tableJoin = { TD:'TR.`_ref` = TD.`transaction`',SPT:'TD.`spt` = SPT.`_ref`',PTN:'SPT.`nature` = PTN.`id`',PTT:'SPT.`type` = PTT.`id`',ST:'SPT.`store` = ST.`id`',P:'SPT.`product` = P.`id`',U:'TR.`customer` = U.`id`',E:'TR.`user` = E.`id`',PL:'SPT.`product` = PL.`product`' };
-        this.typeWhere = [`TR.\`fncode\` LIKE "${type}%"`];
-        this.limit = '0,100';
+    constructor(limit){
+        this.fieldMaps = { docno:'TR.`docno`',fycode:'TR.`fycode`',fncode:'TR.`fncode`',customer:'U.`name`',date:'TR.`date`',quantity:'TD.`quantity`',tax:'TD.`tax`',discount01:'TD.`discount01`',discount02:'TD.`discount02`',store:'ST.`name`',product:'P.`narration`',code:'P.`code`',rate:'TD.`rate`',taxValue:'TD.`tax`',taxRule:'TD.`taxrule`',direction:'TD.`direction`',cid:'TR.`customer`',pid:'TD.`product`',sid:'TR.`store`',id:'TR.`_ref`',eid:'E.`id`',executive:'E.`name`' };
+        this.tableMap = { TR:'transactions',TD:'transaction_details',ST:'stores',P:'products',U:'users',E:'users' };
+        this.dependTables = { P:['TD'] };
+        this.tableJoin = { TD:'TR.`_ref` = TD.`transaction`',ST:'TR.`store` = ST.`id`',P:'TD.`product` = P.`id`',U:'(TR.`customer` = U.`id` OR TR.`customer` IS NULL)',E:'TR.`user` = E.`id`' };
+        this.typeWhere = [];
+        this.limit = `0,${limit || 1}`;
     }
     fields(fields){
         this.rFields = fields;
@@ -16,7 +16,7 @@ export const TransactionQueryBuilder = class {
         return this;
     }
     where(whereObj){
-        this.rWhere = _.map(this.fieldMaps,(field,name) => { if(whereObj[name]){ return (_.isArray(whereObj[name])) ? `${this.fieldMaps[name]} IN ("${whereObj[name].join('","')}")` : `${this.fieldMaps[name]} = "${whereObj[name]}"` } });
+        this.rWhere = _.map(this.fieldMaps,(field,name) => { if(whereObj[name]){ return (_.isArray(whereObj[name])) ? `${this.fieldMaps[name]} IN ('${whereObj[name].join("','")}')` : `${this.fieldMaps[name]} = '${whereObj[name]}'` } });
         return this;
     }
     max(num){
@@ -25,6 +25,6 @@ export const TransactionQueryBuilder = class {
     }
     query(){
         this.aWhere = _.concat(this.ons,this.typeWhere,_.filter(this.rWhere));
-        return `SELECT ${this.select.join(',')} FROM ${this.froms.join(',')} WHERE ${this.aWhere.join(' AND ')} ORDER BY TR.\`date\` DESC LIMIT ${this.limit}`;
+        return `SELECT ${this.select.join(',')} FROM ${this.froms.join(',')} WHERE ${this.aWhere.join(' AND ')} ORDER BY datetime(TR.\`date\`) DESC LIMIT ${this.limit}`;
     }
 };
