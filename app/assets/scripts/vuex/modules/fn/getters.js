@@ -32,16 +32,29 @@ export function discount01(state,{ getDiscount }){
 export function discount02(state,{ getDiscount }){
     return (code,total,discount) => getDiscount(code,'02',total,discount)
 }
-export function total(state,{ details,itemTax,discount01,discount02 },rootState,rootGetters){
+export function saleItem(state,{ details,itemTax,discount01,discount02 },rootState,rootGetters){
     return (code,item,qty,extra) => {
-        let fnDetails = details(code), itemDetails = rootGetters["Product/product"](item); extra = extra || {};
-        let rate = (_.isNil(extra.rate)) ? getNum(itemDetails.price) : _.toNumber(extra.rate);
-        let total = rate * getNum(qty,1); if(!code || !fnDetails) return total;
-        let Discount01 = (fnDetails.discount01 !== 'NotRequired') ? discount01(code,total,getNum(extra.discount01,getNum(extra.discount,0))) : 0;
-        total -= getNum(Discount01); let tax = itemTax(code,item,extra.tax); total += (total * tax);
-        let Discount02 = (fnDetails.discount02 !== 'NotRequired') ? discount02(code,total,getNum(extra.discount02,getNum(extra.discount,0))) : 0;
-        total -= getNum(Discount02);
-        return total;
+        let fnDetails = details(code), itemDetails = rootGetters["Product/product"](item),
+            pid = itemDetails['id'], name = itemDetails['name'], narration = itemDetails['narration'], uom = itemDetails['uom']; extra = extra || {};
+        let quantity = getNum(qty,1),rate,amount,dis01,tax,dis02,taxdisplay,disc,taxrate,total,taxrule = itemDetails['taxcode' + fnDetails.taxselection.substr(-2)];
+        rate = (_.isNil(extra.rate)) ? getNum(itemDetails.price) : _.toNumber(extra.rate);
+        amount = quantity * rate;
+        taxrate = itemTax(code,item,getNum(extra.tax));
+        dis01 = (fnDetails.discount01 !== 'NotRequired') ? discount01(code,amount,getNum(extra.discount01,getNum(extra.discount,0))) : 0;
+        tax = ((quantity * rate) - dis01) * taxrate; taxdisplay = tax + '@' + taxrate*100 + '%';
+        dis02 = (fnDetails.discount02 !== 'NotRequired') ? discount02(code,(amount-dis01),getNum(extra.discount02,getNum(extra.discount,0))) : 0;
+        disc = dis01 + dis02; total = amount + tax - disc;
+        return { item,product:pid,pid,name,narration,product_name:name,uom,quantity,rate,amount,discount01:dis01,taxrule,taxrate,tax,taxdisplay,discount02:dis02,discount:disc,total };
+    }
+}
+export function saleItemBasic(state,{ details,itemTax },rootState,rootGetters){
+    return (code,item) => {
+        let fnDetails = details(code), itemDetails = rootGetters["Product/product"](item),
+            pid = itemDetails['id'], name = itemDetails['name'], narration = itemDetails['narration'], uom = itemDetails['uom'];
+        let rate,taxrate,taxrule = itemDetails['taxcode' + fnDetails.taxselection.substr(-2)];
+        rate = getNum(itemDetails.price);
+        taxrate = itemTax(code,item);
+        return { item,product:pid,pid,name,narration,product_name:name,uom,rate,taxrule,taxrate };
     }
 }
 
