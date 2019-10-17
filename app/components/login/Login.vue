@@ -67,7 +67,7 @@
                 this.loginForm = true; this.busy = false;
             },
             postFormLogin(data){
-                this.busy = true; this.loginForm = false; this.autoNavigateDelay = 12000;
+                this.busy = true; this.loginForm = false; this.autoNavigateDelay = 3000;
                 this.pTxt(`Login Success!! User data Synching in progress`);
                 this.waitNotification = true;
                 this.autoNavigate = setTimeout(function(vm){ vm.redirectToHome(2) },this.autoNavigateDelay,this)
