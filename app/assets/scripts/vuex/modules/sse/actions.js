@@ -1,30 +1,40 @@
 import {SSE} from "nativescript-sse";
 
+let reConnectMinDelay = 3,connection = false,timeOut = 0;
 let eventSource = null;
+const EST = { Connected:null,Error:null,Message:null,Url:null };
+
+export function restartEventSourceDelayed({ dispatch }){
+    clearTimeout(timeOut); clearEventSource();
+    timeOut = setTimeout(() => dispatch('restartEventSource'),reConnectMinDelay*1000)
+}
 
 export function restartEventSource({ dispatch }){
     clearEventSource(); dispatch('startEventSource');
 }
 
 export function startEventSource({ dispatch,getters }){
+    if(!connection) return;
     let url = getPreparedSSEUrl(getters.SSEUrl,getters.SYNCTables);
-    if(url) return dispatch('processEventSource',url);
+    if(url && (EST.Url !== url || (__.now() - _.toSafeInteger(EST.Connected)) > 3)) return dispatch('processEventSource',url);
 }
 
 export function processEventSource({dispatch}, url) {
-    eventSource = new SSE(url);
+    eventSource = new SSE(url); EST.Connected = __.now();
     eventSource.events.on('onMessage', (data) => {
+        EST.Message = __.now();
         let tables = purifySSEDataMessage(data);
         dispatch('triggerEventSubscribers',{ event:'SSEMonitor',payload:tables },{ root:true });
     });
     eventSource.events.on('onError', (data) => {
-        setTimeout(function (dispatch) { dispatch('restartEventSource') },3000,dispatch)
+        EST.Error = __.now(); EST.Connected = null;
+        dispatch('restartEventSourceDelayed');
     });
 }
 
 export function onConnectionChange({ dispatch },status){
-    clearEventSource();
-    if(status) return dispatch('startEventSource');
+    connection = status;
+    if(status) return dispatch('restartEventSource');
 }
 
 export function syncTableChanged({ dispatch },tables){
