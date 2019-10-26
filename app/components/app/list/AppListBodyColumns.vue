@@ -1,7 +1,7 @@
 <template>
     <GridLayout class="applist-tbody-columns" :rows="rows" :columns="columns">
         <AppListBodyColumnContent v-for="(path,colNo) in mainLayoutPaths" row="0" :col="colNo" :idx="row" class="applist-tbody-column" :key="key(colNo)" :path="path" :item="item" :wrap="mainLayoutPaths.length === 1" :links="links" :updates="updates">{{ content(path) }}</AppListBodyColumnContent>
-        <AppListBodyColumnSubRow v-if="hasSubRow" row="1" col="0" :colSpan="headColumnCount" :item="item" :layout="subLayout" :links="links"></AppListBodyColumnSubRow>
+        <AppListBodyColumnSubRow v-if="hasSubRow" row="1" col="0" :idx="row" :colSpan="headColumnCount" :item="item" :layout="subLayout" :cast="cast" :links="links" :updates="updates"></AppListBodyColumnSubRow>
     </GridLayout>
 </template>
 
