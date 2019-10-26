@@ -36,7 +36,6 @@ module.exports = env => {
     const {
         // The 'appPath' and 'appResourcesPath' values are fetched from
         // the nsconfig.json configuration file.
-		// when bundling with `tns run android|ios --bundle`.
         appPath = "app",
         appResourcesPath = "app/App_Resources",
 
@@ -49,6 +48,8 @@ module.exports = env => {
         hiddenSourceMap, // --env.hiddenSourceMap
         unitTesting, // --env.unitTesting
         verbose, // --env.verbose
+        snapshotInDocker, // --env.snapshotInDocker
+        skipSnapshotTools // --env.skipSnapshotTools
     } = env;
 
     const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap;
@@ -300,6 +301,8 @@ module.exports = env => {
             ],
             projectRoot,
             webpackConfig: config,
+            snapshotInDocker,
+            skipSnapshotTools
         }));
     }
 
