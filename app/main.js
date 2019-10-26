@@ -1,13 +1,11 @@
 import Vue from 'nativescript-vue'
 import Home from './components/Home'
+import "./app.scss";
 import {TNSFontIcon, fonticon} from 'nativescript-fonticon';
 
 global._ = require('lodash'); global.moment = require('moment'); global.__ = {}; global.sql = require('sqlstring');
 global.DB = require('./assets/scripts/services/database').DB; global.EB = require('./assets/scripts/services/EventBus').EventBus;
 global.print = require('./assets/scripts/services/Printer.js').print;
-
-import "./app.scss";
-import "./app.css";
 
 global.VuexStore = require('./assets/scripts/vuex/store').default;
 global.log = function(text,...texts){ VuexStore.commit('Log/addQueue',text); if(TNS_ENV !== 'production') console.log(text,...texts); };
