@@ -2,9 +2,7 @@ import {AppListDetailProps} from "./applistdetailprops";
 
 export const AppListLinkNavigate = {
     mixins:[AppListDetailProps],
-    props: {
-        links: { type:Object,default:{} },
-    },
+    props: ['links'],
     data(){ return {
         mixinLinkClasses: ['cp','text-underline'],
     } },
