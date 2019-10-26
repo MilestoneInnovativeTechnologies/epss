@@ -1,23 +1,17 @@
 <template>
     <GridLayout class="applist-tbody-columns" :rows="rows" :columns="columns">
-        <TextRegular v-for="(path,colNo) in mainLayoutPaths" row="0" :col="colNo" class="applist-tbody-column" :class="_linkClass(path)" @tap.native="_linkNavigate(path)" :textWrap="mainLayoutPaths.length === 1" :key="key(colNo)">{{ content(path) }}</TextRegular>
+        <AppListBodyColumnContent v-for="(path,colNo) in mainLayoutPaths" row="0" :col="colNo" :idx="row" class="applist-tbody-column" :key="key(colNo)" :path="path" :item="item" :wrap="mainLayoutPaths.length === 1" :links="links" :updates="updates">{{ content(path) }}</AppListBodyColumnContent>
         <AppListBodyColumnSubRow v-if="hasSubRow" row="1" col="0" :colSpan="headColumnCount" :item="item" :layout="subLayout" :links="links"></AppListBodyColumnSubRow>
     </GridLayout>
 </template>
 
 <script>
     import { getContentComponentOptions } from './../../../assets/scripts/mixins/getcontent';
-    import { AppListLinkNavigate } from './../../../assets/scripts/mixins/applistlink';
 
     export default {
         name: "AppListBodyColumns",
-        props: {
-            item: { type:Object,default:()=>{ return { name:'ePlus' } } },
-            headColumnCount: { type:Number,default:1 },
-            layout: { type:Object,default:()=> { return { Name:'name' } } },
-            cast: { type:Object,default:()=> { return { } } },
-        },
-        mixins: [getContentComponentOptions,AppListLinkNavigate],
+        props: ['row','item','headColumnCount','layout','cast','links','updates'],
+        mixins: [getContentComponentOptions],
         computed:{
             unique(){ return new Date().getTime() },
             key(){ return (colNo) => ['applist',this.unique,'head','column',colNo].join('-') },
