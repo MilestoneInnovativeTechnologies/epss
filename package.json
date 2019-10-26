@@ -43,7 +43,7 @@
     "css-loader": "^1.0.0",
     "lazy": "1.0.11",
     "moment-locales-webpack-plugin": "^1.0.7",
-    "nativescript-dev-webpack": "~1.1.0",
+    "nativescript-dev-webpack": "~1.2.0",
     "nativescript-vue-template-compiler": "^2.0.0",
     "nativescript-worker-loader": "^0.9.5",
     "node-sass": "^4.9.2",
