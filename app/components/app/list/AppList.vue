@@ -11,13 +11,13 @@
                 <AppListHeadAction v-if="hasAction" :action="action" class="applist-thead-column applist-column-action" @list-action="listAction" :collection="dataCollection" :items="dataItems.length"></AppListHeadAction>
             </FlexBoxLayout>
         </FlexBoxLayout>
-        <FlexboxLayout flexDirection="column" row="2" col="0" class="applist-tbody">
+        <FlexBoxLayout flexDirection="column" row="2" col="0" class="applist-tbody">
             <FlexBoxLayout class="applist-tbody-row" v-for="(item,rowNo) in items" :key="key(rowNo,item)">
                 <TextBold class="applist-tbody-column applist-column-no">{{ rowNo + 1 }}</TextBold>
-                <AppListBodyColumns :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :cast="cast"></AppListBodyColumns>
+                <AppListBodyColumns :row="rowNo" :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :updates="updates" :cast="cast"></AppListBodyColumns>
                 <AppListAction v-if="hasAction" class="applist-tbody-column applist-column-action" :action="action" :link="detail" :props="linkProps(item)" :rowno="rowNo" @list-action="listAction" :collection="dataCollection"></AppListAction>
             </FlexBoxLayout>
-        </FlexboxLayout>
+        </FlexBoxLayout>
         <FlexBoxLayout row="3" col="0" class="applist-tfoot">
             <TextHighlight class="text-underline m-t-8 m-r-5 text-right" width="100%" @tap.native="loadMore">Load More</TextHighlight>
         </FlexBoxLayout>
@@ -34,10 +34,11 @@
             headRowHeight: { type:[Number,String],default:50 },
             layout: { type:Object,default:()=>{ return {} } },
             maxHeadContents: { type:Number,default:3 },
-            source:{ type:[Array,Object],default:() => [{ name:'ePlus' },{ name:'Smart Sale' }] },
+            source:{ type:[Array,Object],default:() => [] },
             detail: { type:String,default:'' },
             props: { type:null,default:'id' },
-            links: { type:Object,default:()=>{return {}} },
+            links: { type:Object,default:()=>{ return {} } },
+            updates: { type:Array,default:() => [] },
             limit: { type:[Number,String],default:10 },
             title: { type:String,default:'' },
             cast: { type:Object,default:()=>{ return {} } },
@@ -66,11 +67,14 @@
             setLimit(limit){ this.dataLimit = _.toSafeInteger(limit); },
             loadMore(){ this.display += _.toSafeInteger(this.dataLimit) },
             getDataLayout(items){ return _.mapKeys(items,(item) => _.capitalize(item)) },
+            updateDataItem(index,data){ for(let key in data) if(this.dataItems && _.has(this.dataItems,[index,key])) this.dataItems[index][key] = data[key]; },
         },
         created() {
             this.display = this.dataLimit === 0 ? this.dataItems.length : this.dataLimit;
             this.dataLayout = _.isEmpty(this.layout) ? this.getDataLayout(_.keys(_.head(this.dataItems))) : this.layout;
+            EB.$on('applist-dataitem-update',({ index,data }) => this.updateDataItem(index,data));
         },
+        beforeDestroy(){ EB.$off('applist-dataitem-update'); },
         watch: {
             source:{ deep:true,immediate:true,handler:'setItems' },
             limit:{ immediate:true,handler:'setLimit' },
