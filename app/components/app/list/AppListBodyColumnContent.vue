@@ -12,7 +12,7 @@
     export default {
         name: "AppListBodyColumnContent",
         mixins: [AppListLinkNavigate,AppListDetailUpdate],
-        props: ['item','path','wrap'],
+        props: ['text','item','path','wrap'],
         computed: {
             normalClass(){ return [] },
             textWrap(){ return this.wrap },
