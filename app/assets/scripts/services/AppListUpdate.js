@@ -25,10 +25,10 @@ export class AppListUpdate {
     getUpdatesFromObject(object){
         let value = this.valName, dObject = this.getDefaultData();
         return _.mapValues(object,function(rObj){
-            let dObj = dObject;
+            let dObj = _.cloneDeep(dObject);
             dObj['fields'][value].type = _.has(rObj,'type') ? rObj.type : 'Text';
             if(_.has(rObj,'field')) dObj['fields'][value] = rObj.field;
-            return _.cloneDeep(_.assign(dObj,rObj));
+            return Object.assign({},dObj,rObj);
         });
     }
 }
