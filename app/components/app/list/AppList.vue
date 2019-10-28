@@ -14,7 +14,7 @@
         <FlexBoxLayout flexDirection="column" row="2" col="0" class="applist-tbody">
             <FlexBoxLayout class="applist-tbody-row" v-for="(item,rowNo) in items" :key="key(rowNo,item)">
                 <TextBold class="applist-tbody-column applist-column-no">{{ rowNo + 1 }}</TextBold>
-                <AppListBodyColumns :row="rowNo" :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :updates="updates" :cast="cast"></AppListBodyColumns>
+                <AppListBodyColumns :row="rowNo" :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :updates="mUpdates" :cast="cast"></AppListBodyColumns>
                 <AppListAction v-if="hasAction" class="applist-tbody-column applist-column-action" :action="action" :link="detail" :props="linkProps(item)" :rowno="rowNo" @list-action="listAction" :collection="dataCollection"></AppListAction>
             </FlexBoxLayout>
         </FlexBoxLayout>
@@ -27,6 +27,7 @@
 <script>
     import {AppListDetailProps} from "../../../assets/scripts/mixins/applistdetailprops";
     import {AppListAction} from "../../../assets/scripts/mixins/applistactions";
+    import {AppListUpdate} from "../../../assets/scripts/services/AppListUpdate";
 
     export default {
         name: "AppList",
@@ -38,17 +39,20 @@
             detail: { type:String,default:'' },
             props: { type:null,default:'id' },
             links: { type:Object,default:()=>{ return {} } },
-            updates: { type:Array,default:() => [] },
+            updates: { type:[Array,Object],default:() => [] },
             limit: { type:[Number,String],default:10 },
             title: { type:String,default:'' },
             cast: { type:Object,default:()=>{ return {} } },
         },
         mixins: [AppListDetailProps,AppListAction],
-        data(){ return {
-            display:0,
-            dataItems:[],
-            dataLimit:0,
-            dataLayout:{ 'No Data':'name' },
+        data(){
+            let mUpdates = new AppListUpdate().init(this.updates);
+            return {
+                display:0,
+                dataItems:[],
+                dataLimit:0,
+                dataLayout:{ 'No Data':'name' },
+                mUpdates,
         } },
         computed: {
             unique(){ return new Date().getTime() },
