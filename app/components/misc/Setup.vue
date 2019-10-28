@@ -7,7 +7,7 @@
         <TextRegular :textWrap="true" class="m-t-20">Once your device registered, please proceed to Setup Application</TextRegular>
         <ActivityIndicator :busy="busy" class="m-t-20"></ActivityIndicator>
         <StackLayout v-if="busy" class="m-t-20">
-            <TextHighlight class="m-t-20 w-full text-center" :key="percentage" v-if="tasks['Init synchronizing app records']">{{ 'Downloading records. Completed: '+percentage+'%' }}</TextHighlight>
+            <TextHighlight class="m-t-20 w-full text-center" :text="'Downloading records. Completed: '+percentage+'%'" v-if="tasks['Init synchronizing app records']"></TextHighlight>
             <TextHeadingSub>Tasks</TextHeadingSub>
             <GridLayout coloums="*,auto" :rows="taskRows">
                 <template v-for="(status,task,idx) in tasks">

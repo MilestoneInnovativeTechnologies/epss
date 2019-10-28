@@ -2,8 +2,7 @@
     <GridLayout class="applist-tbody-sub-row" :columns="columns">
         <StackLayout v-for="(path,head,no) in layout" :col="no" class="applist-tbody-sub-row-columns" :key="key(no)">
             <TextHeadingRowSub class="applist-tbody-sub-row-column applist-tbody-sub-row-column-head">{{ head }}</TextHeadingRowSub>
-<!--            <TextRegular class="applist-tbody-sub-row-column applist-tbody-sub-row-column-detail" :class="_linkClass(path)" @tap.native="_linkNavigate(path)">{{ content(path) }}</TextRegular>-->
-            <AppListBodyColumnContent :idx="idx" class="applist-tbody-sub-row-column applist-tbody-sub-row-column-detail" :path="path" :item="item" :wrap="false" :links="links" :update="updates[path]">{{ content(path) }}</AppListBodyColumnContent>
+            <AppListBodyColumnContent :idx="idx" class="applist-tbody-sub-row-column applist-tbody-sub-row-column-detail" :path="path" :item="item" :wrap="false" :links="links" :update="updates[path]" :text="content(path)"></AppListBodyColumnContent>
         </StackLayout>
     </GridLayout>
 </template>
