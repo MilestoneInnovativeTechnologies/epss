@@ -9,7 +9,6 @@ export const AppListLinkNavigate = {
     methods: {
         _linkObj(path){ return _.get(this.links,path) },
         _linkHas(path){ return (!_.isEmpty(this.links) && !_.isEmpty(this._linkObj(path))) },
-        _linkClass(path){ return this._linkHas(path) ? this.mixinLinkClasses : [] },
         _linkDetail(path){
             let linkObj = this._linkObj(path); if(!linkObj) return null;
             return _.isArray(linkObj) ? _.head(linkObj) : linkObj;
