@@ -1,7 +1,8 @@
 export function get(state,{ processable,getAI },rootState,rootGetters) {
     return (store,fycode,fncode) => {
         let abr = rootGetters['abbreviations'](store,fycode,fncode);
-        let data = processable(fncode,store); if(!data) return alert('Seems you don\'t have any reserved docno\'s remaining.');
+        let data = processable(fncode,store);
+        if(!data) { alert('Seems you don\'t have any reserved docno\'s remaining.'); return null; }
         let fn = rootGetters['FN/_tableDataItemByKey']('functiondetails','code',fncode);
         let AI = getAI(fn,data);
         return rootGetters['docno'](fn.format,{ ...abr,AI });
