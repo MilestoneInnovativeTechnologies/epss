@@ -17,7 +17,7 @@
         fetch_product_list_for_advance_transaction
     } from "../../../assets/scripts/queries";
 
-    const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type'];
+    const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type','status'];
     const TDF = ['transaction','store','product','direction','quantity','rate','taxrule','tax','discount01','discount02','soi'];
     const Layout = { Name:'narration',Quantity:'quantity',Total:'total',Rate:'rate',Tax:'taxdisplay',Discount:'discount' };
 
@@ -43,7 +43,7 @@
         mixins: [EventListeners,ThisObj],
         props: ['store','fycode','fncode','title'],
         data(){ return {
-            customer: null, payment_type: null, date: null, transaction: null, direction: 'Out', soi:null,
+            customer: null, payment_type: null, date: null, transaction: null, direction: 'Out', status: 'Active', soi:null,
             events: ['tra-header']
         } },
         computed: {

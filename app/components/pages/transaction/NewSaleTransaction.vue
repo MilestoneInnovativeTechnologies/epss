@@ -17,7 +17,7 @@
     import {NewSaleTransaction, PrintModal} from "../../../assets/scripts/navigations";
 
     const feMX = require('./../../../assets/scripts/mixins/formelement');
-    const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type'];
+    const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type','status'];
     const TDF = ['transaction','store','product','direction','quantity','rate','taxrule','tax','discount01','discount02','soi'];
     const HFields = { date:'DatePicker',customer: 'Customer',payment_type:'Payment' };
     const DFields = { product:'Product',quantity:'Quantity',rate:'Rate',discount:'Decimal' };
@@ -42,7 +42,7 @@
         mixins: [ThisObj,FloatFormProductSale,feMX.common,feMX.datepicker,feMX.customer,feMX.payment,feMX.product,feMX.quantity,feMX.rate,feMX.decimal],
         props: ['store','fycode','fncode','title'],
         data(){ return {
-            customer: null, payment_type: null, date: null, transaction: null, direction: 'Out',
+            customer: null, payment_type: null, status: 'Active', date: null, transaction: null, direction: 'Out',
             saved: 0,
         } },
         computed: {
