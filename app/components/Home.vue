@@ -8,10 +8,6 @@
         <TextTitleSub width="90%" class="m-t-20 cp">Sales Orders</TextTitleSub>
         <SalesOrderPendingMetric width="90%" class="m-b-10" :key="'cspm'+uKey"></SalesOrderPendingMetric>
         <HomeMenu :key="'hm-'+uKey"></HomeMenu>
-<!--        <template v-for="(items,caption,sidx) in menus">-->
-<!--            <TextTitleSub class="m-t-12 m-b-8 m-l-2">{{ caption }}</TextTitleSub>-->
-<!--            <GridMenuRow :menus="items"></GridMenuRow>-->
-<!--        </template>-->
         <AppButton @tap.native="userLogout" class="m-t-15 c-white">LOGOUT</AppButton>
     </App>
 </template>
