@@ -1,64 +1,46 @@
 <template>
-    <App :title="title" :action="action" @save-transfer-out="saveTransferOut" @proceed-to-transfer-in="proceedTransferIn">
-        <StackLayout v-if="fncode === 'MT1'">
-            <TextTitleSub class="m-t-15">Pending Material Transfers</TextTitleSub>
-            <AppList :source="getList" :layout="inLayout()" action="pick" @collection="inSelected = $event"></AppList>
-        </StackLayout>
-        <StackLayout v-else>
-            <TextTitleSub class="m-t-15">Recent Transfer Outs</TextTitleSub>
-            <AppList :source="getList" :layout="outLayout()"></AppList>
-            <AppList class="m-t-20" :title="newOutListTitle()" :source="getOutAbleStockList" :layout="newOutListLayout()" @collection="selectedItems = $event" action="select"></AppList>
-        </StackLayout>
+    <App :title="title" :action="action" @save-transfer-out="saveTransferOut" @view-products="proceedViewTransferInItems">
+        <IndexStockTransferIn v-if="fncode === 'MT1'" :store="store" :fycode="fycode" @selected="selectedItems = $event"></IndexStockTransferIn>
+        <IndexStockTransferOut v-else :store="store" :fycode="fycode" @selected="selectedItems = $event" :key="'ISTO-'+updates"></IndexStockTransferOut>
     </App>
 </template>
 
 <script>
     import { mapState,mapActions } from 'vuex';
-    import {fetch_all_pending_transfer_outs, fetch_all_recent_transfer_outs, fetch_current_stock_list_of_a_store} from "../../assets/scripts/queries";
-
-    const constants = { limit:10, after:3, outListFetchAfter:3 };
-    const inLayout = { 'Doc No':'docno','Source Store':'store',Date:'date' };
-    const outLayout = { 'Doc No':'docno','Date':'date','Status':'status' };
-    const newOutListTitle = 'Select items for new transfer out';
-    const newOutListLayout = { Item:'name',Stock:'stock','Out Quantity':'quantity'  };
+    import {ProductSale} from "../../assets/scripts/mixins/productsale";
+    import {TransactionPack} from "../../assets/scripts/mixins/transactionpack";
+    import {StockTransferInItems} from "../../assets/scripts/navigations";
+    const DBTransaction = require("../../assets/scripts/services/DBTransaction").DBTransaction;
 
     export default {
         name: "MaterialTransferIndex",
+        mixins: [ProductSale,TransactionPack],
         props: ['fycode','fncode','store'],
         data(){ return {
             selectedItems: [],
-            inSelected: [],
+            updates: 0,
         } },
         computed: {
-            ...mapState('Transfer',['list','stock']), ...mapState('Menu',['content']),
-            action(){ return (this.fncode === 'MT2') ? 'Save Transfer Out' : 'Proceed to Transfer IN' },
+            ...mapState('Menu',['content']),
+            action(){ return (this.fncode === 'MT2') ? 'Save Transfer Out' : 'View Products' },
             title(){ return _.get(_.filter(this.content,(itm) => itm.fncode === this.fncode),'0.name') },
-            getList(){ return this.list[this.store] || [] },
-            getOutAbleStockList(){ return (this.stock && this.stock[this.store]) ? _.filter(this.stock[this.store],list => _.toNumber(list.stock) > 0) : []; }
         },
         methods: {
-            ...mapActions('Transfer',{ stockTransfer:'_stock' }),
-            doStockList(query,key,path){ this.stockTransfer({ query:query,key,path }); },
-            inLayout(){ return inLayout }, outLayout(){ return outLayout },
-            newOutListTitle(){ return newOutListTitle },
-            newOutListLayout(){ return newOutListLayout },
-
-            saveTransferOut(){
-                confirm({ title:'Are you sure?',message:'You are about to do Stock Transfer Out. Please confirm',okButtonText:'Confirmed, Do Transfer',cancelButtonText:'Cancel' })
-                    .then(result => alert('The page is still under construction!'));
+            ...mapActions('Transfer',{ saveMaterialTransferOut:'out' }),
+            async saveTransferOut(){
+                if(this.selectedItems.length < 1) return alert({ title: "Attention", message: "Please select any products to do stock transfer out", okButtonText: "Proceed" });
+                this.PS_items = []; this.selectedItems.map((item) => this.PS_AddItem(item.pid,item.quantity));
+                let outData = new DBTransaction(this.TP).prepare(this.PS_items);
+                let result = await confirm({ title:'Are you sure?',message:'You are about to do Stock Transfer Out. Please confirm',okButtonText:'Confirmed, Do Transfer',cancelButtonText:'Cancel' });
+                if(!result) return;
+                let docno = await this.saveMaterialTransferOut(outData);
+                alert({ title: "Success!!", message: "Material Transfer Out has done.\nDocument No: "+docno, okButtonText: "Proceed" });
+                this.updates++;
             },
-            proceedTransferIn(){
-                alert('The page is still under construction!');
-            }
-
-        },
-        created() {
-            let query = sql.format((this.fncode === 'MT2') ? fetch_all_recent_transfer_outs : fetch_all_pending_transfer_outs,[this.store,this.fycode,this.fncode]);
-            if(!this.list[this.store] || _.isEmpty(this.list[this.store])) this.doStockList(query,'list',this.store);
-            else setTimeout(() => this.doStockList(query),constants.after * 1000);
-            if(this.fncode === 'MT2'){
-                let Q1 = sql.format(fetch_current_stock_list_of_a_store,[this.store]);
-                setTimeout(() => this.doStockList(Q1,'stock',this.store),constants.outListFetchAfter * 1000);
+            proceedViewTransferInItems(){
+                if(this.selectedItems.length < 1) return alert({ title: "Attention", message: "Please select any pending stock transfer out to do stock transfer in", okButtonText: "Proceed" });
+                let id = this.selectedItems[0].id;
+                this.$navigateTo(StockTransferInItems,{ props:{ id,store:this.store,fycode:this.fycode } });
             }
         }
     }
