@@ -7,10 +7,17 @@ export class DBCache {
         this.fileName = table + '.json';
         this.file = fsm.knownFolders.currentApp().getFolder(this.path).getFile(this.fileName);
         this.data = [];
-        if(data) this.file.writeText(JSON.stringify(data)).then(() => this.getData());
-        else this.getData();
+        if(data) this.file.writeText(JSON.stringify(this.crunch(data))).then(() => this.data = data);
+        else this.file.readText().then(content => this.data = this.build(JSON.parse(content)))
     }
-    getData(){ this.file.readText().then(res => this.data = JSON.parse(res || "[]")); }
+    crunch(data){
+        let fields = Object.keys(data[0]);
+        let values = data.map(Object.values);
+        return { fields,values }
+    }
+    build({fields,values}){
+        return values.map((valArray) => _.zipObject(fields,valArray))
+    }
     all(){ return this.data }
     dataByGroup(field){ return _.groupBy(this.data,field) }
     dataByField(field){ return _.keyBy(this.data,field) }
