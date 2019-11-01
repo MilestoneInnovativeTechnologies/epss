@@ -27,7 +27,7 @@ export const FloatFormProductSale = {
             this.ELEmit('absolute-form-values',{ product,rate:this.FFPS_CurrentItem.rate });
         },
         FFPS_ProductAdd({ product,quantity,rate,discount }){
-            let count = this.PS_AddItem(product,quantity,rate,discount), amount = this.PS_Total;
+            this.PS_AddItem(product,quantity,rate,discount); let count = this.PS_items.length, amount = this.PS_Total;
             this.ELEmit('absolute-form-notify',`${quantity} quantity of ${this.FFPS_CurrentItem.name} added successfully!!\nTotal Items added: ${count}\nTotal Amount: ${amount}`);
             this.ELEmit('absolute-form-values',values);
         },
