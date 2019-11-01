@@ -6,16 +6,16 @@ export function productTrans(state,getters,rootState,rootGetters) {
 export function productPrice(state,{ _tableDataItem }) {
     return (product) => { return _tableDataItem('pricelist',product) }
 }
-export function productTax(state,{ _tableDataById }) {
+export function productTax(state) {
     let tfStr = 'taxfactor' + ((__.TAX02 === 'Yes') ? '02' : '01');
     let factors = [tfStr,'sub'+tfStr];
-    return (product) => { return _.sum(_.values(_.only(_.get(_tableDataById('products'),product),factors))) }
+    return (product) => { return _.sum(_.values(_.only(_.get(CCache['products'].dataById(),product),factors))) }
 }
 export function imagePath(state,getters,rootState){
     return [rootState['App'].url_web,product_image_path,''].join('/').replace(/\/+/g,'/').replace('http:/','http://');
 }
 export function product({ dbTables },{ _tableDataItem }){
-    return (id) => _tableDataItem(dbTables[0],id);
+    return (id) => CCache['products'].dataItem(id);
 }
 export function tax(state, {product}, rootState, rootGetters) {
     return (pid,fncode) => {
