@@ -21,24 +21,32 @@ export function init({ dispatch,commit },modulesMap){
     dispatch('initRedrawData');
 }
 
-export function redrawModules({state, commit, rootState}, table) {
+export function redrawModules({state, commit, dispatch}, table) {
     if (!_.has(state.table_modules, table)) return;
     _.forEach(state.table_modules[table], (module) => {
-        let mutation = module + '/' + mutate_sync_data;
-        let query = (rootState[module]['dbQuery'] && rootState[module]['dbQuery'][table]) ? rootState[module]['dbQuery'][table] : null;
-        if (query) DB.getAllQuery(query, function (table, commit, mutation) {
-            if(this.error) console.error('REDRAW Query Error',table,this.error);
-            commit(mutation, {table,data: this.result}, {root: true});
-        }, [table,commit, mutation]); else DB.get(table, null, function (commit, mutation) {
-            if (this.error) return;
-            commit(mutation, {table: this.table(), data: this.result}, {root: true});
-        }, commit, mutation);
+        let query = (state[module]['dbQuery'] && state[module]['dbQuery'][table]) ? state[module]['dbQuery'][table] : `SELECT * FROM ${table}`;
+        let { action,type } = (_.has(state[module],'cacheTables') && _.includes(state[module]['cacheTables'],table))
+            ? { action:dispatch,type:'cacheTableData' }
+            : { action:commit,type:module + '/' + mutate_sync_data };
+        dispatch('redrawTableData',{ table,query,action,type });
     });
 }
 
-export function initRedrawData({state,rootState,dispatch}) {
-    DB.get(rootState['App'].dbTables[0],1,function(modules,dispatch){
-        if(!this.error) _.forEach(modules,(modules,table) => dispatch('redrawModules',table));
+export function redrawTableData(context, {table,query,action,type}) {
+    DB.table(table).getAllQuery(query, function (action, type) {
+        if(this.error) return console.error('REDRAW Query Error',this.table(),this.error);
+        action(type, { table:this.table(),data:this.result }, {root: true});
+    }, [action,type]);
+}
+
+export function cacheTableData(context, {table,data}) {
+    data = (Array.isArray(data) && data.length > 0) ? data : [];
+    new DBCache(table,data);
+}
+
+export function initRedrawData({state,dispatch}) {
+    DB.get(state['App'].dbTables[0],1,function(tblModules,dispatch){
+        if(!this.error) _.forEach(tblModules,(modules,table) => dispatch('redrawModules',table));
     },state.table_modules,dispatch)
 }
 
