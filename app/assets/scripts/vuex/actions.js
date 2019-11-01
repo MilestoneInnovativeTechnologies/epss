@@ -34,7 +34,7 @@ export function redrawModules({state, commit, dispatch}, table) {
 
 export function redrawTableData(context, {table,query,action,type}) {
     DB.table(table).getAllQuery(query, function (action, type) {
-        if(this.error) return console.error('REDRAW Query Error',this.table(),this.error);
+        if(this.error) return log('REDRAW Query Error for table: '+this.table(),this.error);
         action(type, { table:this.table(),data:this.result }, {root: true});
     }, [action,type]);
 }

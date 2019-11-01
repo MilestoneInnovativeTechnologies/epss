@@ -41,12 +41,12 @@
             percentage(){ return _.toSafeInteger(this.completed*100/_.toSafeInteger(this.downloads)) }
         },
         methods: {
-            ...mapActions('App',['register','sLog']), ...mapActions('Menu',['distribute']),
-            ...mapMutations('App',{ setStateData:set_state_data }), ...mapMutations([remove_event_subscriber]),
+            ...mapActions({register:'App/register',sLog:'App/sLog',distribute:'Menu/distribute',rootInit:'init'}),
+            ...mapMutations({ setStateData:'App/'+set_state_data, remEventSub:remove_event_subscriber }),
             doSetup(){ this.busy = true; this.register(this.regData); },
             completeSetup(){
-                this[remove_event_subscriber]({ event:'syncTableChanged',module:'App' });
-                this.distribute(); this.sLog('Completed!');
+                this.remEventSub({ event:'syncTableChanged',module:'App' });
+                this.distribute(); this.sLog('Completed!'); this.rootInit(_.cloneDeep(VuexStore._modulesNamespaceMap))
             }
         },
         watch: {
