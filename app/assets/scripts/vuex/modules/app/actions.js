@@ -57,8 +57,9 @@ export function createTables({ dispatch },data) {
     dispatch('sLog','Create DB tables'); createTable(table_information_db_table_name, table_information_db_table_fields,table_information_db_table_indexes,data).then(data => {
         Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],Ary[3],getInformationInsertData(table,Ary)))]).then((insArray) => {
             DB.insert(table_information_db_table_name, insArray, function (dispatch,menu) {
-                dispatch('Menu/setup',menu,{ root:true }); dispatch('Sync/init',null,{ root:true });
-                setTimeout(function(dispatch){ dispatch('SSE/restartEventSource',null,{ root:true }) },1000,dispatch);
+                dispatch('Menu/setup',menu,{ root:true });
+                dispatch('Sync/init',null,{ root:true });
+                dispatch('SSE/restartEventSourceDelayed',null,{ root:true })
             },dispatch,data.menu);
         })
     });
