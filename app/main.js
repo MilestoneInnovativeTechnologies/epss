@@ -11,10 +11,10 @@ global.DBCache = require('./assets/scripts/services/DBCache').DBCache; global.CC
 global.VuexStore = require('./assets/scripts/vuex/store').default;
 global.log = function(text,...texts){ VuexStore.commit('Log/addQueue',text); if(TNS_ENV !== 'production') console.log(text,...texts); };
 
-import VueDevtools from 'nativescript-vue-devtools'
-if(TNS_ENV !== 'production') {
-  Vue.use(VueDevtools,{ host:'192.168.10.11' })
-}
+// import VueDevtools from 'nativescript-vue-devtools'
+// if(TNS_ENV !== 'production') {
+//   Vue.use(VueDevtools,{ host:'192.168.10.11' })
+// }
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production');
@@ -32,9 +32,6 @@ new Vue({
     store: VuexStore,
     render: h => h('frame', [h(Home)]),
     mounted() {
-        let vuexStore = this.$store;
-        this.$nextTick(function () {
-            vuexStore.dispatch('init', _.cloneDeep(vuexStore._modulesNamespaceMap)).then(null);
-        });
+        this.$nextTick(() => this.$store.dispatch('init', _.cloneDeep(this.$store._modulesNamespaceMap)).then(null));
     },
 }).$start();
