@@ -41,7 +41,7 @@ export function redrawTableData(context, {table,query,action,type}) {
 
 export function cacheTableData(context, {table,data}) {
     data = (Array.isArray(data) && data.length > 0) ? data : [];
-    new DBCache(table,data);
+    CCache[table] = new DBCache(table,data);
 }
 
 export function initRedrawData({state,dispatch}) {
