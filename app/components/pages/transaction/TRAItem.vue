@@ -1,6 +1,6 @@
 <template>
     <StackLayout :width="width" :height="height" style="border-width: 2" class="bordercg01 p-t-2" @tap="addItem(item)">
-        <WSSaleItemImage :item="item" :width="width" :height="width"></WSSaleItemImage>
+        <TRAItemImage :item="item" :width="width" :height="width"></TRAItemImage>
         <FlexboxLayout :height="height-width" class="bcp">
             <Label :text="name" class="c-white fs10 fsb p-5" :width="width - (height-width) - 5" textWrap="true"></Label>
             <StackLayout verticalAlignment="middle" class="bcp m-l-5 bordercp" style="border-width: 2; background-color: #FFFFFF">
