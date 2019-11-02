@@ -7,8 +7,15 @@ export class DBCache {
         this.fileName = table + '.json';
         this.file = fsm.knownFolders.currentApp().getFolder(this.path).getFile(this.fileName);
         this.data = [];
-        if(data) this.file.writeText(JSON.stringify(this.crunch(data))).then(() => this.data = data);
-        else this.file.readText().then(content => this.data = this.build(JSON.parse(content)))
+        this.processData(data);
+    }
+    processData(data){
+        if(data) {
+            this.data = data;
+            this.file.writeText(JSON.stringify(this.crunch(data)))
+        } else {
+            this.file.readText().then(content => this.data = this.build(JSON.parse(content)))
+        }
     }
     crunch(data){
         let fields = Object.keys(data[0]);
