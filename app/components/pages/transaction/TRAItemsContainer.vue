@@ -11,7 +11,7 @@
 <script>
     import { mapGetters } from 'vuex';
     import {EventListeners} from "../../../assets/scripts/mixins/eventlisteners";
-    let products = CCache['products'].dataById();
+    let products = [];
 
     export default {
         name: "TRAItemsContainer",
@@ -42,7 +42,8 @@
             filterText(text){ this.curPage = 1; this.filter = text; },
             listener0(data){ this.list01 = data; this.curPage = 1; },
             listener1(data){ this.list02 = data; this.curPage = 1; },
-        }
+        },
+        created(){ products = CCache['products'].all(); }
     }
 
     function isProductIn(product,text){ return (product && text && product.narration && product.narration.toLowerCase().includes(text.toLowerCase()))  }
