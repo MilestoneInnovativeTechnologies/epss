@@ -3,7 +3,7 @@
         <TRAItemsFilter col="0" row="0" @filter="filterText"></TRAItemsFilter>
         <TRAItems :properties="properties" col="0" row="1" v-if="items.length" :items="items"></TRAItems>
         <HorizontallyMiddle col="0" row="2">
-            <TRAItemsPagination :totPage="totPage" :curPage="curPage" @change-page-to="curPage = $event === '...' ? curPage : $event" class="m-t-5 bordercp" style="border-top: 1"></TRAItemsPagination>
+            <TRAItemsPagination :totPage="TotalPages" :curPage="curPage" @change-page-to="curPage = $event === '...' ? curPage : $event" class="m-t-5 bordercp" style="border-top: 1"></TRAItemsPagination>
         </HorizontallyMiddle>
     </GridLayout>
 </template>
@@ -11,7 +11,7 @@
 <script>
     import { mapGetters } from 'vuex';
     import {EventListeners} from "../../../assets/scripts/mixins/eventlisteners";
-    let products = [];
+    let products = {};
 
     export default {
         name: "TRAItemsContainer",
@@ -23,28 +23,31 @@
         } },
         computed: {
             ...mapGetters({ getProductsPerList:'Product/listProducts',getProductDetail:'Product/product' }),
+            itemsPerPage(){ return _.toSafeInteger(this.properties.itemsPerPage); },
+            pageItemsStartIdx(){ return (this.curPage < 2) ? 0 : this.itemsPerPage * (this.curPage - 1) },
+            pageItemsEndsIdx(){ return this.pageItemsStartIdx + this.itemsPerPage },
 
-            productIds(){
+            ListProductIDs(){
                 return (this.list1 && this.list01)
                     ? (this.list2 && this.list02)
                         ? this.getProductsPerList(this.list1,this.list01,this.list2,this.list02)
                         : this.getProductsPerList(this.list1,this.list01,null,null)
                     : [];
             },
-            productDetails(){ return _.map(this.productIds,(pid) => products[pid]) },
-            fewProductDetails(){ return _.map(this.productIds.slice(0,this.perPage*3),(pid) =>  products[pid]); },
-            filteredItems(){ let filter = this.filter; return filter ? _.filter(this.productDetails,(product) => isProductIn(product,filter)) : this.fewProductDetails; },
-            perPage(){ return _.toSafeInteger(this.properties.itemsPerPage); },
-            items(){ let items = this.filteredItems, start = (this.curPage-1) * this.perPage, end = start + this.perPage; return items.slice(start,end); },
-            totPage(){ return Math.ceil((this.filter ? this.filteredItems.length : this.productIds.length) / this.perPage) }
+            FilteredProductIDs(){ let filter = this.filter.toString().toLowerCase().trim(), IDs = this.ListProductIDs; return _.isEmpty(filter) ? IDs : getProductsFiltered(filter,IDs) },
+            PageVisibleProductIDs(){ let FilteredProductIDs = this.FilteredProductIDs; return FilteredProductIDs.slice(this.pageItemsStartIdx,this.pageItemsEndsIdx); },
+            items(){ let ItemIDs = this.PageVisibleProductIDs; return _.map(ItemIDs,(id) => products[id]) },
+            TotalPages(){ return Math.ceil(this.FilteredProductIDs.length/this.itemsPerPage) }
         },
         methods: {
             filterText(text){ this.curPage = 1; this.filter = text; },
             listener0(data){ this.list01 = data; this.curPage = 1; },
             listener1(data){ this.list02 = data; this.curPage = 1; },
         },
-        created(){ products = CCache['products'].all(); }
+        created(){ products = CCache['products'].dataById(); }
     }
 
-    function isProductIn(product,text){ return (product && text && product.narration && product.narration.toLowerCase().includes(text.toLowerCase()))  }
+    function getProductsFiltered(text,ids){
+        return _.filter(ids,id => { let narration = products[id] ? _.trim(products[id].narration).toLowerCase() : ''; return narration.includes(text) });
+    }
 </script>
