@@ -8,17 +8,6 @@
             <AppButton height="50" row="1" @tap.native="changeHeader" class="c-white fs10">Change Customer</AppButton>
         </GridLayout>
     </GridLayout>
-<!--    <GridLayout rows="auto,auto,auto,auto">-->
-<!--        <AppInfoWide row="0" title="Customer" :key="'trah-cus-'+uKey">{{ name }}</AppInfoWide>-->
-<!--        <AppInfoWide row="1" title="Date" :key="'trah-dte-'+uKey">{{ docdate }}</AppInfoWide>-->
-<!--        <AppInfoWide row="2" title="Payment Mode" :key="'trah-pym-'+uKey">{{ payment_type }}</AppInfoWide>-->
-<!--        <GridLayout row="3" columns="*,140,140,*">-->
-<!--            <StackLayout col="0"></StackLayout>-->
-<!--            <AppButton col="1" @tap.native="deleteHeader" class="c-white">Cash Customer</AppButton>-->
-<!--            <AppButton col="2" @tap.native="changeHeader" class="c-white">Change</AppButton>-->
-<!--            <StackLayout col="3"></StackLayout>-->
-<!--        </GridLayout>-->
-<!--    </GridLayout>-->
 </template>
 
 <script>
