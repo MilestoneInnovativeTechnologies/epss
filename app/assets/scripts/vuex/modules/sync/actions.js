@@ -2,15 +2,11 @@ import {
     table_information_db_table_name,
     app_user_create_date_for_fetch,
     sync_create_chunk_length,
-    sync_success_response_global_action,
-    sync_failure_response_global_action,
-    download_common_params, max_sync_download_retry_count
+    download_common_params,
 } from '../../../constants';
 import {
     add_new_table_for_sync,
-    add_to_sync_download_queue,
-    increment_sync_download_failure_count,
-    remove_first_sync_download_queue_item, remove_user_tables_from_sync,
+    remove_user_tables_from_sync,
     update_table_timing,
 } from './../../mutation-types';
 import {SSSetup} from "../../../services/setup";
@@ -32,18 +28,6 @@ export function init({ commit,rootGetters,dispatch,state }) {
     },rootGetters,commit)
 }
 
-export function SSEMonitor({ state,dispatch },tables) {
-    tables = Array.isArray(tables) ? tables : [tables]; if(tables.length === 0) return;
-    for(let x in tables) { let table = tables[x], tblObj = state.tables[table]; if(tblObj.direction === 'upload') return;
-        if(state.queue_download.indexOf(table) === -1) dispatch('queueTableRecordDownload',{ table, type:tblObj.type });
-    }
-}
-
-export function syncDataReceived({ dispatch,commit }, data) {
-    commit(remove_first_sync_download_queue_item);
-    if(!Array.isArray(data) || _.isEmpty(data)) return;
-    dispatch('doProcessSyncData',data);
-}
 
 export function doProcessSyncData({ dispatch,commit,state },data) {
     _.forEach(data,(activity) => {
@@ -73,18 +57,6 @@ export function doUpdateSyncData({ dispatch,state,commit }, { table,data }) {
     }
 }
 
-export function syncDataFail({ state,commit }){
-    let fTable = state.queue_download[0]; commit(increment_sync_download_failure_count,fTable);
-    commit(remove_first_sync_download_queue_item);
-    if(state.failure_count[fTable] <= max_sync_download_retry_count) commit(add_to_sync_download_queue,[fTable])
-}
-
-export function queueTableRecordDownload({ rootGetters,getters,commit,dispatch},{ table,type }) {
-    let params = getDownloadParams(type,rootGetters), url = getters.tableSyncUrl(table);
-    commit(add_to_sync_download_queue,[table]);
-    dispatch('post',{ url,params,success:sync_success_response_global_action,fail:sync_failure_response_global_action },{ root:true });
-}
-
 export function initUserTables({ dispatch,commit,state }) {
     return new Promise((resolve) => {
         DB.get(table_information_db_table_name,{ type:'APP',operator:'!=' },function (state,commit,dispatch,resolve) {
@@ -101,17 +73,8 @@ export function delUserSyncTables({ dispatch,commit,state }) {
 export function forceDownloadUserTables({ dispatch }) {
     DB.get(table_information_db_table_name,{ type:'APPUSER' },function (dispatch) {
         if(this.error) return log('Error getting app user table information to force download');
-        _.forEach(this.result,function (tblObj) {
-            dispatch('queueTableRecordDownload',{ table:tblObj.table, type:tblObj.type })
-        });
+        if(this.result.length) dispatch('Download/tables',_.map(this.result,'table'),{ root:true });
     },dispatch)
-}
-
-function getDownloadParams(type, rGetters) {
-    let params = download_common_params;
-    if(type !== 'APP') params = _.assign({},params,{ _user:rGetters.user, client:rGetters.client });
-    if(type === 'APPUSER') params = _.assign({},params,{ created:app_user_create_date_for_fetch });
-    return params;
 }
 
 function processSetupActivity(activity) {
