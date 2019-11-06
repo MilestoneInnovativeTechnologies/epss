@@ -23,4 +23,5 @@ export default {
     'Receipts': require('./modules/receipt/index').default,
     'Stock': require('./modules/stock/index').default,
     'Transfer': require('./modules/transfer/index').default,
+    'Download': require('./modules/download/index').default,
 }
