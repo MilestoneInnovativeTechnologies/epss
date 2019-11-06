@@ -34,7 +34,7 @@
             completed: 0
         }},
         computed: {
-            ...mapState('App',['message','tasks']),...mapState('Sync',['queue_download']),
+            ...mapState('App',['message','tasks']),...mapState('Download',['batch']),
             taskRows(){ return _.fill(Array(_.size(this.tasks)),'auto').join(','); },
             taskStatus(){ let tasks = this.tasks; return _.every(tasks) },
             regData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs } },
@@ -45,21 +45,24 @@
             ...mapMutations({ setStateData:'App/'+set_state_data, remEventSub:remove_event_subscriber }),
             doSetup(){ this.busy = true; this.register(this.regData); },
             completeSetup(){
-                this.remEventSub({ event:'syncTableChanged',module:'App' });
+                this.remEventSub({ event:'batchDownloadStarting',module:'App' });
                 this.distribute(); this.sLog('Completed!'); this.rootInit(_.cloneDeep(VuexStore._modulesNamespaceMap))
             }
         },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Setup Error', message:val, okButtonText:'Ok' }).then(() => { this.busy = false; this.setStateData({ message:'' })}) },
             taskStatus:function(val){ if(val) this.$navigateTo(Login,{ backstackVisible:false }); },
-            queue_download:function(tbls){
-                if(this.downloads === null){
-                    if(!this.tasks['Init synchronizing app records']) return;
-                    if(tbls.length === 0) this.completeSetup();
-                    else this.downloads = tbls.length;
-                } else {
-                    this.completed++;
-                    if(this.completed >= this.downloads) this.completeSetup();
+            batch:{
+                deep:true,
+                handler({ running }){
+                    if(this.downloads === null){
+                        if(!this.tasks['Init synchronizing app records']) return;
+                        if(running.length === 0) this.completeSetup();
+                        else this.downloads = running.length;
+                    } else {
+                        this.completed++;
+                        if(this.completed >= this.downloads) this.completeSetup();
+                    }
                 }
             },
         }

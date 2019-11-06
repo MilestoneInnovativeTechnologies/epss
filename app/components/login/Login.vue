@@ -31,7 +31,7 @@
             autoNavigateDelay: 3000,
         }},
         computed: {
-            ...mapState('User',['message','validating','id']), ...mapState('Connection',{ connection:'status' }),...mapState('Sync',['queue_download']),
+            ...mapState('User',['message','validating','id']), ...mapState('Connection',{ connection:'status' }),...mapState('Download',['batch']),
             authenticated(){ let id = this.id; return !(_.isNil(id)) },
             percentage() { return _.toSafeInteger(this.downloaded*100/_.toSafeInteger(this.downloads)); }
         },
@@ -79,15 +79,18 @@
         watch: {
             message(message){ if(_.isEmpty(message)) return; alert({ title:'Login Error',message,okButtonText:"Ok" }).then(() => this[set_state_data]({ message:'' })) },
             authenticated(status){ if(status === true) this.postFormLogin() },
-            queue_download(tbls){
-                if(!this.waitNotification) return;
-                if(this.autoNavigate) { clearTimeout(this.autoNavigate); this.autoNavigate = null; }
-                if(this.downloads === null || tbls.length > this.downloads) {
-                    if(tbls.length === 0) this.redirectToHome(2);
-                    this.downloads = tbls.length;
-                } else {
-                    if(this.downloaded < this.downloads) this.downloaded++;
-                    if(this.downloaded >= this.downloads) this.redirectToHome(2);
+            batch: {
+                deep:true,
+                handler({ running }){
+                    if(!this.waitNotification) return;
+                    if(this.autoNavigate) { clearTimeout(this.autoNavigate); this.autoNavigate = null; }
+                    if(this.downloads === null || running.length > this.downloads) {
+                        if(running.length === 0) this.redirectToHome(2);
+                        this.downloads = running.length;
+                    } else {
+                        if(this.downloaded < this.downloads) this.downloaded++;
+                        if(this.downloaded >= this.downloads) this.redirectToHome(2);
+                    }
                 }
             }
         }

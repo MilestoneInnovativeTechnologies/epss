@@ -65,7 +65,7 @@ export function createTables({ dispatch },data) {
     });
 }
 
-export function syncTableChanged({ dispatch },tables){
+export function batchDownloadStarting({ dispatch },tables){
     if(!tables || tables.length === 0) return;
     dispatch('sLog','Init synchronizing app records');
 }
