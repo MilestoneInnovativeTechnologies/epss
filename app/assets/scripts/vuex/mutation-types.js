@@ -33,9 +33,6 @@ export const add_setup_menu_data = 'addSetupMenuData';
 //Sync
 export const add_new_table_for_sync = 'newTable';
 export const update_table_timing = 'updateTableTime';
-export const add_to_sync_download_queue = 'addSyncDownloadItems';
-export const remove_first_sync_download_queue_item = 'removeSyncDownloadFirstItem';
-export const increment_sync_download_failure_count = 'incrementSyncDownloadFailureCount';
 export const remove_user_tables_from_sync = 'removeUserTableSync';
 
 //User

@@ -15,11 +15,8 @@ export const table_information_db_table_indexes = 'table,type,direction';
 
 //sync
 export const download_common_params = { format: 'json',  type: 'data' };
-export const max_sync_download_retry_count = 1;
 export const app_user_create_date_for_fetch = '1900-01-01 00:00:01';
 export const sync_create_chunk_length = 500;
-export const sync_success_response_global_action = 'Sync/syncDataReceived';
-export const sync_failure_response_global_action = 'Sync/syncDataFail';
 export const approx_time_for_a_sync = 1;
 export const gap_between_sync_queue_seconds = 1;
 export const init_sync_user_table_after = 1;
