@@ -17,3 +17,5 @@ ImageCache.placeholder = fromFile(no_image_file); ImageCache.maxRequests = produ
 
 Downloader.init(); // Downloader.setTimeout(90);
 global.Downloader = new Downloader();
+
+global.Uploader = require('nativescript-background-http');
