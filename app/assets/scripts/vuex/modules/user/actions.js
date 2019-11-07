@@ -10,9 +10,9 @@ export function doLogin({ state,commit,dispatch }){
 
 export function loginResponse({ commit,dispatch,state }, data) {
     if(_.isEmpty(data)) return commit(set_state_data,{ validating:false,message:'No email and password matching records found' });
+    dispatch('doInsertLoginData',getNameDetailArray(data));
     makeModuleListNull.forEach((mod) => commit(mod+'/'+set_state_data,{ list:[] },{ root:true }));
     if(data.login != state.pLogin) dispatch('Sync/forceDownloadUserTables',null,{ root:true });
-    dispatch('doInsertLoginData',getNameDetailArray(data));
 }
 export function doInsertLoginData({ dispatch },data){
     return new Promise((resolve) => {
