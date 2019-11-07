@@ -7,7 +7,7 @@ import {
 
 export default {
     [set_latest_upload_queue_id](state, id) { if(id) state.latest = id; },
-    [set_state_data](state, { key,value }) { state[key] = value; },
+    [set_state_data](state, data) { [].concat(data).forEach(({ key,value }) => state[key] = value); },
     [increment_upload_retry_count](state) { state['retry_count']++; },
     [set_upload_data](state,data) {
         let params = getParams(data);
