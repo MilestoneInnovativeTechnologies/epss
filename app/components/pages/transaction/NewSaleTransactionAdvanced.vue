@@ -34,8 +34,8 @@
     const properties = {
         container: '99%',
         leftPortion: 440, leftToRightSpace: 10, containerPadding: 10,
-        list01: 110, list02: 70, widthHeightRation: 1.3,
-        itemsPerPage: 15, itemsPerRow: 5, itemSpacing: 10,
+        list01: 110, list02: 70, widthHeightRation: 1.35,
+        itemsPerPage: 100, itemsPerRow: 5, itemSpacing: 2,
     };
 
     export default {
@@ -44,6 +44,7 @@
         props: ['store','fycode','fncode','title'],
         data(){ return {
             customer: null, payment_type: null, date: null, transaction: null, direction: 'Out', status: 'Active', soi:null,
+            properties,
             events: ['tra-header']
         } },
         computed: {
@@ -51,7 +52,6 @@
             ...mapState('Product',{ productList:'list',productGroup:'group' }),
             ...mapGetters({ customerDetail:'Customer/customer',productDetail:'Product/product' }),
 
-            properties(){ return properties; },
             taxEnabled(){ return (__.TAX === 'Yes' || __.TAX02 === 'Yes') },
         },
         methods: {

@@ -3,7 +3,7 @@
         <Image row="0" col="0" colSpan="2" rowSpan="2" :src="src" loadMode="async" stretch="aspectFill" useCache="true" />
         <Label row="1" col="0" :text="name" class="fsb p-5 label-grid cp" :class="labelFontSize" textWrap="true"></Label>
         <StackLayout row="1" col="1" :height="priceLength[1]" verticalAlignment="middle" style="background-color: #FFFFFF">
-            <Label :width="priceLength[0]" :text="rate" class="fsb fs18 text-center cp c-bg-white"></Label>
+            <Label :width="priceLength[0]" :text="rate" class="fsb fs14 text-center cp c-bg-white"></Label>
         </StackLayout>
     </GridLayout>
 </template>
@@ -24,7 +24,7 @@
             ...mapGetters('Product',['imagePath']),
             name(){ return this.item.narration },
             rate(){ return __.rate(this.item.price) },
-            labelFontSize(){ return (this.name.toString().length > 60) ? ['fs14'] : ['fs16']},
+            labelFontSize(){ return (this.name.toString().length > 30) ? ['fs8'] : ['fs10']},
             imageURL(){ return [this.imagePath,this.item.id].join('') },
             cacheKey(){ return 'item-image-' + this.item.id }
         },
