@@ -1,44 +1,26 @@
 import {SSE} from "nativescript-sse";
 
-let reConnectMinDelay = 3,connection = false,timeOut = 0;
+let reConnectMinDelay = 10,connection = false;
 let eventSource = null;
 const EST = { Connected:null,Error:null,Message:null,Url:null };
+let debounceEventSource = null;
 
-export function restartEventSourceDelayed({ dispatch }){
-    clearTimeout(timeOut); clearEventSource();
-    timeOut = setTimeout(() => dispatch('restartEventSource'),reConnectMinDelay*1000)
+export function init(ctx) {
+    let func = _.bind(doEventSource,ctx);
+    debounceEventSource = _.debounce(func,reConnectMinDelay * 1000,{ leading:true })
 }
 
-export function restartEventSource({ dispatch }){
-    clearEventSource(); dispatch('startEventSource');
-}
-
-export function startEventSource({ dispatch,getters }){
-    if(!connection) return;
+export function startEventSource({ getters }){
     let url = getPreparedSSEUrl(getters.SSEUrl,getters.SYNCTables);
-    if(url && (EST.Url !== url || (__.now() - _.toSafeInteger(EST.Connected)) > 3)) return dispatch('processEventSource',url);
-}
-
-export function processEventSource({dispatch}, url) {
-    eventSource = new SSE(url); EST.Connected = __.now();
-    eventSource.events.on('onMessage', (data) => {
-        EST.Message = __.now();
-        let tables = purifySSEDataMessage(data);
-        dispatch('triggerEventSubscribers',{ event:'SSEMonitor',payload:tables },{ root:true });
-    });
-    eventSource.events.on('onError', (data) => {
-        EST.Error = __.now(); EST.Connected = null;
-        dispatch('restartEventSourceDelayed');
-    });
+    if(connection && url && debounceEventSource) debounceEventSource(url);
 }
 
 export function onConnectionChange({ dispatch },status){
-    connection = status;
-    if(status) return dispatch('restartEventSource');
+    connection = status; if(status) return dispatch('startEventSource');
 }
 
 export function syncTableChanged({ dispatch },tables){
-    dispatch('restartEventSource');
+    dispatch('startEventSource');
 }
 
 function getPreparedSSEUrl(baseURL,tables){
@@ -55,4 +37,23 @@ function purifySSEDataMessage(data){
 function clearEventSource(){
     if(eventSource !== null) eventSource.close();
     return eventSource = null;
+}
+
+function doEventSource(url){
+    clearEventSource();
+    let message = _.bind(esOnMessage,this), error = _.bind(esOnError,this);
+    eventSource = new SSE(url); EST.Connected = __.now(); EST.Url = url;
+    eventSource.events.on('onMessage',data => message(data));
+    eventSource.events.on('onError', data => error(data));
+}
+
+function esOnMessage(data){
+    EST.Message = __.now();
+    let tables = purifySSEDataMessage(data);
+    this.dispatch('triggerEventSubscribers',{ event:'SSEMonitor',payload:tables },{ root:true });
+}
+
+function esOnError(){
+    EST.Error = __.now(); EST.Connected = null;
+    this.dispatch('restartEventSourceDelayed');
 }
