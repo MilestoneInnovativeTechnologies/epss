@@ -42,8 +42,7 @@
             formPropsCommitted(data) {
                 let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj, field);
                 if (_.includes(propertyAnnotations.valuesProviderTypeEditors, this.fields[field].type)) value = propertyAnnotations.GetAnnotationValueConverted(field, value);
-                this.$set(this.final,field,value);
-                this.$emit(field, value); this.$emit('final', this.final);
+                this.$set(this.final,field,value); emitField(this,field); emitFinal(this);
             }
         },
         created() {
@@ -55,8 +54,10 @@
             fields.map(field => this.$set(this.source,field,this.getInitValue(field)));
         },
         mounted() {
-            _.keys(this.fields).map(field => this.$set(this.final,field,this.getInitSourceValue(field)));
-            this.$emit('final', this.final);
+            emitFinal = _.debounce(emitFinal,750,{ trailing:true }); emitField = _.debounce(emitField,750,{ trailing:true });
+            _.keys(this.fields).map(field => this.$set(this.final,field,this.getInitSourceValue(field))); emitFinal(this);
         }
     }
+    function emitField(vm,field){ vm.$emit(field,vm.final[field]) }
+    function emitFinal(vm){ vm.$emit('final',vm.final) }
 </script>
