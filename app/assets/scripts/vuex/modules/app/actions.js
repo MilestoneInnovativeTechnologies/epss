@@ -59,7 +59,7 @@ export function createTables({ dispatch },data) {
             DB.insert(table_information_db_table_name, insArray, function (dispatch,menu) {
                 dispatch('Menu/setup',menu,{ root:true });
                 dispatch('Sync/init',null,{ root:true });
-                dispatch('SSE/restartEventSourceDelayed',null,{ root:true })
+                dispatch('SSE/startEventSource',null,{ root:true })
             },dispatch,data.menu);
         })
     });
