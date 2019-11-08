@@ -75,21 +75,21 @@ function getName(table){
 
 function downloaded(table,task,{ path }){
     fsm.File.fromPath(path).readText()
-        .then(activities => {
-            if(activities && activities.trim() !== ''){
-                try {
-                    let Activities = JSON.parse(activities);
-                    this.dispatch('Sync/doProcessSyncData',Activities,{ root:true });
-                    fsm.File.fromPath(path).remove().then(null);
-                } catch (e) {
-                    log('Error in parsing activities of table: ' + table + '.. Path: ' + path);
-                }
-            }
-            this.commit('complete',table);
-        })
+        .then(activities => { _.bind(doProcessDownloadedData,this)(path,activities); this.commit('complete',table); })
         .catch(error => log('File read failed for table: '+table,error))
 }
 function download_fails(table,task,{ status,message }){
     this.dispatch('tables',[table]);
     this.commit('complete',table)
+}
+function doProcessDownloadedData(path,data){
+    if(data){
+        data = data.trim();
+        try {
+            if(data.substr(0,1) === '[') this.dispatch('Sync/doProcessSyncData',JSON.parse(data.trim()),{ root:true });
+            fsm.File.fromPath(path).remove().then(null);
+        } catch (e) {
+            log('Error in parsing activities from path: ' + path);
+        }
+    }
 }
