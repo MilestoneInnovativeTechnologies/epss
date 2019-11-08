@@ -3,15 +3,13 @@
 </template>
 
 <script>
-    let timeOut = 0;
-
     export default {
         name: "TRAItemsFilter",
         methods: {
             setFilterText(text){
-                clearTimeout(timeOut);
-                timeOut = setTimeout(() => this.$emit('filter',text),1500);
+                emitText(this,text)
             }
         }
     }
+    function emitText(vm,text){ _.debounce((vm,text) => vm.$emit('filter',text),1500,{ leading:true })(vm,text) }
 </script>
