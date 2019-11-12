@@ -44,6 +44,7 @@ export class Printer {
     LF(n){ return Array(n|| 1).fill(10); };
     FP(n){ return [27,74,n] };
     LS(n){ return (n === undefined) ? [27,50] : [27,51,n] };
+    SP(n){ return (n === undefined) ? [27,32,0] : [27,32,n] };//Set right-side character spacing character spacing horizontal
     ALIGN(n){ return [27,97,n || 0] };
     BLANK(n){ return [27,66,n || 0] };
     MODE(n){ return [27,33,n || 0] };
@@ -100,7 +101,7 @@ export function print(data,tried){
                 if(Array.isArray(arguments[i])) cmd = cmd.concat(arguments[i]);
                 else cmd = cmd.concat(printer.TEXT(arguments[i]));
             }
-            return printer.print(cmd.concat(Array(2).fill(10)).concat(printer.CUTPARTIAL()).concat(printer.DRAWER()));
+            return printer.print(cmd.concat(Array(1).fill(10)).concat(printer.CUTPARTIAL()).concat(printer.DRAWER()));
         }
     }
 }
