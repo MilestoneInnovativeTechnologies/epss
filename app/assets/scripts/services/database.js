@@ -28,6 +28,7 @@ class Database {
         this.root = path.join(knownFolders.documents().path, 'database');
         this.dbFile = path.join(this.root, this.fileName + '.db');
         this.executedQuery = [];
+        this.unEscPattern = new RegExp('\\{-\\|(\\d*)\\|-\\}','g');
     }
 
     table(tbl) {
@@ -130,7 +131,7 @@ class Database {
             let value = [time,time];
             _.forEach(record,(val,key) => {
                 let idx = nameObj[key]; if(idx === null || idx === undefined) { idx = names.push(key)-1; nameObj[key] = idx; }
-                let sVal = (_.includes(val,"'") || _.includes(val,'"')) ? val.replace(/['"]/g,() => ' ') : val;
+                let sVal = (_.includes(val,"'") || _.includes(val,'"')) ? val.replace(/['"]/g,(chr) => '{-|' + chr.charCodeAt(0) + '|-}') : val;
                 _.set(value,idx,sVal);
             });
             values.push(value)
@@ -142,6 +143,7 @@ class Database {
         let time = parseInt(new Date().getTime()/1000);
         let sets = { updated_at:time };
         _.forEach(data, (val, key) => {
+            if((_.includes(val,"'") || _.includes(val,'"'))) val = val.replace(/['"]/g,(chr) => '{-|' + chr.charCodeAt(0) + '|-}');
             _.set(sets,key,val);
         });
         return sets;
@@ -185,7 +187,7 @@ class Database {
             this.result = error;
         } else {
             sLog(this.tbl + ' -> Success');
-            this.result = result;
+            this.result = this.unEscape(result);
         }
         if(callback) callback.apply(this,args);
     }
@@ -221,6 +223,16 @@ class Database {
     create_IDXs(tbl,fields){ if(!fields) return ''; return fields.split(',').map(fld => this.create_IDX(tbl,fld)); }
     create_IDX(tbl,fld){ return `CREATE INDEX "${tbl}_${fld}_index" ON "${tbl}" ("${fld}");` }
 
+    unEscape(data){
+        if(Array.isArray(data)) return data.map(record => this.unEscape(record));
+        if(_.values(data).join('').toString().includes('{-|')){
+            for(let x in data){
+                if(data[x] && typeof data[x] === 'string' && data[x].includes('{-|'))
+                    data[x] = data[x].replace(this.unEscPattern,(str,match) => String.fromCharCode(match))
+            }
+            return data;
+        } else return data;
+    }
     exeQuery(query){
         this.executedQuery.unshift(query);
         this.executedQuery.splice(5);
