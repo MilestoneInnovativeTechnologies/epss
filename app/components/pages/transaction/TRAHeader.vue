@@ -29,7 +29,7 @@
             customer: values.customer, date:values.date, payment_type:values.payment_type, uKey:0
         } },
         computed: {
-            ...mapGetters({ detail:'Customer/_stateDataItem',user:'User' }), ...mapState('Customer',['list']),
+            ...mapGetters({ detail:'Customer/_stateDataItem',user:'user' }), ...mapState('Customer',['list']),
             name(){ return this.customer ? (this.detail('list',this.customer) || { name:'Cash Customer' }).name : 'Cash Customer' },
             docdate(){ return __.docdate(this.date) },
         },
