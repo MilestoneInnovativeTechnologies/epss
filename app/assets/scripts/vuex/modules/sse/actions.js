@@ -55,5 +55,5 @@ function esOnMessage(data){
 
 function esOnError(){
     EST.Error = __.now(); EST.Connected = null;
-    this.dispatch('restartEventSourceDelayed');
+    this.dispatch('startEventSource');
 }
