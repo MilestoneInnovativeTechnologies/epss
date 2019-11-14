@@ -16,7 +16,7 @@
         'BR2': ['date','customer','amount'],
     };
     const LabelCorrection = { bank:'Bank Name',cheque:'Cheque Number',cheque_date:'Cheque Date' };
-    const saveFields = ['docno','store','fycode','fncode','user','customer','date','amount','bank','cheque_date','cheque','source','_ref'];
+    const saveFields = ['docno','store','fycode','fncode','user','customer','date','amount','bank','cheque_date','cheque','status','source','_ref'];
 
 
 
@@ -40,7 +40,7 @@
         data(){ return {
             eDocno: null,
             customer: null, date: null, amount: null,
-            bank: null, cheque_date: null, cheque: null, source: 'SS',
+            bank: null, cheque_date: null, cheque: null, source: 'SS', status: 'Active',
         } },
         computed: {
             ...mapGetters({ curDate:'date',user:'user',nRef:'_ref',toDateTime:'toDateTime' }),
