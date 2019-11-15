@@ -4,14 +4,17 @@ export class Print {
     constructor(id){
         this.prop = []; this.query1_result = null; this.query2_result = null; this.query3_result = null; this.tObj_default = new Object({});
         this.template_default = [
-            { type:'raw', detail:'[this.header1]',align:'center' },
-            { type:'line', bold:true },
+            { type:'raw', detail:'[company.print_line1]',align:'center',underline:true },
+            { type:'line' },
             { type:'raw', detail:'It seems that there is some error in parsing the template provided.',align:'center' },
-            { type:'line', bold:true },
-            { type:'raw', detail:'[this.footer1]',align:'center' },
         ];
         if(parseInt(id) == id) this.setFromID(parseInt(id));
-        else this.setFromFNCode(id)
+        else this.setFromFNCode(id);
+        DB.get('epss_app',null,function(PrintTemplate){
+            let fetches = ['print_line1','print_line2','print_line3'], company = {};
+            this.result.forEach(({ name,detail }) => (fetches.includes(name)) ? company[name] = detail : null);
+            PrintTemplate.company(company);
+        },PrintTemplate)
     }
 
     setFromID(id){
