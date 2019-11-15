@@ -247,23 +247,20 @@ export class PrintTemplate {
         if(!source){
             source = [{ title:null,detail:null }];
             title_exp = getExpression(title); detail_exp = getExpression(detail);
-            if(!title_exp) { source[0]['title'] = title; title = 'title' }
-            if(!detail_exp) { source[0]['detail'] = detail; detail = 'detail' }
+            source[0]['title'] = (title_exp) ? eval(title_exp) : title;
+            source[0]['detail'] = (detail_exp) ? eval(detail_exp) : detail;
+            title = 'title'; detail = 'detail';
         } else if(typeof source === 'string') {
             let source_exp = getExpression(source);
-            if(source_exp) source = eval(source_exp);
-            else {
-                detail = getExpression(detail) || source;
-                source = [{ title,detail }];
-            }
+            source = source_exp ? eval(source_exp) : [{ title:null,detail:null }];
         }
         if(!Array.isArray(source)) source = [source];
-        let title_exp = getExpression(title) || 'data[title]';
-        let detail_exp = getExpression(detail) || 'data[detail]';
-        return source.map((data,index) => new Object({ title:eval(title_exp),detail:eval(detail_exp) }));
+        let title_exp = getExpression(title), detail_exp = getExpression(detail);
+        return source.map((data,index) => new Object({ title:title_exp ? eval(title_exp) : data[title],detail:detail_exp ? eval(detail_exp) : data[detail]}));
     }
 
     toLength(str,len,pos = 'R',chr = " ",strict = false){
+        if(typeof str !== 'number' && typeof str !== 'string') str = '';
         let repeat = parseInt(len) - str.toString().length;
         chr = chr.repeat(repeat>0 ? repeat : 0);
         str = pos === 'R' ?  str + chr : chr + str;
@@ -272,7 +269,8 @@ export class PrintTemplate {
     }
 
     getChunks(str,len){
-        let chunks = []; len = len || 1;
+        if(str === null || str === undefined) return [];
+        let chunks = []; len = len || 1; str = str.toString();
         for(let i = 0;i < str.length;i += len){
             chunks.push(str.substr(i,len))
         }
