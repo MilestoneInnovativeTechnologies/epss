@@ -35,11 +35,19 @@ export class Print {
             this['tObj']['header' + n] = data['header' + n];
             this['tObj']['footer' + n] = data['footer' + n];
             this['query' + n] = data['query' + n];
-            let props = data['query' + n + '_props'];
-            this['query' + n + '_props'] = props ? eval((props.substr(0,1) === '[') ? props : '["' + props + '"]') : null;
+            let props = this.getPropsFromDB(data['query' + n + '_props']);
+            this['query' + n + '_props'] = props;
             this['tObj']['query' + n] = [];
+            props.forEach(prop => this.prop[prop] = null);
         });
         this['tObj']['fncode'] = data['fncode'];
+    }
+
+    getPropsFromDB(data){
+        if(!data) return [];
+        if(data.substr(0,1) === '[' && data.substr(-1) === ']') return eval(data);
+        if(data.includes(',')) return data.split(',');
+        return [data];
     }
 
     set(obj){
@@ -63,6 +71,7 @@ export class Print {
     }
 
     props(obj){
+        if(obj === undefined) return Object.keys(this.prop);
         for(let x in obj) this.prop[x] = obj[x];
         return this;
     }
