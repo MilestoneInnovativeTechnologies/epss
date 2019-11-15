@@ -8,7 +8,7 @@ global.__ = {};
 global.sql = require('sqlstring');
 global.DB = require('./services/database').DB;
 global.EB = require('./services/EventBus').EventBus;
-global.print = require('./services/Printer.js').print;
+global.doPrint = require('./services/Printer.js').print;
 global.DBCache = require('./services/DBCache').DBCache;
 global.CCache = {};
 
