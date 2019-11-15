@@ -23,4 +23,5 @@ export class SSSetup {
     }
     now(){ return parseInt(new Date().getTime()/1000) }
     dtz(dt){ return parseInt(moment(dt).format('X')) }
+    time(){ return moment().format('hh:mm:ss') }
 }
