@@ -19,3 +19,4 @@ Downloader.init(); // Downloader.setTimeout(90);
 global.Downloader = new Downloader();
 
 global.Uploader = require('nativescript-background-http');
+global.Print = require('./services/Print').Print;
