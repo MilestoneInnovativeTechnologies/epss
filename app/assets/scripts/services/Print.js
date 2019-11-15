@@ -21,7 +21,7 @@ export class Print {
     }
 
     setFromFNCode(fncode){
-        DB.get('printing',{ fncode },function(cls){
+        DB.get('printing',{ fncode,status:'Active' },function(cls){
             cls.setFromDB(this.result);
         },this)
     }
