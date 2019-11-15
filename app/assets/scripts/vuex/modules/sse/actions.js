@@ -2,12 +2,12 @@ import {SSE} from "nativescript-sse";
 
 let reConnectMinDelay = 10,connection = false;
 let eventSource = null;
-const EST = { Connected:null,Error:null,Message:null,Url:null };
 let debounceEventSource = null;
 
 export function init(ctx) {
     let func = _.bind(doEventSource,ctx);
-    debounceEventSource = _.debounce(func,reConnectMinDelay * 1000,{ leading:true })
+    debounceEventSource = _.debounce(func,reConnectMinDelay * 1000,{ leading:true });
+    ctx.state.connection['init'] = __.time();
 }
 
 export function startEventSource({ getters }){
@@ -15,12 +15,13 @@ export function startEventSource({ getters }){
     if(connection && url && debounceEventSource) debounceEventSource(url);
 }
 
-export function onConnectionChange({ dispatch },status){
+export function onConnectionChange({ dispatch,state },status){
+    state.connection['connection_status'] = status; state.connection['connection_changed'] = __.time();
     connection = status; if(status) return dispatch('startEventSource');
 }
 
-export function syncTableChanged({ dispatch },tables){
-    dispatch('startEventSource');
+export function syncTableChanged({ dispatch,state },tables){
+    dispatch('startEventSource'); state.connection['table_changed'] = __.time(); state.connection['tables'] = __.time();
 }
 
 function getPreparedSSEUrl(baseURL,tables){
@@ -41,19 +42,22 @@ function clearEventSource(){
 
 function doEventSource(url){
     clearEventSource();
+    this.state.connection['connected'] = __.time(); this.state.connection['url'] = url;
     let message = _.bind(esOnMessage,this), error = _.bind(esOnError,this);
-    eventSource = new SSE(url); EST.Connected = __.now(); EST.Url = url;
+    eventSource = new SSE(url);
     eventSource.events.on('onMessage',data => message(data));
     eventSource.events.on('onError', data => error(data));
 }
 
 function esOnMessage(data){
-    EST.Message = __.now();
+    this.state.connection['message'] = __.time();
+    this.state.connection['message_count']++;
     let tables = purifySSEDataMessage(data);
     this.dispatch('triggerEventSubscribers',{ event:'SSEMonitor',payload:tables },{ root:true });
 }
 
 function esOnError(){
-    EST.Error = __.now(); EST.Connected = null;
+    this.state.connection['error'] = __.time();
+    this.state.connection['error_count']++;
     this.dispatch('startEventSource');
 }
