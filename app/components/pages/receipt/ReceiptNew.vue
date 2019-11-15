@@ -7,6 +7,7 @@
 <script>
     import { mapGetters,mapActions } from 'vuex';
     import {ReceiptNew,PrintModal} from "../../../assets/scripts/navigations";
+    import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
     const feMX = require('./../../../assets/scripts/mixins/formelement');
     const fields = { customer:'Customer',date:'DatePicker',amount:'Amount',bank:'Text',cheque:'Text',cheque_date:'DatePicker' };
     const ThisOBJ = require('./../../../assets/scripts/mixins/tobj').ThisObj;
@@ -35,7 +36,7 @@
 
     export default {
         name: "ReceiptNew",
-        mixins: [ThisOBJ,feMX.common, feMX.customer, feMX.paymentmode, feMX.store, feMX.fiscal, feMX.datepicker, feMX.amount, feMX.text],
+        mixins: [ThisOBJ, FnPrint,feMX.common, feMX.customer, feMX.paymentmode, feMX.store, feMX.fiscal, feMX.datepicker, feMX.amount, feMX.text],
         props: ['fncode','fycode','store','title'],
         data(){ return {
             eDocno: null,
@@ -64,12 +65,8 @@
             updateData(data){ let hData = Object.assign({},data,{ date:this.toDateTime(data.date) }); this.TO_SetPropFromObj(hData); },
             saveReceipt(){
                 let data = this.TO_Get(saveFields);
-                this.saveReceiptData(data).then(ref => this.$navigateTo(ReceiptNew,{ props:this.reloadProps }))
-                    .then(ref => {
-                        let receipts = _.set(data,'customer_name',_.get(this.customerDetail(data.customer),'name'));
-                        this.$showModal(PrintModal,{ props: { title:this.title,data:{ receipts },template },fullscreen:true })
-                            .then(print_data => this.$navigateTo(ReceiptNew,{ props:this.reloadProps }))
-                    })
+                this.saveReceiptData(data)//.then(ref => this.$navigateTo(ReceiptNew,{ props:this.reloadProps }))
+                    .then(ref => this.FnPrint(this.TO_Get(this.FnPrintProps)).then(() => this.$navigateTo(ReceiptNew,{ props:this.reloadProps })))
             },
         },
         created(){
