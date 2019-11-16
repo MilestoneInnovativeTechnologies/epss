@@ -4,6 +4,13 @@ const app_user_create_date = '1900-01-01 00:00:01';
 
 let timeOut = 0;
 const tableID = {};
+let DownloadSuccess,DownloadFailed,ProcessDownloadedData;
+
+export function init(ctx){
+    DownloadSuccess = _.bind(downloaded,ctx);
+    DownloadFailed = _.bind(download_fails,ctx);
+    ProcessDownloadedData = _.bind(doProcessDownloadedData,ctx);
+}
 
 export function tables({ dispatch },tables){
     if(!Array.isArray(tables) || tables.length === 0) return null;
@@ -34,10 +41,13 @@ export function table({ rootState,rootGetters },table){
 export function start(ctx) {
     _.forEach(ctx.state.batch.running,(table,idx) => {
         let taskID = tableID[table]; if(!taskID) return;
-        let success = _.bind(downloaded,ctx,table,taskID), fail = _.bind(download_fails,ctx,table,taskID);
-        setTimeout(function (taskID, success, fail) {
-            return Downloader.start(taskID).then(completed => success(completed)).catch(error => fail(error));
-        },idx*3000,taskID,success,fail);
+        // let success = _.bind(downloaded,ctx,table,taskID), fail = _.bind(download_fails,ctx,table,taskID);
+        setTimeout(function (table, taskID, success, fail) {
+            log('Download: Dispatching Downloader Start for table: '+ table);
+            return Downloader.start(taskID)
+                .then(completed => DownloadSuccess(table,taskID,completed))
+                .catch(error => DownloadFailed(table,taskID,error));
+        },idx*3000,table,taskID);
     })
 }
 
@@ -74,15 +84,18 @@ function getName(table){
 }
 
 function downloaded(table,task,{ path }){
+    log('Download: downloaded to path '+ path);
     fsm.File.fromPath(path).readText()
-        .then(activities => { _.bind(doProcessDownloadedData,this)(path,activities); this.commit('complete',table); })
+        .then(activities => { ProcessDownloadedData(path,activities); this.commit('complete',table); })
         .catch(error => log('File read failed for table: '+table,error))
 }
 function download_fails(table,task,{ status,message }){
+    log('Download: Failed downloading for table '+ table);
     this.dispatch('tables',[table]);
     this.commit('complete',table)
 }
 function doProcessDownloadedData(path,data){
+    log('Download: Processing downloaded data from path '+ path,'Data: ',data);
     if(data){
         data = data.trim();
         try {
