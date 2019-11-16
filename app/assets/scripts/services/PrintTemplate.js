@@ -17,20 +17,20 @@ export class PrintTemplate {
 
     set_defaults(){
         this.defaults = {
-            NORMAL: { source:null, title:null, detail:null, title_bold:false, detail_bold:true, separate_character:':', size:0, title_underline:false, detail_underline:false,line_feed:false },
-            WIDE: { source:null, title:null, detail:null, title_bold:false, detail_bold:true, separate:false, separate_character:':', separate_position:'center', title_left:true, size:0 },
-            STACK: { source:null, title:null, detail:null, title_bold:true, detail_bold:false, size:0, title_size:0, detail_size:0, line_feed:false, title_append:'',align:'left' },
-            RAW: { source:null, detail:null, bold:false, size:0, align:'left', underline:false, line_feed:false },
-            LINE: { text:'-', bold:false, size:0 },
-            FEED: { amount:1 },
-            TABLE: { source:null,columns:['No'],keys:['[AI]'],width:[1],size:0 },
+            NORMAL: { source:null, title:null, detail:null, title_bold:false, detail_bold:true, separate_character:':', size:0, title_underline:false, detail_underline:false, line_feed:false, on:true },
+            WIDE: { source:null, title:null, detail:null, title_bold:false, detail_bold:true, separate:false, separate_character:':', separate_position:'center', title_left:true, size:0, on:true },
+            STACK: { source:null, title:null, detail:null, title_bold:true, detail_bold:false, size:0, title_size:0, detail_size:0, line_feed:false, title_append:'', align:'left', on:true },
+            RAW: { source:null, detail:null, bold:false, size:0, align:'left', underline:false, line_feed:false, on:true },
+            LINE: { text:'-', bold:false, size:0, on:true },
+            FEED: { amount:1, on:true },
+            TABLE: { source:null, columns:['No'], keys:['[AI]'], width:[1], size:0, on:true },
         };
     }
 
     NORMAL(options,object){
         let opts = this.options('NORMAL',options);
-        let { source,title,detail,size,title_bold,detail_bold,title_underline,detail_underline,separate_character,line_feed } = opts;
-        source = _.bind(this.sourceToTitleDetail,object,this.print_lines)(source,title,detail);
+        let { source,title,detail,size,title_bold,detail_bold,title_underline,detail_underline,separate_character,line_feed,on } = opts;
+        source = _.bind(this.sourceToTitleDetail,object,this.print_lines,on)(source,title,detail); if(!source) return [];
         let line_width = this.size[this.width][size];
         let bold_on = printer.BOLDON(), bold_off = printer.BOLDOFF(), underline_on = printer.UNDERLINEON(), underline_off = printer.UNDERLINEOFF(), lf1 = printer.LF(1);
         let separator = ` ${separate_character} `;
@@ -39,7 +39,8 @@ export class PrintTemplate {
         let detail_prepend = [].concat(detail_bold ? bold_on : bold_off,detail_underline ? underline_on : underline_off);
         let detail_append = [].concat(detail_underline ? underline_off : [],detail_bold ? bold_off : [],line_feed ? lf1 : []);
         let lines = [].concat(size ? printer.SIZEON(size) : []), lastSourceIdx = source.length - 1;
-        source.forEach(({ title,detail },sIdx) => {
+        source.forEach(({ title,detail,print },sIdx) => {
+            if(!print) return;
             title = title + separator;
             if((title + detail).length <= line_width) lines.push([].concat(title_prepend,printer.TEXT(title),title_append,detail_prepend,printer.TEXT(detail),detail_append));
             else {
@@ -59,11 +60,11 @@ export class PrintTemplate {
 
     WIDE(options,object){
         let opts = this.options('WIDE',options);
-        let { source,title,detail,separate,separate_character,size,title_left,separate_position,title_bold,detail_bold } = opts;
+        let { source,title,detail,separate,separate_character,size,title_left,separate_position,title_bold,detail_bold,on } = opts;
         let sep = separate ? (` ${separate_character} `) : ' ';
-        source = _.bind(this.sourceToTitleDetail,object,this.print_lines)(source,title,detail);
+        source = _.bind(this.sourceToTitleDetail,object,this.print_lines,on)(source,title,detail); if(!source) return [];
         let line_width = this.size[this.width][size];
-        let lines = source.map(({ title,detail }) => this.wideLineLeftRight(title_left ? title : detail,title_left ? detail : title,sep,separate ? separate_position : 'left',line_width));
+        let lines = source.map(({ title,detail,print }) => print ? this.wideLineLeftRight(title_left ? title : detail,title_left ? detail : title,sep,separate ? separate_position : 'left',line_width) : { left:null,right:null });
         lines = this.wideLineNormalize(lines,line_width);
         let bold_on = printer.BOLDON(), bold_off = printer.BOLDOFF(), bold_left = bold_off, bold_right = bold_off;
         if(title_bold) if(title_left) bold_left = bold_on; else bold_right = bold_on;
@@ -75,8 +76,8 @@ export class PrintTemplate {
 
     STACK(options,object){
         let opts = this.options('STACK',options);
-        let { source,title,detail,align,title_append,title_bold,detail_bold,title_size,detail_size,size,line_feed } = opts;
-        source = _.bind(this.sourceToTitleDetail,object,this.print_lines)(source,title,detail);
+        let { source,title,detail,align,title_append,title_bold,detail_bold,title_size,detail_size,size,line_feed,on } = opts;
+        source = _.bind(this.sourceToTitleDetail,object,this.print_lines,on)(source,title,detail); if(!source) return [];
         let bold_on = printer.BOLDON(), bold_off = printer.BOLDOFF(), lf1 = printer.LF(1), size_off = printer.SIZEOFF();
         title_size = (title_size||size||0) > 0 ? printer.SIZEON(title_size||size||0) : size_off;
         let title_prepend = [].concat((title_bold) ? bold_on : bold_off,title_size);
@@ -85,7 +86,8 @@ export class PrintTemplate {
         let detail_prepend = [].concat((detail_bold) ? bold_on : bold_off,detail_size);
         let detail_append = [].concat(size_off,bold_off,(line_feed) ? lf1 : []);
         let lines = printer.ALIGN(printer.ALIGNMODE[align.toUpperCase()]);
-        source.forEach(({ title,detail }) => {
+        source.forEach(({ title,detail,print }) => {
+            if(!print) return;
             title = [].concat(title_prepend,printer.TEXT(title),title_append,lf1);
             detail = [].concat(detail_prepend,printer.TEXT(detail),detail_append,lf1);
             lines.push(title,detail);
@@ -95,19 +97,20 @@ export class PrintTemplate {
 
     RAW(options,object){
         let opts = this.options('RAW',options);
-        let { source,detail,align,size,bold,underline,line_feed } = opts;
-        source = _.bind(this.sourceToTitleDetail,object,this.print_lines)(source,null,detail);
+        let { source,detail,align,size,bold,underline,line_feed,on } = opts;
+        source = _.bind(this.sourceToTitleDetail,object,this.print_lines,on)(source,null,detail); if(!source) return [];
         let size_off = printer.SIZEOFF(), bold_on = printer.BOLDON(), bold_off = printer.BOLDOFF(), underline_on = printer.UNDERLINEON(2), underline_off = printer.UNDERLINEOFF(), lf1 = printer.LF();
         let prepend = [].concat(bold ? bold_on : [],underline ? underline_on : []);
         let append = [].concat(bold ? bold_off : [],underline ? underline_off : [],line_feed ? lf1 : []);
         let lines = [].concat(printer.ALIGN(printer.ALIGNMODE[align.toUpperCase()]),(size > 0) ? printer.SIZEON(size) : size_off);
-        source.forEach(({ detail }) => lines.push([].concat(prepend,printer.TEXT(detail),append,lf1)));
+        source.forEach(({ detail,print }) => print ? lines.push([].concat(prepend,printer.TEXT(detail),append,lf1)) : null);
         return lines.concat(size_off,printer.ALIGN(0)).flat(1);
     }
 
-    LINE(options){
+    LINE(options,object){
         let opts = this.options('LINE',options);
-        let { text,bold,size } = opts, chars = this.size[this.width][size];
+        let { text,bold,size,on } = opts, chars = this.size[this.width][size];
+        if(!_.bind(function(company,exp){ return eval(exp) },object,this.print_lines)(on)) return [];
         text = text.repeat(chars).substr(0,chars);
         return [].concat(
             bold ? printer.BOLDON() : printer.BOLDOFF(),
@@ -118,14 +121,16 @@ export class PrintTemplate {
             printer.LF())
     }
 
-    FEED(options){
-        let amount = this.options('FEED',options).amount;
+    FEED(options,object){
+        let { amount,on } = this.options('FEED',options);
+        if(!_.bind(function(company,exp){ return eval(exp) },object,this.print_lines)(on)) return [];
         return Array(amount).fill(10);
     }
 
     TABLE(options,object){
         let opts = this.options('TABLE',options);
-        let { source,columns,keys,width,size } = opts;
+        let { source,columns,keys,width,size,on } = opts;
+        if(!_.bind(function(company,exp){ return eval(exp) },object,this.print_lines)(on)) return [];
         if(!Array.isArray(source)){
             if(typeof source === 'object') source = [source];
             else if(typeof source === 'string'){
@@ -146,7 +151,7 @@ export class PrintTemplate {
 
         return [].concat(
             this.LINE({ bold:true }),
-            printer.TEXT(columns.join('')),
+            printer.TEXT(columns.join('') + "\n"),
             this.LINE(),
             printer.TEXT(normalized.join('')),
             this.LINE({ bold:true })
@@ -177,6 +182,7 @@ export class PrintTemplate {
     wideLineNormalize(lines,width){
         let normalized = [];
         lines.forEach(({ left,right }) => {
+            if(!left && !right) return;
             if(left.length + right.length > width){
                 if(left.length > Math.ceil(width/3)){
                     let leftLength = Math.floor(width/2), rightLength = width - leftLength;
@@ -248,7 +254,7 @@ export class PrintTemplate {
         return Object.assign({},this.defaults[item],options || {})
     }
 
-    sourceToTitleDetail(company,source,title,detail){
+    sourceToTitleDetail(company,on,source,title,detail){
         if(!source){
             source = [{ title:null,detail:null }];
             title_exp = getExpression(title); detail_exp = getExpression(detail);
@@ -261,7 +267,7 @@ export class PrintTemplate {
         }
         if(!Array.isArray(source)) source = [source];
         let title_exp = getExpression(title), detail_exp = getExpression(detail);
-        return source.map((data,index) => new Object({ title:title_exp ? eval(title_exp) : data[title],detail:detail_exp ? eval(detail_exp) : data[detail]}));
+        return source.map((data,index) => new Object({ title:title_exp ? eval(title_exp) : data[title],detail:detail_exp ? eval(detail_exp) : data[detail], print:eval(on) }));
     }
 
     toLength(str,len,pos = 'R',chr = " ",strict = false){
