@@ -45,7 +45,7 @@
                 let data = { ...(new DBTransaction(this.TP).prepare(this.PS_items)),out:this.id };
                 let result = await confirm({ title:'Are you sure?',message:'You are about to do a Stock Transfer IN. Please confirm',okButtonText:'Confirmed, Do Transfer',cancelButtonText:'Cancel' });
                 if(!result) return;
-                let docno = await this.saveMaterialTransferIn(data);
+                let { docno } = await this.saveMaterialTransferIn(data);
                 await alert({ title: "Success!!", message: "Material Transfer In has done.\nDocument No: "+docno, okButtonText: "Proceed" });
                 this.$navigateTo(Home);
             }

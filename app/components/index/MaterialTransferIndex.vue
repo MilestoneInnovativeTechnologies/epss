@@ -33,7 +33,7 @@
                 let outData = new DBTransaction(this.TP).prepare(this.PS_items);
                 let result = await confirm({ title:'Are you sure?',message:'You are about to do Stock Transfer Out. Please confirm',okButtonText:'Confirmed, Do Transfer',cancelButtonText:'Cancel' });
                 if(!result) return;
-                let docno = await this.saveMaterialTransferOut(outData);
+                let { docno } = await this.saveMaterialTransferOut(outData);
                 alert({ title: "Success!!", message: "Material Transfer Out has done.\nDocument No: "+docno, okButtonText: "Proceed" });
                 this.updates++;
             },
