@@ -1,7 +1,7 @@
 <template>
     <AlignMiddle>
-        <StackLayout width="420" class="bcg01 p-b-10">
-            <GridLayout width="420" rows="60" :columns="columns"  class="bordercp" style="border-width: 1">
+        <StackLayout width="320" class="bcg01 p-b-10">
+            <GridLayout width="320" rows="60" :columns="columns"  class="bordercp" style="border-width: 1">
                 <Label row="0" col="0" class="bcp c-white fs20 fsb font-weight-bold p-10" :text="title" />
                 <StackLayout v-if="closable" row="0" col="1" class="bcg01" verticalAlignment="center" @tap="formClose">
                     <FontIcon class="cp text-center w-full" size="35">cancel</FontIcon>
