@@ -6,10 +6,10 @@
 
 <script>
     import { mapState,mapActions } from 'vuex';
-    import {TransactionQueryBuilder} from "../../assets/scripts/services/transactionquery";
     import {WideScreenCheck} from "../../assets/scripts/mixins/widescreencheck";
     import {ThisObj} from "../../assets/scripts/mixins/tobj";
     import {NewSaleTransaction, NewSaleTransactionAdvanced} from "../../assets/scripts/navigations";
+    import {recent_sale_transactions} from "../../assets/scripts/queries";
 
     const constants = { limit: 30, after: 3, on: 3 };
     const fetchFields = ['docno','fycode','fncode','customer','date','store','cid','sid','id','eid','executive'];
@@ -27,11 +27,7 @@
         methods: {
             ...mapActions('Transaction',{ stockTransaction:'_stockIfNot' }),
             doStock(){
-                let query = new TransactionQueryBuilder(constants.limit)
-                    .fields(fetchFields)
-                    .where(this.TO_Get(['sid','fycode','fncode'],{ sid:'store' }))
-                    .query();
-                this.stockTransaction({ query,key:'recent',path:this.fncode,on:constants.on });
+                this.stockTransaction({ query:sql.format(recent_sale_transactions,[this.store,this.fycode,this.fncode,constants.limit]),key:'recent',path:this.fncode,on:constants.on });
             },
             createNew(){
                 let navComponent = this.WSC_isWide ? NewSaleTransactionAdvanced : NewSaleTransaction;
