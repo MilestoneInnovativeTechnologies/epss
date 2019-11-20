@@ -54,7 +54,7 @@
             fields.map(field => this.$set(this.source,field,this.getInitValue(field)));
         },
         mounted() {
-            emitFinal = _.debounce(emitFinal,750,{ trailing:true }); emitField = _.debounce(emitField,750,{ trailing:true });
+            //emitFinal = _.debounce(emitFinal,150,{ trailing:true }); emitField = _.debounce(emitField,150,{ trailing:true });
             _.keys(this.fields).map(field => this.$set(this.final,field,this.getInitSourceValue(field))); emitFinal(this);
         }
     }
