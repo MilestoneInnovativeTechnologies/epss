@@ -6,7 +6,7 @@
 
 <script>
     import { mapGetters,mapActions } from 'vuex';
-    import {ReceiptNew,PrintModal} from "../../../assets/scripts/navigations";
+    import {ReceiptNew} from "../../../assets/scripts/navigations";
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
     const feMX = require('./../../../assets/scripts/mixins/formelement');
     const fields = { customer:'Customer',date:'DatePicker',amount:'Amount',bank:'Text',cheque:'Text',cheque_date:'DatePicker' };
@@ -18,21 +18,6 @@
     };
     const LabelCorrection = { bank:'Bank Name',cheque:'Cheque Number',cheque_date:'Cheque Date' };
     const saveFields = ['docno','store','fycode','fncode','user','customer','date','amount','bank','cheque_date','cheque','status','source','_ref'];
-
-
-
-
-    const template = [
-        { type:'raw',source:'receipts',keys:{ docno:'Document',date:'Date',customer_name:'Customer' } },
-        { type:'line' },
-        { type:'raw',source:'receipts',keys:{ amount:'Amount' } },
-        { type:'line' },
-        { type:'raw',source:'receipts',keys:{ cheque:'Cheque Number',cheque_date:'Cheque Date',bank:'Bank Name', } }
-    ];
-
-
-
-
 
     export default {
         name: "ReceiptNew",

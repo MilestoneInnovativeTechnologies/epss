@@ -13,6 +13,7 @@
     import {TransactionPack} from "../../../assets/scripts/mixins/transactionpack";
     import {ProductSale} from "../../../assets/scripts/mixins/productsale";
     import {Home} from "../../../assets/scripts/navigations";
+    import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
     const DBTransaction = require("../../../assets/scripts/services/DBTransaction").DBTransaction;
 
     const TransactionQueryBuilder = require('./../../../assets/scripts/services/transactionquery').TransactionQueryBuilder,
@@ -23,7 +24,7 @@
 
     export default {
         name: "StockTransferInItems",
-        mixins: [ProductSale,TransactionPack],
+        mixins: [ProductSale,TransactionPack, FnPrint],
         props: ['id','store','fycode'],
         data(){ return {
             selectedItems: [],
@@ -45,9 +46,9 @@
                 let data = { ...(new DBTransaction(this.TP).prepare(this.PS_items)),out:this.id };
                 let result = await confirm({ title:'Are you sure?',message:'You are about to do a Stock Transfer IN. Please confirm',okButtonText:'Confirmed, Do Transfer',cancelButtonText:'Cancel' });
                 if(!result) return;
-                let { docno } = await this.saveMaterialTransferIn(data);
-                await alert({ title: "Success!!", message: "Material Transfer In has done.\nDocument No: "+docno, okButtonText: "Proceed" });
-                this.$navigateTo(Home);
+                let { docno,_ref } = await this.saveMaterialTransferIn(data), vm = this;
+                confirm({ title:'Material Transfer In has done',message:'Document No: ' + docno + "\nDo you want to print?",cancelButtonText:'Print and Proceed',okButtonText:'Proceed without Print' })
+                    .then(result => result ? vm.$navigateTo(Home) : vm.FnPrint({ _ref,id:vm.id }).then(() => vm.$navigateTo(Home)))
             }
         },
         created(){
