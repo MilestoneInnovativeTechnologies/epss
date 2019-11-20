@@ -33,7 +33,7 @@ export class Print {
         if(!db_array) return;
         let data = (Array.isArray(db_array) && db_array[0]) ? db_array[0] : db_array;
         try { this['tObj'] = eval(data.object ? data.object.replace(/\\n/g,String.fromCharCode(10)) : null) || this.tObj_default; } catch (e) { log('Error in setting ThisObject from database table printing of column object'); this['tObj'] = new Object({}); }
-        try { this['template'] = eval(data.template ? data.template.replace(/\\n/g,String.fromCharCode(10)) : null) || this.template_default; } catch (e) { this['template'] = this.template_default; }
+        try { this['template'] = eval(data.template ? data.template.replace(/\\n/g,String.fromCharCode(10)) : null) || this.template_default; } catch (e) { log('Error in setting template for print',data.template); this['template'] = this.template_default; }
         [1,2,3].forEach(n => {
             this['tObj']['header' + n] = data['header' + n];
             this['tObj']['footer' + n] = data['footer' + n];
