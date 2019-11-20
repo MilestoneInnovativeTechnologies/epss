@@ -12,7 +12,6 @@
     import {recent_sale_transactions} from "../../assets/scripts/queries";
 
     const constants = { limit: 30, after: 3, on: 3 };
-    const fetchFields = ['docno','fycode','fncode','customer','date','store','cid','sid','id','eid','executive'];
 
     export default {
         name: "SalesIndex",
