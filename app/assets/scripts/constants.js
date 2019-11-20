@@ -34,4 +34,4 @@ export const product_image_cache_max_request = 10;
 
 //Drawer Component
 export const drawer_content_size_percent = 10;
-export const drawer_content_size_max = 400;
+export const drawer_content_size_max = 300;
