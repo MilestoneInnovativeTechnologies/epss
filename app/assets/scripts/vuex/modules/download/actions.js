@@ -96,7 +96,7 @@ function download_fails(table,task,{ status,message }){
 }
 function doProcessDownloadedData(path,data){
     log('Download: Processing downloaded data from path '+ path,'Data: ',data);
-    if(data){
+    if(data && data.trim() !== ''){
         data = data.trim();
         try {
             if(data.substr(0,1) === '[') this.dispatch('Sync/doProcessSyncData',JSON.parse(data.trim()),{ root:true });
