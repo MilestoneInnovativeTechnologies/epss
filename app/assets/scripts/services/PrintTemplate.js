@@ -64,7 +64,7 @@ export class PrintTemplate {
         let sep = separate ? (` ${separate_character} `) : ' ';
         source = _.bind(this.sourceToTitleDetail,object,this.print_lines,on)(source,title,detail); if(!source) return [];
         let line_width = this.size[this.width][size];
-        let lines = source.map(({ title,detail,print }) => print ? this.wideLineLeftRight(title_left ? title : detail,title_left ? detail : title,sep,separate ? separate_position : 'left',line_width) : { left:null,right:null });
+        let lines = source.map(({ title,detail,print }) => print ? this.wideLineLeftRight(title_left ? title : detail,title_left ? detail : title,sep,separate ? separate_position : 'left',line_width) : { left:'',right:'' });
         lines = this.wideLineNormalize(lines,line_width);
         let bold_on = printer.BOLDON(), bold_off = printer.BOLDOFF(), bold_left = bold_off, bold_right = bold_off;
         if(title_bold) if(title_left) bold_left = bold_on; else bold_right = bold_on;
@@ -256,14 +256,14 @@ export class PrintTemplate {
 
     sourceToTitleDetail(company,on,source,title,detail){
         if(!source){
-            source = [{ title:null,detail:null }];
+            source = [{ title:'',detail:'' }];
             title_exp = getExpression(title); detail_exp = getExpression(detail);
             source[0]['title'] = (title_exp) ? eval(title_exp) : title;
             source[0]['detail'] = (detail_exp) ? eval(detail_exp) : detail;
             title = 'title'; detail = 'detail';
         } else if(typeof source === 'string') {
             let source_exp = getExpression(source);
-            source = source_exp ? eval(source_exp) : [{ title:null,detail:null }];
+            source = source_exp ? eval(source_exp) : [{ title:'',detail:'' }];
         }
         if(!Array.isArray(source)) source = [source];
         let title_exp = getExpression(title), detail_exp = getExpression(detail);
