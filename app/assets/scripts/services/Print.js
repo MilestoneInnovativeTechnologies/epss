@@ -83,6 +83,7 @@ export class Print {
         if(width) PrintTemplate.set({ width });
         let printData = [];
         this.template.forEach(options => printData.push(PrintTemplate[options.type.toUpperCase()](options,this['tObj'])));
+        if(parseInt(PrintTemplate.width) < 40) printData = printData.concat(printer.LF(2));
         doPrint(printData.flat(1));
     }
 }
