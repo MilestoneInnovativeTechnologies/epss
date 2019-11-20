@@ -10,5 +10,3 @@ export const NewSalesOrder = require('../../components/pages/salesorder/NewSales
 export const NewSalesOrderAdvanced = require('../../components/pages/salesorder/NewSalesOrderAdvanced').default;
 
 export const StockTransferInItems = require('../../components/pages/transfer/StockTransferInItems').default;
-
-export const PrintModal = require('../../components/pages/temp/PrintModal').default;
