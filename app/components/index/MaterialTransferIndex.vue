@@ -10,11 +10,12 @@
     import {ProductSale} from "../../assets/scripts/mixins/productsale";
     import {TransactionPack} from "../../assets/scripts/mixins/transactionpack";
     import {StockTransferInItems} from "../../assets/scripts/navigations";
+    import {FnPrint} from "../../assets/scripts/mixins/fnprint";
     const DBTransaction = require("../../assets/scripts/services/DBTransaction").DBTransaction;
 
     export default {
         name: "MaterialTransferIndex",
-        mixins: [ProductSale,TransactionPack],
+        mixins: [ProductSale,TransactionPack,FnPrint],
         props: ['fycode','fncode','store'],
         data(){ return {
             selectedItems: [],
@@ -33,9 +34,9 @@
                 let outData = new DBTransaction(this.TP).prepare(this.PS_items);
                 let result = await confirm({ title:'Are you sure?',message:'You are about to do Stock Transfer Out. Please confirm',okButtonText:'Confirmed, Do Transfer',cancelButtonText:'Cancel' });
                 if(!result) return;
-                let { docno } = await this.saveMaterialTransferOut(outData);
-                alert({ title: "Success!!", message: "Material Transfer Out has done.\nDocument No: "+docno, okButtonText: "Proceed" });
-                this.updates++;
+                let { docno,_ref } = await this.saveMaterialTransferOut(outData), vm = this;
+                confirm({ title:'Material Transfer Out has done',message:'Document No: ' + docno + "\nDo you want to print?",cancelButtonText:'Print and Proceed',okButtonText:'Proceed without Print' })
+                    .then((result) => result ? vm.updates++ : vm.FnPrint({ _ref }).then(() => vm.updates++));
             },
             proceedViewTransferInItems(){
                 if(this.selectedItems.length < 1) return alert({ title: "Attention", message: "Please select any pending stock transfer out to do stock transfer in", okButtonText: "Proceed" });
