@@ -3,6 +3,8 @@
 </template>
 
 <script>
+    const emitText = _.debounce((vm,text) => vm.$emit('filter',text),1500,{ leading:true });
+
     export default {
         name: "TRAItemsFilter",
         methods: {
@@ -11,5 +13,4 @@
             }
         }
     }
-    function emitText(vm,text){ _.debounce((vm,text) => vm.$emit('filter',text),1500,{ leading:true })(vm,text) }
 </script>
