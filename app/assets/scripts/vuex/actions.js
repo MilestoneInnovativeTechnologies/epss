@@ -28,11 +28,11 @@ export function redrawModules({state, commit, dispatch}, table) {
         let { action,type } = (_.has(state[module],'cacheTables') && _.includes(state[module]['cacheTables'],table))
             ? { action:dispatch,type:'cacheTableData' }
             : { action:commit,type:module + '/' + mutate_sync_data };
-        dispatch('redrawTableData',{ table,query,action,type });
+        redrawTableData(table,query,action,type);
     });
 }
 
-export function redrawTableData(context, {table,query,action,type}) {
+function redrawTableData(table,query,action,type) {
     DB.table(table).getAllQuery(query, function (action, type) {
         if(this.error) return log('REDRAW Query Error for table: '+this.table(),this.error);
         action(type, { table:this.table(),data:this.result }, {root: true});
