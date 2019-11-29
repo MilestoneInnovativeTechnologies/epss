@@ -1,5 +1,6 @@
 export default {
     dbTables:['epss_app','epss_user'],
+    dwnTables: {},
     appTables:['epss_sync'],
     dbFields:['name,detail','name,detail','url,uuid,user,content,onsuccess,onfail,progress,added,considered,responded,response,status'],
     dbIndexes:['name','name','progress,status'],

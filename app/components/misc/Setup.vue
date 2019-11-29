@@ -16,6 +16,15 @@
                 </template>
             </GridLayout>
         </StackLayout>
+        <StackLayout v-if="dwnTblsRows">
+            <TextHeadingSub>Tables</TextHeadingSub>
+            <WrapLayout>
+                <StackLayout v-for="(status,table) in dwnTables" orientation="horizontal">
+                    <TextHighlight>{{ table | properCase }}</TextHighlight>
+                    <FontIcon class="cp m-t-2 m-r-20" size="16" :name="status ? 'check_box' : 'check_box_outline_blank'"></FontIcon>
+                </StackLayout>
+            </WrapLayout>
+        </StackLayout>
     </App>
 </template>
 
@@ -23,10 +32,12 @@
     import {set_state_data,remove_event_subscriber} from "../../assets/scripts/vuex/mutation-types";
     const { device, screen } = require('tns-core-modules/platform');
     import { mapActions,mapState,mapMutations } from 'vuex';
+    import {WideScreenCheck} from "../../assets/scripts/mixins/widescreencheck";
     const Login = require('../login/Login').default
 
     export default {
         name: "Setup",
+        mixins: [WideScreenCheck],
         data(){ return {
             busy: false,
             uuid: device.uuid,
@@ -34,37 +45,45 @@
             completed: 0
         }},
         computed: {
-            ...mapState('App',['message','tasks']),...mapState('Download',['batch']),
+            ...mapState('App',['message','tasks','dwnTables']),...mapState('Download',['batch']),
             taskRows(){ return _.fill(Array(_.size(this.tasks)),'auto').join(','); },
+            dwnTblsRows(){ return _.isEmpty(this.dwnTables) ? false : Array(_.keys(this.dwnTables).length).fill('auto').join(','); },
             taskStatus(){ let tasks = this.tasks; return _.every(tasks) },
-            regData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs } },
+            regData(){ return { uuid:this.uuid,height:screen.mainScreen.heightDIPs,width:screen.mainScreen.widthDIPs,print_width:this.WSC_isWide ? 48 : 32 } },
             percentage(){ return _.toSafeInteger(this.completed*100/_.toSafeInteger(this.downloads)) }
         },
         methods: {
             ...mapActions({register:'App/register',sLog:'App/sLog',distribute:'Menu/distribute',rootInit:'init'}),
             ...mapMutations({ setStateData:'App/'+set_state_data, remEventSub:remove_event_subscriber }),
             doSetup(){ this.busy = true; this.register(this.regData); },
+            removeEvents(){
+                ['syncTableChanged','batchDownloadStarting','batchDownloadedTable']
+                .forEach(event => this.remEventSub({ event,module:'App' }));
+            },
             completeSetup(){
-                this.remEventSub({ event:'batchDownloadStarting',module:'App' });
-                this.distribute(); this.sLog('Completed!'); this.rootInit(_.cloneDeep(VuexStore._modulesNamespaceMap))
+                this.removeEvents(); this.distribute();
+                this.sLog('Completed!'); this.rootInit(_.cloneDeep(VuexStore._modulesNamespaceMap));
             }
+        },
+        filters: {
+            properCase(value) { return _.startCase(value); }
         },
         watch: {
             message:function(val){ if(_.isEmpty(val)) return; alert({ title:'Setup Error', message:val, okButtonText:'Ok' }).then(() => { this.busy = false; this.setStateData({ message:'' })}) },
             taskStatus:function(val){ if(val) this.$navigateTo(Login,{ backstackVisible:false }); },
-            batch:{
+            dwnTables:{
                 deep:true,
-                handler({ running }){
+                handler(tables){
+                    if(!tables || _.isEmpty(tables)) return;
                     if(this.downloads === null){
                         if(!this.tasks['Init synchronizing app records']) return;
-                        if(running.length === 0) this.completeSetup();
-                        else this.downloads = running.length;
+                        else this.downloads = _.keys(tables).length;
                     } else {
-                        this.completed++;
+                        this.completed = _.filter(tables).length
                         if(this.completed >= this.downloads) this.completeSetup();
                     }
                 }
-            },
+            }
         }
     }
 </script>

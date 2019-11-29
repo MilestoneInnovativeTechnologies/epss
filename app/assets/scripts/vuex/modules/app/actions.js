@@ -35,7 +35,7 @@ export function deviceRegistration({ dispatch }, {uuid}) {
 }
 export function setup({ state,dispatch,commit },data){
     if(_.isEmpty(data)) { let message = 'OOPS!! Device not registered!!'; commit(set_state_data,{ message }); return log(message); }
-    data = _.assign(data,_.pick(state,['uuid','width','height']));
+    data = _.assign(data,_.pick(state,['uuid','width','height','print_width']));
     Promise.all([..._.map([...state.dbTables,...state.appTables],(tbl,idx) => createTable(tbl,state.dbFields[idx],state.dbIndexes[idx],state.dbSLog[idx]))]).then((resArray) => {
         _.forEach(resArray,(slog) => dispatch('sLog',slog));
         let reqData = _.omit(data,['id','created_at','updated_at']), insData = _.map(reqData,(detail,name) => _.zipObject(['name','detail'],[name,detail]));
@@ -53,21 +53,26 @@ export function setupTables({ dispatch }) {
         });
     });
 }
-export function createTables({ dispatch },data) {
+export function createTables({ dispatch,commit },data) {
     dispatch('sLog','Create DB tables'); createTable(table_information_db_table_name, table_information_db_table_fields,table_information_db_table_indexes,data).then(data => {
         Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],Ary[3],getInformationInsertData(table,Ary)))]).then((insArray) => {
-            DB.insert(table_information_db_table_name, insArray, function (dispatch,menu) {
-                dispatch('Menu/setup',menu,{ root:true });
+            DB.insert(table_information_db_table_name, insArray, function (dispatch,commit,menu,tables) {
                 dispatch('Sync/init',null,{ root:true });
-                dispatch('SSE/startEventSource',null,{ root:true })
-            },dispatch,data.menu);
+                dispatch('Menu/setup',menu,{ root:true });
+            },dispatch,commit,data.menu,_.keys(data.db));
         })
     });
 }
 
+export function syncTableChanged({ commit,dispatch },tables){
+    commit('dwnTables',tables);
+    dispatch('Download/tables',tables,{ root:true });
+}
 export function batchDownloadStarting({ dispatch },tables){
-    if(!tables || tables.length === 0) return;
-    dispatch('sLog','Init synchronizing app records');
+    if(tables && tables.length > 0) dispatch('sLog','Init synchronizing app records');
+}
+export function batchDownloadedTable({ commit },table){
+    if(table) commit('downloadedTable',table);
 }
 
 function createTable(name,fields,indexes,done){
