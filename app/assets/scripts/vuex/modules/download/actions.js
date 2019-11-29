@@ -42,7 +42,7 @@ export function start(ctx) {
     _.forEach(ctx.state.batch.running,(table,idx) => {
         let taskID = tableID[table]; if(!taskID) return;
         // let success = _.bind(downloaded,ctx,table,taskID), fail = _.bind(download_fails,ctx,table,taskID);
-        setTimeout(function (table, taskID, success, fail) {
+        setTimeout(function (table, taskID) {
             log('Download: Dispatching Downloader Start for table: '+ table);
             return Downloader.start(taskID)
                 .then(completed => DownloadSuccess(table,taskID,completed))
@@ -85,6 +85,7 @@ function getName(table){
 
 function downloaded(table,task,{ path }){
     log('Download: downloaded to path '+ path);
+    this.dispatch('triggerEventSubscribers',{ event:this.state.subscribeEvents[1],payload:table },{ root:true });
     fsm.File.fromPath(path).readText()
         .then(activities => { ProcessDownloadedData(path,activities); this.commit('complete',table); })
         .catch(error => log('File read failed for table: '+table,error))
