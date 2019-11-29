@@ -3,14 +3,14 @@ const fsm = require('tns-core-modules/file-system');
 export class DBCache {
     constructor(table,data){
         this.table = table;
-        this.path = 'tblData';
+        this.path = 'assets/scripts/data';
         this.fileName = table + '.json';
         this.file = fsm.knownFolders.currentApp().getFolder(this.path).getFile(this.fileName);
         this.data = [];
         this.processData(data);
     }
     processData(data){
-        if(data) {
+        if(data !== undefined) {
             this.data = data;
             this.file.writeText(JSON.stringify(this.crunch(data)))
         } else {
@@ -18,6 +18,7 @@ export class DBCache {
         }
     }
     crunch(data){
+        data = data || [{}];
         let fields = Object.keys(data[0]);
         let values = data.map(Object.values);
         return { fields,values }
