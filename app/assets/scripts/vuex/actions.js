@@ -64,17 +64,22 @@ export function _insert({ dispatch },{ table,data,success,vm,upload }){
     });
 }
 
-export function _update({ dispatch,commit },{ table,data,id,pk,condition,upload }){
-    condition = condition || (_.zipObject([(pk || 'id')],[id]));
+export function _update({ dispatch,commit },{ table,data,id,pk,condition,upload,create }){
+    condition = condition || (_.zipObject([(pk || 'id')],[id])); let type = 'update';
     return new Promise((resolve) => {
-        let now = __.now(); upload = (upload === undefined) ? true : upload;
-        DB.update(table,condition,data,function (now,table,resolve,dispatch,actUpload) {
-            DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table,dispatch,actUpload){
-                let activity = getActivity(table,this.result,'update');
-                resolve(activity); if(actUpload) dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
-            },resolve,table,dispatch,actUpload);
-            dispatch('postDBAction',{ table,type:'update' });
-        },now,table,resolve,dispatch,upload);
+        let now = __.now(); upload = (upload === undefined) ? true : upload; create = (create === undefined) ? true : create;
+        DB.update(table,condition,data,function (now,table,data,resolve,dispatch,actUpload) {
+            if(this.result){
+                DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table,dispatch,actUpload){
+                    let activity = getActivity(table,this.result,'update');
+                    resolve(activity); if(actUpload) dispatch('triggerEventSubscribers',{ event:'activityUpload',payload:activity });
+                },resolve,table,dispatch,actUpload);
+                dispatch('postDBAction',{ table,type });
+            } else {
+                if(!create) return; data = _.merge(conditionToData(condition),data);
+                dispatch('_insert',{ table,data,upload })
+            }
+        },now,table,data,resolve,dispatch,upload,create);
     });
 }
 
@@ -100,4 +105,9 @@ export function triggerEventSubscribers({state,dispatch},{ event,payload }) {
 function getActivity(table, data, mode, primary_key) {
     mode = mode || 'create'; primary_key = (primary_key) ? (Array.isArray(primary_key) ? primary_key : [primary_key]) : ['id'];
     return { table,primary_key,mode,data };
+}
+function conditionToData(condition){
+    let rCond = {};
+    if(_.isNumber(condition) || _.isString(condition) || _.isArray(condition)) return rCond;
+    return _.omit(condition,['id','created_at','updated_at']);
 }
