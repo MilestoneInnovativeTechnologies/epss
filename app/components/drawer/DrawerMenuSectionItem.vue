@@ -15,7 +15,7 @@
         mixins: [AccountKeyDefaults],
         props: ['item'],
         computed: {
-            itemName(){ return this.item.home_display },
+            itemName(){ return this.item.drawer_display },
             itemIcon(){ return this.item.icon },
             fncode(){ return this.item.fncode },
             component(){ return require('./../index/'+this.item.component+'.vue').default; },

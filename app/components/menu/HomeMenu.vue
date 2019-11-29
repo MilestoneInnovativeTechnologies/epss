@@ -4,6 +4,10 @@
             <TextTitleSub class="m-b-8 m-l-2">{{ section }}</TextTitleSub>
             <GridMenuSectionItems :items="section_items[idx]" :height="height" :space="spacing"></GridMenuSectionItems>
         </StackLayout>
+        <StackLayout class="m-b-15" v-for="(common,idx) in commons" :key="['hmgs-2',idx].join('-')">
+            <TextTitleSub class="m-b-8 m-l-2">{{ common }}</TextTitleSub>
+            <GridMenuSectionItems :items="common_items[idx]" :height="height" :space="spacing"></GridMenuSectionItems>
+        </StackLayout>
     </StackLayout>
 </template>
 
@@ -21,7 +25,7 @@
             maxWidth: 430,
         } },
         computed: {
-            ...mapState('Menu',['content','sections','section_items']), ...mapState('App',{ scrWidth:'width' }),
+            ...mapState('Menu',['content','sections','section_items','commons','common_items']), ...mapState('App',{ scrWidth:'width' }),
             maxItems(){ return _.max(_.map(this.section_items,(sAry) => sAry.length)) },
             width(){ return (_.toSafeInteger(this.scrWidth) > this.maxWidth) ? this.maxWidth : '100%' }
         },

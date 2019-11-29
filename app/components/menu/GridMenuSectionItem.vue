@@ -22,7 +22,6 @@ c
             fncode(){ return this.item.fncode },
             component(){ return require('./../index/'+this.item.component+'.vue').default; },
             cProps(){ return this.item.props.split(','); },
-            nProps(){ let vm = this, cProps = this.cProps; return _.zipObject(cProps,cProps.map(prp => vm[prp])); },
         },
         methods: {
             proceedNavigation(){
@@ -31,6 +30,7 @@ c
             },
             navigate(){
                 this.ELOff('absolute-form-submit',this.listener0);
+                if(!this.cProps[0]) return this.doNavigate({});
                 let nProps = _.zipObject(this.cProps,this.cProps.map(prop => this[prop]));
                 if(_.every(nProps)) return this.doNavigate(nProps);
                 this.ACCKDs_requestDefaults();
