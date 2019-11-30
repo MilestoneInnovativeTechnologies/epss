@@ -19,7 +19,7 @@
         <StackLayout v-if="dwnTblsRows">
             <TextHeadingSub>Tables</TextHeadingSub>
             <WrapLayout>
-                <StackLayout v-for="(status,table) in dwnTables" orientation="horizontal">
+                <StackLayout v-for="(status,table) in dwnTables" orientation="horizontal" :key="'dwn-table-'+table">
                     <TextHighlight>{{ table | properCase }}</TextHighlight>
                     <FontIcon class="cp m-t-2 m-r-20" size="16" :name="status ? 'check_box' : 'check_box_outline_blank'"></FontIcon>
                 </StackLayout>
