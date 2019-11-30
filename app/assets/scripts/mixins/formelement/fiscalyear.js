@@ -1,7 +1,7 @@
 import { mapState,mapActions } from "vuex";
 import {fetch_fiscal_year_details} from "../../queries";
 
-export const FormElementMixinFiscalyear = {
+export const FormElementMixinFiscal = {
     computed: {
         ...mapState('Fiscal',{ feFiscalList:'list' }),
         feValuesFiscal(){
