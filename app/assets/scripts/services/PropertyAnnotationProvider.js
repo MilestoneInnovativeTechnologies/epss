@@ -34,21 +34,18 @@ export class PropertyAnnotationProvider {
     }
 
     SetSourceValue(name, value) {
-        let valObj = _.zipObject([name], [value]);
-        this.SourceValues = Object.assign({}, this.SourceValues, valObj);
+        this.SourceValues[name] = value;
     }
 
     SetPatchValue(name, value) {
-        let valObj = _.zipObject([name], [value]);
-        this.PatchValues = Object.assign({}, this.PatchValues, valObj);
+        this.PatchValues[name] = value;
         return value;
     }
 
     SetValueConverter(name, type, params) {
-        let setObj = _.zipObject([name], [type]);
-        this.ValueConverter = Object.assign({}, this.ValueConverter, setObj);
+        this.ValueConverter[name] = type;
         if (params) {
-            this.ConverterParams = Object.assign({}, this.ConverterParams, _.zipObject([name], [params]));
+            this.ConverterParams[name] = params;
         }
     }
 
@@ -59,7 +56,7 @@ export class PropertyAnnotationProvider {
             else if (_.isArray(currentValue)) newValue = this.ProviderFromArray(currentValue, Annotation);
             else if (_.isObject(currentValue)) newValue = this.ProviderFromObject(currentValue, Annotation);
             else newValue = this.ProviderFromArray([''], Annotation);
-            Annotation = Object.assign({}, Annotation, {valuesProvider: newValue})
+            Annotation['valuesProvider'] = newValue;
         }
         return Annotation
     }
