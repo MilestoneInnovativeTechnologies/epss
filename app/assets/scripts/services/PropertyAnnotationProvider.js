@@ -118,7 +118,7 @@ export class PropertyAnnotationProvider {
 
     GetAnnotationNameConverted(name, value) {
         if (!this.ValueConverter[name]) return _.isNil(value) ? '' : value;
-        value = _.isNil(value) ? this.GetAnnotationValueConverted(name, _.head(this.PatchValues[name])) : value;
+        value = (_.isNil(value) || value === '') ? this.GetAnnotationValueConverted(name, _.head(this.PatchValues[name])) : value;
         let method = 'NameConverter' + this.ValueConverter[name];
         return this[method](value, name);
     }

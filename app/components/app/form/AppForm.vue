@@ -22,7 +22,7 @@
         },
         methods: {
             getInitValue(name) {
-                let values = this.values, initValue;
+                let values = this.values, initValue = '';
                 if (values && !_.isEmpty(values) && _.has(values, name) && !_.isNil(values[name])) initValue = values[name];
                 if(_.includes(this.propertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
                     return this.propertyAnnotations.GetAnnotationNameConverted(name,initValue);
