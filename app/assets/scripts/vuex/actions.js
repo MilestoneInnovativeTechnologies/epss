@@ -68,7 +68,7 @@ export function _update({ dispatch,commit },{ table,data,id,pk,condition,upload,
     condition = condition || (_.zipObject([(pk || 'id')],[id])); let type = 'update';
     return new Promise((resolve) => {
         let now = __.now(); upload = (upload === undefined) ? true : upload; create = (create === undefined) ? true : create;
-        DB.update(table,condition,data,function (now,table,data,resolve,dispatch,actUpload) {
+        DB.update(table,condition,data,function (now,table,data,resolve,dispatch,actUpload,create) {
             if(this.result){
                 DB.get(table,{ updated_at:now,operator:'>=' },function(resolve,table,dispatch,actUpload){
                     let activity = getActivity(table,this.result,'update');
