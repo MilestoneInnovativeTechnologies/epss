@@ -1,17 +1,17 @@
-import {WideScreenCheck} from "./widescreencheck";
 import {ThisObj} from "./tobj";
 
 let FNPrint = null;
 export const FnPrint = {
-    mixins: [WideScreenCheck,ThisObj],
+    mixins: [ThisObj],
     methods: {
-        FnPrint(Obj){
-            Obj = (Obj === undefined) ? this.TO_Get(this.FnPrintProps) : Obj;
-            return new Promise(resolve => FNPrint.props(Obj).prepare().then(FNPrint => resolve(FNPrint.print(this.WSC_isWide ? 48 : 32))))
+        FnPrint(Obj,lookup){
+            Obj = (Obj === undefined) ? this.TO_Get(this.FnPrintProps,lookup) : Obj;
+            return new Promise(resolve => FNPrint.props(Obj).prepare().then(FNPrint => resolve(FNPrint.print(this.FnPrintPrintWidth))))
         }
     },
     computed: {
-        FnPrintProps(){ return FNPrint.props() }
+        FnPrintProps(){ return FNPrint.props() },
+        FnPrintPrintWidth(){ return this.$store.getters["App/get"]('print_width'); }
     },
     mounted(){
         FNPrint = new Print(this.fncode);
