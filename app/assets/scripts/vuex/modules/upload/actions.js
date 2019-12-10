@@ -10,14 +10,15 @@ let timeOut = null;
 let table = null;
 let cancelTimeOut = 0;
 const times = { immediate:750,short:2000,normal:5000,long:15000,far:90000 };
+let TaskResponded,TaskError,TaskCancel,Keep;
 
-export function init({ dispatch,getters,state,commit }) {
-    table = getters.table;
-    setTimeout(() => dispatch('clearCompleted'),clear_upload_completed_delay * 1000);
-    DB.get(table,{ progress:state.enums.ADDED },function(commit,dispatch){
+export function init(ctx) {
+    table = ctx.getters.table; TaskResponded = _.bind(taskResponded,ctx); TaskError = _.bind(taskError,ctx); TaskCancel = _.bind(taskCancel,ctx); Keep = _.bind(keep,ctx);
+    setTimeout(() => ctx.dispatch('clearCompleted'),clear_upload_completed_delay * 1000);
+    DB.get(table,{ progress:ctx.state.enums.ADDED },function({commit,dispatch}){
         if(!this.error && this.result.length !== 0) commit(set_state_data,{ key:'latest',value:_.get(_.last(this.result),'id',0) });
         return dispatch('processQueue');
-    },commit,dispatch)
+    },ctx)
 }
 
 export function activityUpload({ getters,dispatch },activity) {
@@ -28,11 +29,11 @@ export function activityUpload({ getters,dispatch },activity) {
 
 export function add(ctx,activity){
     let Activity = Array.isArray(activity) ? activity : [activity];
-    if(Activity.length === 0) return; let tables = ctx.getters.tables, func = _.bind(keep,ctx);
+    if(Activity.length === 0) return; let tables = ctx.getters.tables;
     Activity.forEach(activity => {
         (_.has(tables,activity.table)
             && tables[activity.table].direction !== 'download'
-            && activity.data.length > 0) ? func(activity.table,JSON.stringify([activity])) : null
+            && activity.data.length > 0) ? Keep(activity.table,JSON.stringify([activity])) : null
     })
 }
 
@@ -59,11 +60,10 @@ export function upload(ctx,data){
     clearTimeout(cancelTimeOut);
 
     let task = Uploader.session('activity-upload-'+data['id']).multipartUpload(getParams(data),getRequest(data));
-    let responded = _.bind(taskResponded,ctx,task,data), error = _.bind(taskError,ctx,task,data), cancel = _.bind(taskCancel,ctx,task,data);
 
-    task.on('responded',response => responded(response));
-    task.on('error',response => error(response));
-    task.on('cancel',response => cancel(response));
+    task.on('responded',response => TaskResponded(task,data,response));
+    task.on('error',response => TaskError(task,data,response));
+    task.on('cancel',response => TaskCancel(task,data,response));
 
     cancelTimeOut = setTimeout((task) => task.cancel(),times.far,task);
 }
@@ -96,13 +96,13 @@ const method = 'post',headers = { "Content-Type": "application/octet-stream" }, 
 function getRequest({ url,id }) {
     return { url,method,headers,description:id,androidDisplayNotificationProgress,androidAutoDeleteAfterUpload }
 }
-const format = 'json', type = 'data', mime = "application/json";
+const format = 'json', type = 'data', mimeType = "application/json";
 function getParams({ user,uuid,content }){
     let params = { _user:user,uuid,format,type };
     return _.map(params,(value,name) => _.zipObject(['name','value'],[name,value])).concat({
         filename: content,
         name: 'file',
-        mime
+        mimeType
     })
 }
 
