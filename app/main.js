@@ -5,6 +5,7 @@ import "./app.scss";
 require('./assets/scripts/globals');
 // require('./assets/scripts/debugs');
 require('./assets/scripts/fonticons');
+require('./assets/scripts/filters');
 
 global.VuexStore = require('./assets/scripts/vuex/store').default;
 global.log = function(text,...texts){ VuexStore.commit('Log/addQueue',text); if(TNS_ENV !== 'production') console.log(text,...texts); };
