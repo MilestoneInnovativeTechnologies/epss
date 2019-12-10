@@ -9,6 +9,7 @@ export function _ref(state){
     }
 }
 export function date(){ return () => moment().format('YYYY-MM-DD') }
+export function dateToSeconds(){ return (date) => moment(date).format('X') }
 export function datetime(){ return () => moment().format('YYYY-MM-DD HH:mm:ss') }
 export function startOfDay(){ return moment().startOf('day').format('X') }
 export function startOfWeek(){ return moment().startOf('week').format('X') }
