@@ -1,5 +1,5 @@
 <template>
-    <AppList :source="receipts" :layout="listLayout" :cast="listCast" :detail="listDetail" :links="listLinks"  :title="title" :limit="limit"></AppList>
+    <AppList :source="receipts" :layout="listLayout" :cast="listCast" :detail="listDetail" :links="listLinks"  :title="title || 'Receipts'" :limit="limit || 10"></AppList>
 </template>
 
 <script>

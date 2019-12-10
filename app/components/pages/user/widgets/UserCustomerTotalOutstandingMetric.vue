@@ -1,25 +1,26 @@
 <template>
-    <AppMetric :items="items"></AppMetric>
+    <AppMetric :items="items" v-if="CCacheDataReady"></AppMetric>
 </template>
 
 <script>
-    import { mapState,mapGetters,mapActions } from 'vuex';
+    import {CCacheDataMixin} from "../../../../assets/scripts/mixins/ccachedata";
 
     export default {
         name: "UserCustomerTotalOutstandingMetric",
+        mixins: [CCacheDataMixin],
         data(){ return {
             metricTemplate: ['outstanding','overdue'],
             metricIcons: ['attach_money','warning'],
             size:25, coloured: true,
-            itemKeys: ['coloured','size','icon','text','title']
+            itemKeys: ['coloured','size','icon','text','title'],
         } },
         computed: {
-            ...mapState('Customer',['list']),
             itemText(){ return _.mapValues(_.zipObject(this.metricTemplate,this.metricTemplate),(type) => this.getSum(type) ) },
             items(){ let vm = this; return _.map(this.metricTemplate,(title,idx) => _.zipObject(vm.itemKeys,[vm.coloured,vm.size,vm.metricIcons[idx],__.amount(vm.itemText[title]),title])) }
         },
         methods: {
-            getSum(key){ return __.amount(_.sum(_.map(this.list,(item) => _.toNumber(item[key])))) }
-        }
+            getSum(key){ return __.amount(_.sum(_.map(this.customers,(item) => _.toNumber(item[key])))) }
+        },
+        created(){ this.CCacheDataPrepare({ table:'users',key:'customers' }); }
     }
 </script>

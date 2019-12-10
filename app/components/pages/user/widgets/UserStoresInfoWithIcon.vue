@@ -3,13 +3,17 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import {user_assigned_area_customers} from "../../../../assets/scripts/queries";
 
     export default {
         name: "UserStoresInfoWithIcon",
+        props: ['user'],
         computed: {
-            ...mapState('Stores',['list']),
-            stores(){ return _.map(this.list,'name') }
+            stores(){ return _.map(this.list,'name') },
+            list(){ return this.$store.state['Stores'].list },
+        },
+        created(){
+            if(this.user && (!this.list || !this.list.length)) this.$store.dispatch('Stores/_stock',{ query:sql.format(user_assigned_area_customers, this.user) })
         }
     }
 </script>
