@@ -1,7 +1,7 @@
 export function setting(state,{ _tableDataByField }) {
+    let S1 = _tableDataByField('settings','name'), S2 = _tableDataByField('user_settings','setting');
     return (name) => {
-        let data = _.get(_tableDataByField('settings','name'),name);
-        let settingId = data.id, userSetting = _.get(_tableDataByField('user_settings','setting'),settingId);
-        return _.isEmpty(userSetting) ? _.get(data,'value') : _.get(userSetting,'value');
+        let SettingID = _.get(S1,[name,'id'],null);
+        return _.has(S2,SettingID) ? _.get(S2,[SettingID,'value']) : _.get(S1,[name,'value']);
     }
 }
