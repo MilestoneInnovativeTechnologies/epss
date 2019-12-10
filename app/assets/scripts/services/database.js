@@ -49,7 +49,7 @@ class Database {
         let update = this.dataToUpdate(data);
         condition = this.correctCondition(condition);
         let query = sql.format(`UPDATE ?? SET ? WHERE ${condition}`,[tbl,update]);
-        this.query(query,callback,...args);
+        return this.query(query,callback,...args);
     }
 
     correctCondition(condition){
