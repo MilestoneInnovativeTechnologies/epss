@@ -12,11 +12,11 @@
             metricTemplate: ['outstanding','overdue'],
             metricIcons: ['attach_money','warning'],
             size:25, coloured: true,
-            itemKeys: ['coloured','size','icon','text','title'],
+            itemKeys: ['coloured','size','icon','text','title','detail'],
         } },
         computed: {
             itemText(){ return _.mapValues(_.zipObject(this.metricTemplate,this.metricTemplate),(type) => this.getSum(type) ) },
-            items(){ let vm = this; return _.map(this.metricTemplate,(title,idx) => _.zipObject(vm.itemKeys,[vm.coloured,vm.size,vm.metricIcons[idx],__.amount(vm.itemText[title]),title])) }
+            items(){ let vm = this; return _.map(this.metricTemplate,(title,idx) => _.zipObject(vm.itemKeys,[vm.coloured,vm.size,vm.metricIcons[idx],__.amount(vm.itemText[title]),title,'customer/Customer'+(_.startCase(title))+'List'])) }
         },
         methods: {
             getSum(key){ return __.amount(_.sum(_.map(this.customers,(item) => _.toNumber(item[key])))) }
