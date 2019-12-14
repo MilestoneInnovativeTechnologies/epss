@@ -1,6 +1,6 @@
 <template>
     <App title="Customers">
-        <AppForm :fields="{ search:{ name:'search',type:'Text' } }" @search="search = $event" />
+        <AppForm :fields="{ search:{ name:'search',type:'Text',label:'' } }" @search="search = $event" />
         <CustomerList v-if="CCacheDataReady" :customers="customers" />
     </App>
 </template>
@@ -10,8 +10,9 @@
 
     export default {
         name: "CustomersIndex",
+        props: ['id'],
         mixins: [CCacheDataMixin],
-        data(){ return { search:'',users:null } },
+        data(){ return { search:'' } },
         computed: {
             customers(){ return (_.trim(this.search) === '') ? this.users : this.users.filter(this.isIn) }
         },
