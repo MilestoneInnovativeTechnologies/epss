@@ -16,7 +16,7 @@
         }},
         computed: {
             progressCount(){ return _.countBy(this.sales_order,'progress'); },
-            items(){ let vm = this; return _.map(this.metricTemplate,(item) => _.zipObject(['text','title','coloured','size'],[_.toSafeInteger(vm.progressCount[item]),_.upperCase(item),vm.coloured,vm.size])) }
+            items(){ let vm = this; return _.map(this.metricTemplate,(item) => _.zipObject(['text','title','coloured','size','detail'],[_.toSafeInteger(vm.progressCount[item]),_.upperCase(item),vm.coloured,vm.size,'salesorder/SalesOrder'+item+'List'])) }
         },
         created(){ this.CCacheDataPrepare({ table:'sales_order',method:'dataById' }); }
     }
