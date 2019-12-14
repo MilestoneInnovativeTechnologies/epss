@@ -1,8 +1,8 @@
 <template>
     <GridLayout :rows="rows" columns="*" class="m-4 p-15 metric-item" @tap="navigate">
         <FontIcon row="0" col="0" v-if="icon" :style="iconStyle" class="cp text-center m-b-0" verticalAlignment="bottom">{{ icon }}</FontIcon>
-        <TextDisplay row="1" col="0" verticalAlignment="middle" class="m-0 p-0" :class="displayClass" :size="displaySize">{{ text }}</TextDisplay>
-        <TextTitleSub row="2" col="0" v-if="title" class="text-center cp m-t-0" verticalAlignment="top">{{ title }}</TextTitleSub>
+        <TextDisplay row="1" col="0" verticalAlignment="middle" class="m-0 p-0" :class="displayClass" :size="displaySize" :text="text" />
+        <TextTitleSub row="2" col="0" v-if="title" class="text-center cp m-t-0" verticalAlignment="top" :text="title"></TextTitleSub>
     </GridLayout>
 </template>
 
