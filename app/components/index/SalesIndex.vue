@@ -28,7 +28,7 @@
             ...mapGetters(['startOfDay','startOfWeek','startOfMonth','dateToSeconds']),
             ...mapGetters({ settings:'Settings/setting'}),
             title(){ return _.get(_.filter(this.content,(itm) => itm.fncode === this.fncode),'0.name') },
-            fnTrans(){ return this.transactions[this.fncode] },
+            fnTrans(){ return _(this.transactions).keyBy('id').values().value() },
             dailyMetric(){ return this.settings('daily_sales_total_amount_in_sales_index') !== 'No' },
             periodMetric(){ return this.settings('weekly_and_monthly_sales_total_amount_in_sales_index') === 'Yes' },
             dailyMetricItem(){
@@ -55,7 +55,7 @@
             }
         },
         created() {
-            this.CCacheDataPrepare({ table:'transactions',method:'dataByGroup',args:'fncode' });
+            this.CCacheDataPrepare({ table:'transactions',method:'dataByGroup',args:'fncode',get:this.fncode });
         }
 
     }

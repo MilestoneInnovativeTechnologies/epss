@@ -28,7 +28,7 @@
             ...mapState('Menu',['content']),
             ...mapGetters(['startOfDay','startOfWeek','startOfMonth','dateToSeconds']),
             ...mapGetters({ settings:'Settings/setting'}),
-            transactions(){ return this.sales_order[this.fncode] },
+            transactions(){ return _(this.sales_order).keyBy('id').values().value() },
             title(){ return _.get(_.filter(this.content,(itm) => itm.fncode === this.fncode),'0.name') },
             dailyMetric(){ return this.settings('daily_sales_total_amount_in_sales_order_index') !== 'No' },
             periodMetric(){ return this.settings('weekly_and_monthly_sales_total_amount_in_sales_order_index') === 'Yes' },
@@ -55,6 +55,6 @@
                 this.$navigateTo(navComponent,{ props:this.TO_Get(['store','fycode','fncode','title']) });
             }
         },
-        created() { this.CCacheDataPrepare({ table:'sales_order',method:'dataByGroup',args:'fncode' }); }
+        created() { this.CCacheDataPrepare({ table:'sales_order',method:'dataByGroup',args:'fncode',get:this.fncode }); }
     }
 </script>
