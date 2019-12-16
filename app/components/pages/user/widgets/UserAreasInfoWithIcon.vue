@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {user_assigned_store_areas} from "../../../../assets/scripts/queries";
+    import {login_user_assigned_areas} from "../../../../assets/scripts/queries";
 
     export default {
         name: "UserAreasInfoWithIcon",
@@ -13,7 +13,7 @@
             list(){ return this.$store.state['Areas'].list }
         },
         created(){
-            if(this.user && (!this.list || !this.list.length)) this.$store.dispatch('Areas/_stock',{ query:sql.format(user_assigned_store_areas, this.user) })
+            if(this.user && (!this.list || !this.list.length)) this.$store.dispatch('Areas/_stock',{ query:login_user_assigned_areas })
         }
     }
 </script>

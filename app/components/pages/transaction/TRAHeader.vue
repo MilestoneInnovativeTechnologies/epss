@@ -14,7 +14,7 @@
     import {EventListeners} from "../../../assets/scripts/mixins/eventlisteners";
     import { mapGetters,mapState,mapActions } from "vuex";
     import {ThisObj} from "../../../assets/scripts/mixins/tobj";
-    import {user_assigned_area_customers} from "../../../assets/scripts/queries";
+    import {login_user_area_customers} from "../../../assets/scripts/queries";
 
     const feMX = require('./../../../assets/scripts/mixins/formelement');
     const values = { customer:null,date:moment().format('YYYY-MM-DD'),payment_type:'Cash' };
@@ -47,7 +47,7 @@
                 this.ELOff('absolute-form-close');
             }
         },
-        created(){ if(this.list.length === 0) this.stockCustomer({ query:sql.format(user_assigned_area_customers,this.user),key:'list' }); },
+        created(){ if(this.list.length === 0) this.stockCustomer({ query:sql.format(login_user_area_customers,this.user),key:'list' }); },
         mounted(){ this.deleteHeader() }
     }
 </script>
