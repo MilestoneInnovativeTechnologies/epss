@@ -6,7 +6,7 @@
             <AppMetric :items="metricItems" class="m-y-15" />
             <AppInfoWide v-for="(title,field,idx) in infoWide" :title="title" :text="product[field]" :key="'pd-wi-'+idx" />
             <TransactionList v-if="transactions && transactions.length" title="Recent sales with this product" :transactions="transactions" :layout="layout" :cast="cast" class="m-t-15" />
-            <TransactionList v-if="sales_order && sales_order.length" title="Recent orders with this product" :transactions="transactions" :layout="layout" :cast="cast" class="m-t-15" />
+            <SalesOrderList v-if="sales_order && sales_order.length" title="Recent orders with this product" :transactions="sales_order" :layout="layout" :cast="cast" class="m-t-15" />
         </StackLayout>
         <TextHeadingSub v-else>No details available</TextHeadingSub>
     </App>
@@ -46,7 +46,7 @@
         created() {
             this.CCacheDataPrepare({table: 'products', key: 'product', method: 'dataById', get:this.id });
             this.CCacheDataPrepare({table: 'transactions', method: 'dataByGroup', args:'pid', get:this.id });
-            this.CCacheDataPrepare({table: 'sales_orders', method: 'dataByGroup', args:'pid', get:this.id });
+            this.CCacheDataPrepare({table: 'sales_order', method: 'dataByGroup', args:'pid', get:this.id });
         },
         watch: {
             product: {
