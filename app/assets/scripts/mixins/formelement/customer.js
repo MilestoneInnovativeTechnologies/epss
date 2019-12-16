@@ -1,5 +1,5 @@
 import { mapState,mapActions } from "vuex";
-import {user_assigned_area_customers} from "../../queries";
+import {login_user_area_customers} from "../../queries";
 
 export const FormElementMixinCustomer = {
     computed: {
@@ -14,6 +14,6 @@ export const FormElementMixinCustomer = {
         ...mapActions({ feListFetchCustomer: 'Customer/_stockIfNot' }),
     },
     created() {
-        if(this.feCustomerList.length === 0) this.feListFetchCustomer({ query:sql.format(user_assigned_area_customers,this.feUserID),key:'list' });
+        if(this.feCustomerList.length === 0) this.feListFetchCustomer({ query:sql.format(login_user_area_customers,this.feUserID),key:'list' });
     }
 };

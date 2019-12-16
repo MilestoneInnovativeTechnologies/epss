@@ -1,5 +1,5 @@
 import {mapActions, mapState} from "vuex";
-import {user_assigned_stores} from "../../queries";
+import {login_user_assigned_stores} from "../../queries";
 
 export const FormElementMixinStore = {
     computed: {
@@ -14,6 +14,6 @@ export const FormElementMixinStore = {
         ...mapActions({ feListFetchStore: 'Stores/_stockIfNot' }),
     },
     created() {
-        this.feListFetchStore({ query:sql.format(user_assigned_stores,this.feUserID),key:'list' })
+        this.feListFetchStore({ query:login_user_assigned_stores,key:'list' })
     }
 };

@@ -1,5 +1,5 @@
 import {mapActions, mapState} from "vuex";
-import {user_assigned_store_areas} from "../../queries";
+import {login_user_assigned_areas} from "../../queries";
 
 export const FormElementMixinArea = {
     computed: {
@@ -14,6 +14,6 @@ export const FormElementMixinArea = {
         ...mapActions({ feListFetchArea: 'Areas/_stockIfNot' }),
     },
     created() {
-        this.feListFetchArea({ query:sql.format(user_assigned_store_areas,this.feUserID),key:'list' })
+        this.feListFetchArea({ query:login_user_assigned_areas,key:'list' })
     }
 };
