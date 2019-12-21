@@ -1,7 +1,7 @@
 <template>
-    <StackLayout>
-        <TextNormal v-if="text" textWrap="true" :text="text" class="cp m-l-15"></TextNormal>
-        <AppForm :fields="fields" :values="values" @final="saveFinal"></AppForm>
+    <StackLayout style="border-left-width: 2; border-color: #EF6D3B;" class="m-y-2">
+        <TextNormal v-if="display || text" textWrap="true" :text="display || text" class="cp m-l-15" />
+        <AppForm :fields="fields" :values="values" @final="saveFinal" />
     </StackLayout>
 </template>
 
