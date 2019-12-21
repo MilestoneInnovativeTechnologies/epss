@@ -12,9 +12,9 @@
     export default {
         name: "SettingDb",
         mixins: [SettingsCommonMixin],
-        props: ['table','field','row','text','editor','options','switch'],
+        props: ['table','field','row','text','editor','options','switch','default'],
         data(){ return {
-            values: {},
+            values: {}, display: false,
             initialized: false,
         } },
         computed: {
@@ -30,8 +30,25 @@
         },
         created(){
             DB.get(this.table,this.condition,function(vm){
-                if(this.result) vm.setValue(this.result[0][vm.field])
-            },this)
+                if(!this.error && this.result && this.result.length) vm.setValue(this.result[0][vm.field]);
+                else {
+                    if(vm.default && vm.default.trim() !== ''){
+                        if(vm.default.substr(0,1) === '[' && vm.default.substr(-1) === ']'){
+                            let parts = vm.default.substring(1,vm.default.length-1).split(',');
+                            DB.get(parts[0],{ id:parts[2] },function(field,vm){
+                                if(this.result) vm.setValue(this.result[0][field]);
+                            },parts[1],vm)
+                        } else vm.setValue(vm.default);
+                    }
+                }
+            },this);
+
+            if(this.text && this.text.trim() && this.text.substr(0,1) === '[' && this.text.substr(-1) === ']'){
+                let parts = this.text.substring(1,this.text.length-1).split(',');
+                DB.get(parts[0],{ id:parts[2] },function(field,vm){
+                    if(this.result) vm.display = this.result[0][field];
+                },parts[1],this)
+            }
         }
     }
     const DBUpdate = _.debounce(function({ table,condition,$store:{ dispatch } },data){
