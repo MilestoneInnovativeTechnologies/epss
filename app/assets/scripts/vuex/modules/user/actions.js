@@ -1,4 +1,4 @@
-import {add_event_subscriber, remove_user_tables_from_sync, set_state_data} from "../../mutation-types";
+import {set_state_data} from "../../mutation-types";
 
 const userStateKeys = ['name','email','id','api_token','reference'];
 const makeModuleListNull = ['Stores','Areas','Customer','SalesOrder'];
