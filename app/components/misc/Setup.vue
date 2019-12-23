@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
     <App title="Setup Application" action="Setup Application" drawer="false" back="false" :actionProps="{ isEnabled:!busy }" @setup-application="doSetup">
         <TextHeadingSub class="m-t-30">Device UUID</TextHeadingSub>
@@ -53,16 +52,16 @@
             percentage(){ return _.toSafeInteger(this.completed*100/_.toSafeInteger(this.downloads)) }
         },
         methods: {
-            ...mapActions({register:'App/register',sLog:'App/sLog',distribute:'Menu/distribute',rootInit:'init'}),
+            ...mapActions({register:'App/register',sLog:'App/sLog',rootInit:'init'}),
             ...mapMutations({ setStateData:'App/'+set_state_data, remEventSub:remove_event_subscriber }),
             doSetup(){ this.busy = true; this.register(this.regData); },
             removeEvents(){
-                ['syncTableChanged','batchDownloadStarting','batchDownloadedTable']
+                ['batchDownloadStarting','batchDownloadedTable']
                 .forEach(event => this.remEventSub({ event,module:'App' }));
             },
             completeSetup(){
-                this.removeEvents(); this.distribute();
-                this.sLog('Completed!'); this.rootInit(_.cloneDeep(VuexStore._modulesNamespaceMap));
+                this.removeEvents(); this.sLog('Completed!');
+                this.rootInit(_.cloneDeep(VuexStore._modulesNamespaceMap));
             }
         },
         filters: {
