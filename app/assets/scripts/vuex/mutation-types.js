@@ -9,10 +9,6 @@ export const remove_event_subscriber = 'removeEventSubscriber';
 export const add_connection_monitor = 'addConnectionMonitorAction';
 export const set_connectivity_availability = 'setConnectivityAvailable';
 
-//App
-
-//Helper
-
 //Module Common
 export const mutate_sync_data = 'mutateSyncData';
 export const stock_state_data = 'stockStateData';
@@ -26,9 +22,6 @@ export const start_process_queue = 'initQueueProcess';
 export const initiate_processing_transfer = 'initTransfer';
 export const finalize_processing_transfer = 'finalizeTransfer';
 export const finalize_failed_transfer = 'failedTransfer';
-
-//Menu
-export const add_setup_menu_data = 'addSetupMenuData';
 
 //Sync
 export const add_new_table_for_sync = 'newTable';

@@ -1,8 +1,6 @@
 import {
     table_information_db_table_name,
-    app_user_create_date_for_fetch,
     sync_create_chunk_length,
-    download_common_params,
 } from '../../../constants';
 import {
     add_new_table_for_sync,

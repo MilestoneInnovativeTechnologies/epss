@@ -14,8 +14,6 @@ export const table_information_db_table_fields = 'table,fields,type,direction,cr
 export const table_information_db_table_indexes = 'table,type,direction';
 
 //sync
-export const download_common_params = { format: 'json',  type: 'data' };
-export const app_user_create_date_for_fetch = '1900-01-01 00:00:01';
 export const sync_create_chunk_length = 500;
 export const approx_time_for_a_sync = 1;
 export const gap_between_sync_queue_seconds = 1;
