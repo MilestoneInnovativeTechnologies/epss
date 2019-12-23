@@ -1,5 +1,5 @@
 <template>
-    <StackLayout class="m-t-12" v-if="section_items.length && ready" :width="width">
+    <StackLayout class="m-t-12" v-if="content && section_items.length && ready" :width="width">
         <StackLayout class="m-b-15" v-for="(section,idx) in sections" :key="['hmgs',idx].join('-')">
             <TextTitleSub class="m-b-8 m-l-2">{{ section }}</TextTitleSub>
             <GridMenuSectionItems :items="section_items[idx]" :height="height" :space="spacing"></GridMenuSectionItems>

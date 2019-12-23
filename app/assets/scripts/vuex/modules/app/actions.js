@@ -5,7 +5,7 @@ import {
     table_information_db_table_indexes,
     table_information_db_table_name
 } from "../../../constants";
-import {set_state_data} from "../../mutation-types";
+import {add_new_table_for_sync, set_state_data} from "../../mutation-types";
 
 export function sLog({commit},task) {
     let set = 'tasks.' + task, setObj = _.zipObject([set],[true]);
@@ -47,6 +47,7 @@ export function setup({ state,dispatch,commit },data){
 }
 
 export function setupTables({ dispatch }) {
+    createTable(table_information_db_table_name, table_information_db_table_fields,table_information_db_table_indexes);
     dispatch('sLog','Reset client on server'); dispatch('Sync/deleteClient',null,{ root:true }).finally(() => {
         dispatch('get',{ url:database_fetch_url,success:'App/createTables' },{ root:true }).finally(() => {
             dispatch('sLog','Get DB tables');
@@ -54,19 +55,24 @@ export function setupTables({ dispatch }) {
     });
 }
 export function createTables({ dispatch,commit },data) {
-    dispatch('sLog','Create DB tables'); createTable(table_information_db_table_name, table_information_db_table_fields,table_information_db_table_indexes,data).then(data => {
-        Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],Ary[3],getInformationInsertData(table,Ary)))]).then((insArray) => {
-            DB.insert(table_information_db_table_name, insArray, function (dispatch,commit,menu,tables) {
-                dispatch('Sync/init',null,{ root:true });
-                dispatch('Menu/setup',menu,{ root:true });
-            },dispatch,commit,data.menu,_.keys(data.db));
-        })
+    dispatch('sLog','Create DB tables');
+    Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],Ary[3],getInformationInsertData(table,Ary)))]).then((insArray) => {
+        DB.insert(table_information_db_table_name, insArray, function (dispatch,commit,menu) {
+            dispatch('downloadTables');
+            dispatch('Menu/setup',menu,{ root:true });
+        },dispatch,commit,data.menu);
     });
 }
 
-export function syncTableChanged({ commit,dispatch },tables){
-    commit('dwnTables',tables);
-    dispatch('Download/tables',tables,{ root:true });
+export function downloadTables({ commit,dispatch }){
+    DB.get(table_information_db_table_name,{ type:'APP' },function (commit,dispatch) {
+        if(this.error) return alert('Unexpected error, Try re-installing application.');
+        let tables = []; _.forEach(this.result,tblObj => {
+            tables.push(tblObj.table);
+            commit('Sync/'+add_new_table_for_sync,_.omit(tblObj,['created_at','updated_at']),{ root:true });
+        });
+        commit('dwnTables',tables); dispatch('Download/tables',tables,{ root:true });
+    },commit,dispatch);
 }
 export function batchDownloadStarting({ dispatch },tables){
     if(tables && tables.length > 0) dispatch('sLog','Init synchronizing app records');

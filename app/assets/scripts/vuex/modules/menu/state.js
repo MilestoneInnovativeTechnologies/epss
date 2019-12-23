@@ -1,5 +1,4 @@
 export default {
-    sMenuData: [],
     content: null,
     sections: [],
     section_items: [],
