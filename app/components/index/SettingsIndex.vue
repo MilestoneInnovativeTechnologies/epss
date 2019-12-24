@@ -2,7 +2,7 @@
     <App title="Settings" action="Save and Return" @save-and-return="home" :actionProps="{ isEnabled:actionEnable }">
         <AppForm :fields="fields" @tag="tag = $event" />
         <HorizontallyMiddle>
-            <component width="400" :is="component" v-for="({ component,bind },idx) in components" v-bind="bind" :key="'settings-component-' + idx" v-show="tag.trim() === '' || tags[idx].includes(tag)" />
+            <component width="300" :is="component" v-for="({ component,bind },idx) in components" v-bind="bind" :key="'settings-component-' + idx" v-show="tag.trim() === '' || tags[idx].includes(tag)" />
         </HorizontallyMiddle>
     </App>
 </template>
