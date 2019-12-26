@@ -1,5 +1,5 @@
 <template>
-    <StackLayout class="m-t-12" v-if="content && section_items.length && ready" :width="width">
+    <StackLayout class="m-t-12" v-if="content" :width="width" :key="'hm-lyt-'+uKey">
         <StackLayout class="m-b-15" v-for="(section,idx) in sections" :key="['hmgs',idx].join('-')">
             <TextTitleSub class="m-b-8 m-l-2">{{ section }}</TextTitleSub>
             <GridMenuSectionItems :items="section_items[idx]" :height="height" :space="spacing"></GridMenuSectionItems>
@@ -23,7 +23,7 @@
             spacing: 2,
             minWidth: 120,
             maxWidth: 430,
-            ready: false,
+            uKey: 0,
         } },
         computed: {
             ...mapState('Menu',['content','sections','section_items','commons','common_items']), ...mapState('App',{ scrWidth:'width' }),
@@ -47,19 +47,21 @@
                     sIdx = (sIdx < 0) ? vm.addToSection(Obj.category_display) : sIdx;
                     vm.addSectionItem(sIdx,Obj);
                 });
-                this.ready = true;
+                this.uKey++;
             },
             addSectionItem(sIdx,Obj){
                 let section_items = this.section_items;
                 if(!section_items[sIdx]) section_items[sIdx] = [];
-                section_items[sIdx].push(Obj);
-                this[set_state_data]({ section_items });
+                if(_.map(section_items[sIdx],'id').indexOf(Obj.id) < 0){
+                    section_items[sIdx].push(Obj);
+                    this[set_state_data]({ section_items });
+                }
             },
         },
         mounted(){
             if(!this.content){ this.stockMenuContents(); }
             else if(_.isEmpty(this.sections)) { this.populateMenuItems(this.content); }
-            else this.ready = true;
+            else this.uKey++;
         }
     }
 </script>
