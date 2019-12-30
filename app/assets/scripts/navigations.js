@@ -1,5 +1,6 @@
 export const Home = require('../../components/Home').default;
 export const Login = require('../../components/login/Login').default;
+export const Debug = require('../../components/debug/DebugIndex').default;
 
 export const MaterialTransferIndex = require('../../components/index/MaterialTransferIndex').default;
 
