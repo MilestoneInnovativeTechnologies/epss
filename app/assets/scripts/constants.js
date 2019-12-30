@@ -25,7 +25,7 @@ export const maximum_processing_seconds = 30;
 //upload
 export const maximum_upload_retry_count = 2;
 export const maximum_upload_processing_time = 35;
-export const clear_upload_completed_delay = 300;
+export const clear_upload_completed_delay = 3600;
 
 //Product
 export const product_image_cache_max_request = 10;

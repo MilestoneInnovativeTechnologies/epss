@@ -69,7 +69,7 @@ export function upload(ctx,data){
 }
 
 export function clearCompleted({ state,dispatch }) {
-    DB.delete(table,{ progress:state.enums.RESPONDED,status:state.enums.SUCCESS },function(){
+    DB.delete(table,[{ progress:state.enums.RESPONDED,status:state.enums.SUCCESS },{ updated_at:__.now()-3600,operator:'>' }],function(){
         if(this.error) log('Clearing completed uploads failed');
         setTimeout(() => dispatch('clearCompleted'),clear_upload_completed_delay*1000);
     });
