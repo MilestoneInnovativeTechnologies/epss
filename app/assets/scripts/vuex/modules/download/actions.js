@@ -87,24 +87,30 @@ function getName(table){
 function downloaded(table,task,{ path }){
     this.dispatch('triggerEventSubscribers',{ event:this.state.subscribeEvents[1],payload:table },{ root:true });
     fsm.File.fromPath(path).readText()
-        .then(activities => { ProcessDownloadedData(path,activities); this.commit('complete',table); })
+        .then(activities => ProcessDownloadedData(table,path,activities))
         .catch(error => log('File read failed for table: '+table,error))
 }
 function download_fails(table,task,{ status,message }){
     log('Download: Failed downloading for table '+ table);
     this.dispatch('tables',[table]);
-    this.commit('complete',table)
+    this.commit('complete',{ table,status,message,records:0 })
 }
-function doProcessDownloadedData(path,data){
-    if(data && data.trim() !== ''){
-        data = data.trim();
+function doProcessDownloadedData(table,path,data){
+    let jData = getJSONData(data);
+    if(jData.length){
         try {
-            if(data.substr(0,1) === '[') this.dispatch('Sync/doProcessSyncData',JSON.parse(data.trim()),{ root:true });
+            this.dispatch('Sync/doProcessSyncData',jData,{ root:true });
             fsm.File.fromPath(path).remove().then(null);
         } catch (e) {
             log('Error in parsing activities from path: ' + path);
         }
     }
+    this.commit('complete',{ table,status:'success',message:'success',records:jData.length ? jData[0].data.length : 0 })
+}
+function getJSONData(data){
+    if(!data || data.trim() === '' || data.trim().substr(0,1) !== '[') return [];
+    return JSON.parse(data.trim());
+
 }
 function clearDownloadLog() {
     DB.delete('epss_download',[{ updated_at:__.now()-3600,operator:'<' }],function(){
