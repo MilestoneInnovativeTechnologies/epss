@@ -1,3 +1,5 @@
+import {clear_download_log_delay} from "../../../constants";
+
 const fsm = require('tns-core-modules/file-system');
 const download_common_params = { format:'json',type:'file' };
 const app_user_create_date = '1900-01-01 00:00:01';
@@ -10,6 +12,7 @@ export function init(ctx){
     DownloadSuccess = _.bind(downloaded,ctx);
     DownloadFailed = _.bind(download_fails,ctx);
     ProcessDownloadedData = _.bind(doProcessDownloadedData,ctx);
+    setTimeout(() => clearDownloadLog(),clear_download_log_delay * 1000);
 }
 
 export function tables({ dispatch },tables){
@@ -102,4 +105,10 @@ function doProcessDownloadedData(path,data){
             log('Error in parsing activities from path: ' + path);
         }
     }
+}
+function clearDownloadLog() {
+    DB.delete('epss_download',[{ updated_at:__.now()-3600,operator:'<' }],function(){
+        if(this.error) log('Clearing download logs failed');
+        setTimeout(() => clearDownloadLog(),clear_download_log_delay*1000);
+    });
 }
