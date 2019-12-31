@@ -61,6 +61,7 @@ export function _insert({ dispatch },{ table,data,success,vm,upload }){
             dispatch('postDBAction',{ table,type:'create' });
             if(callback) if(_.isFunction(callback)) callback.call(vm,id); else vm[callback].call(vm,id);
         },totalRecords,table,resolve,success,vm,upload)
+            .catch((e) => log('Error inserting data for ' + table,data,e));
     });
 }
 
