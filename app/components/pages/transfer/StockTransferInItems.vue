@@ -48,7 +48,7 @@
                 if(!result) return;
                 let { docno,_ref } = await this.saveMaterialTransferIn(data), vm = this;
                 confirm({ title:'Material Transfer In has done',message:'Document No: ' + docno + "\nDo you want to print?",cancelButtonText:'Print and Proceed',okButtonText:'Proceed without Print' })
-                    .then(result => result ? vm.$navigateTo(Home) : vm.FnPrint({ _ref,id:vm.id }).then(() => vm.$navigateTo(Home)))
+                    .then(result => result ? vm.$navigateTo(Home.default) : vm.FnPrint({ _ref,id:vm.id }).then(() => vm.$navigateTo(Home.default)))
             }
         },
         created(){
