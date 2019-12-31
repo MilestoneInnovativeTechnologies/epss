@@ -41,7 +41,7 @@ class Database {
         sLog(this.table(tbl).tbl + ' -> Insert');
         let insert = this.dataToInsert(data);
         let query = sql.format(`INSERT INTO ?? (??) VALUES ?`,[tbl,insert.names,insert.values]);
-        this.query(query,callback,...args);
+        return this.query(query,callback,...args);
     }
 
     update(tbl,condition,data,callback,...args){
