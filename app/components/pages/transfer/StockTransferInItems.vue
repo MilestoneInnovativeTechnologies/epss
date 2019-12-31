@@ -14,6 +14,7 @@
     import {ProductSale} from "../../../assets/scripts/mixins/productsale";
     import {Home} from "../../../assets/scripts/navigations";
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
+    import {fetch_a_transaction_detail} from "../../../assets/scripts/queries";
     const DBTransaction = require("../../../assets/scripts/services/DBTransaction").DBTransaction;
 
     const TransactionQueryBuilder = require('./../../../assets/scripts/services/transactionquery').TransactionQueryBuilder,
@@ -53,7 +54,7 @@
         },
         created(){
             if(_.isEmpty(this.details[0])){
-                let query = new TransactionQueryBuilder().fields(fields).where({ id:this.id }).query();
+                let query = sql.format(fetch_a_transaction_detail,[this.id]);
                 this.doStockDetail(query,'detail',this.id);
             }
         }
