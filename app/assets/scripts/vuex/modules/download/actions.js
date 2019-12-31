@@ -46,8 +46,8 @@ export function start(ctx) {
         let taskID = tableID[table]; if(!taskID) return;
         setTimeout(function (table, taskID) {
             return Downloader.start(taskID)
-                .then(completed => DownloadSuccess(table,taskID,completed))
-                .catch(error => DownloadFailed(table,taskID,error));
+                .then(completed => setTimeout(DownloadSuccess,1000,table,taskID,completed))
+                .catch(error => setTimeout(DownloadFailed,1000,table,taskID,error));
         },idx*3000,table,taskID);
     })
 }
@@ -86,7 +86,8 @@ function getName(table){
 
 function downloaded(table,task,{ path }){
     this.dispatch('triggerEventSubscribers',{ event:this.state.subscribeEvents[1],payload:table },{ root:true });
-    fsm.File.fromPath(path).readText()
+    let File = fsm.File.fromPath(path);
+    File.readText()
         .then(activities => ProcessDownloadedData(table,path,activities))
         .catch(error => log('File read failed for table: '+table,error))
 }
@@ -96,21 +97,23 @@ function download_fails(table,task,{ status,message }){
     this.commit('complete',{ table,status,message,records:0 })
 }
 function doProcessDownloadedData(table,path,data){
-    let jData = getJSONData(data);
+    let jData = getJSONData(data,path);
     if(jData.length){
-        try {
-            this.dispatch('Sync/doProcessSyncData',jData,{ root:true });
-            fsm.File.fromPath(path).remove().then(null);
-        } catch (e) {
-            log('Error in parsing activities from path: ' + path);
-        }
+        this.dispatch('Sync/doProcessSyncData',jData,{ root:true });
+        fsm.File.fromPath(path).remove().then(null);
     }
     this.commit('complete',{ table,status:'success',message:'success',records:jData.length ? jData[0].data.length : 0 })
 }
-function getJSONData(data){
-    if(!data || data.trim() === '' || data.trim().substr(0,1) !== '[') return [];
-    return JSON.parse(data.trim());
-
+function getJSONData(data,path){
+    let jData = [];
+    if(data && data.trim() !== '' && data.trim().substr(0,1) === '[') {
+        try {
+            jData = JSON.parse(data.trim());
+        } catch (e){
+            log('Error in parsing activities from path: ' + path, e);
+        }
+    }
+    return jData;
 }
 function clearDownloadLog() {
     DB.delete('epss_download',[{ updated_at:__.now()-3600,operator:'<' }],function(){
