@@ -41,7 +41,7 @@
             proceedViewTransferInItems(){
                 if(this.selectedItems.length < 1) return alert({ title: "Attention", message: "Please select any pending stock transfer out to do stock transfer in", okButtonText: "Proceed" });
                 let id = this.selectedItems[0].id;
-                this.$navigateTo(StockTransferInItems,{ props:{ id,store:this.store,fycode:this.fycode } });
+                this.$navigateTo(StockTransferInItems.default,{ props:{ id,store:this.store,fycode:this.fycode } });
             }
         }
     }

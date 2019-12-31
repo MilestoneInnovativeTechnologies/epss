@@ -19,7 +19,7 @@
         data(){ return { uKey:0 } },
         computed: mapState('User', ['id','name']),
         mounted: function () {
-            this.$nextTick(() => this.id ? this.uKey++ : this.$navigateTo(Login,{ backstackVisible:false }))
+            this.$nextTick(() => this.id ? this.uKey++ : this.$navigateTo(Login.default,{ backStackVisible:false }))
         }
     }
 </script>

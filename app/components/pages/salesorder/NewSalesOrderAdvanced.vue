@@ -54,7 +54,7 @@
             docno(){ return this.saleDocNo(this.store,this.fycode,this.fncode) },
             setHeader(data){ this.TO_SetPropFromObj(data); },
             layout(){ return this.taxEnabled ? Layout : _.omit(PLayouts,'tax') },
-            reloadComp(){ this.$navigateTo(NewSalesOrderAdvanced,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
+            reloadComp(){ this.$navigateTo(NewSalesOrderAdvanced.default,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
             listener0(data){ let hData = Object.assign({},data,{ date:this.toDateTime(data.date) }); this.setHeader(hData) },
 
             saveTransaction({ items,receipt }){

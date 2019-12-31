@@ -51,7 +51,7 @@
                 return _.toNumber(qty) * _.toNumber(rate) + _.toNumber(tax) - _.toNumber(dis1) - _.toNumber(dis2);
             },
             createNew(){
-                let navComponent = this.WSC_isWide ? NewSalesOrderAdvanced : NewSalesOrder;
+                let navComponent = this.WSC_isWide ? NewSalesOrderAdvanced.default : NewSalesOrder.default;
                 this.$navigateTo(navComponent,{ props:this.TO_Get(['store','fycode','fncode','title']) });
             }
         },

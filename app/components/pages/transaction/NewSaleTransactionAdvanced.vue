@@ -55,7 +55,7 @@
             setHeader(data){ this.TO_SetPropFromObj(data); },
             layout(){ return this.taxEnabled ? Layout : _.omit(PLayouts,'tax') },
             listener0(data){ let hData = Object.assign({},data,{ date:this.toDateTime(data.date) }); this.setHeader(hData) },
-            reloadComp(){ this.$navigateTo(NewSaleTransactionAdvanced,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
+            reloadComp(){ this.$navigateTo(NewSaleTransactionAdvanced.default,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
 
             saveTransaction({ items,receipt }){
                 if(items.length < 1) return alert('Please add products!!');

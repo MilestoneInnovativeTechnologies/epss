@@ -51,7 +51,7 @@
             saveReceipt(){
                 let data = this.TO_Get(saveFields);
                 this.saveReceiptData(data)//.then(ref => this.$navigateTo(ReceiptNew,{ props:this.reloadProps }))
-                    .then(ref => this.FnPrint(this.TO_Get(this.FnPrintProps)).then(() => this.$navigateTo(ReceiptNew,{ props:this.reloadProps })))
+                    .then(ref => this.FnPrint(this.TO_Get(this.FnPrintProps)).then(() => this.$navigateTo(ReceiptNew.default,{ props:this.reloadProps })))
             },
         },
         created(){

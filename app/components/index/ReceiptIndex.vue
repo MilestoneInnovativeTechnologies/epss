@@ -32,7 +32,7 @@
             monthlyMetricItem(){ let vm = this; return [_.zipObject(metricItemKeys,[metricColoured,metricSize,vm.getTotalAfter(_.toSafeInteger(this.startOfMonth)),'This Month'])] }
         },
         methods: {
-            createNew(){ this.$navigateTo(ReceiptNew,{ props:this.TO_Get(['store','fycode','fncode','title']) }) },
+            createNew(){ this.$navigateTo(ReceiptNew.default,{ props:this.TO_Get(['store','fycode','fncode','title']) }) },
             getTotalAfter(time){
                 if(!this.receipts || !this.receipts[this.fncode] || this.receipts[this.fncode].length === 0) return 0;
                 let total = _.sumBy(this.receipts[this.fncode],({ amount,date }) => _.toSafeInteger(this.dateToSeconds(date)) >= time ? _.toNumber(amount) : 0);

@@ -12,6 +12,6 @@
     import { Debug } from '../../assets/scripts/navigations'
     export default {
         name: "DrawerHomeNavigation",
-        data(){ return { Debug } },
+        data(){ return { Debug:Debug.default } },
     }
 </script>
