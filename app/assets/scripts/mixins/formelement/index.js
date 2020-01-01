@@ -23,3 +23,4 @@ export const area = require('./area').FormElementMixinArea;
 export const discounttype = require('./discounttype').FormElementMixinDiscountType;
 export const loginusers = require('./loginusers').FormElementMixinLoginUsers;
 export const password = require('./password').FormElementMixinPassword;
+export const appdbtables = require('./appdbtables').FormElementMixinAppDBTables;
