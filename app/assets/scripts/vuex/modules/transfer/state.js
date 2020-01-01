@@ -1,5 +1,5 @@
 export default {
     recent: {},
-    pending: {},
+    pending: [],
     stock: {},
 }

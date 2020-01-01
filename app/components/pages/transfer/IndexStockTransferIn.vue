@@ -1,7 +1,7 @@
 <template>
     <StackLayout>
         <TextTitleSub class="m-t-15">Pending Material Transfers</TextTitleSub>
-        <AppList :source="pending[store]" :layout="layout()" action="pick" @collection="$emit('selected',$event)"></AppList>
+        <AppList :source="pending" :layout="layout()" action="pick" @collection="$emit('selected',$event)"></AppList>
     </StackLayout>
 </template>
 
@@ -23,13 +23,13 @@
         },
         methods: {
             ...mapActions('Transfer',{ stockTransfer:'_stock' }),
-            doStockList(query,key,path){ this.stockTransfer({ query,key,path }); },
+            doStockList(query,key){ this.stockTransfer({ query,key }); },
             layout(){ return layout },
         },
         created() {
-            let query = sql.format(fetch_all_pending_transfer_outs,[this.store,this.fycode,this.fncode]);
-            if(!this.pending[this.store] || _.isEmpty(this.pending[this.store])) this.doStockList(query,'pending',this.store);
-            else setTimeout(() => this.doStockList(query),constants.after * 1000);
+            let query = fetch_all_pending_transfer_outs;
+            if(!this.pending || _.isEmpty(this.pending)) this.doStockList(query,'pending');
+            else setTimeout(() => this.doStockList(query,'pending'),constants.after * 1000);
         }
     }
 </script>
