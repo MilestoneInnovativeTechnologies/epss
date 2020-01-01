@@ -21,6 +21,7 @@
                 One: 'DB Records Count',
                 Two: 'Upload Logs',
                 Three: 'Download Logs',
+                Four: 'View Table Records',
             }
         } },
         computed: {

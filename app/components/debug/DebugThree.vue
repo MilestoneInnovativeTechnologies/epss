@@ -2,7 +2,7 @@
     <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
         <ScrollView>
             <AppList v-if="records.length > 1" :source="source" :layout="layout" :limit="source.length" />
-            <TextBold text="No Records" />
+            <TextBold v-else text="No Records" />
         </ScrollView>
     </Page>
 </template>
@@ -11,7 +11,7 @@
     const layout = { Table:'table',Records:'records',Time:'time',Status:'status',Message:'message' };
 
     export default {
-        name: "DebugTwo",
+        name: "DebugThree",
         data(){ return {
             records: [], layout
         } },

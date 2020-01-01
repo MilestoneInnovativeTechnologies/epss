@@ -2,7 +2,7 @@
     <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
         <ScrollView>
             <AppList v-if="records.length > 1" :source="records" :layout="{ Table:'table',Records:'records' }":limit="records.length" />
-            <TextBold text="No Records" />
+            <TextBold v-else text="No Records" />
         </ScrollView>
     </Page>
 </template>
