@@ -50,7 +50,7 @@ export function doUpdateSyncData({ dispatch,state,commit }, { table,data }) {
     let cField = cFields[state.tables[table].type];
     for(let i = 0; i < data.length; i++){
         let condition = cField ? _.pick(data[i],cField) : null;
-        dispatch('_update',{ table,data:data[i],condition,upload:false },{ root:true })
+        dispatch('_update',{ table,data:data[i],condition,upload:false,create:false },{ root:true })
             .then(activity => commit(update_table_timing,{ table,type:'update',time:_.get(_.last(activity.data),'updated_at') }))
     }
 }
