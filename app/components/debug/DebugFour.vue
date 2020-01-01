@@ -1,12 +1,12 @@
 <template>
     <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
-        <StackLayout>
-            <AppForm v-if="tables.length > 0" action="Fetch" :fields="fields" :values="{ table:'epss_tblinfo' }" @submit="fetch" />
-            <ScrollView>
+        <Gridlayout rows="auto,*" columns="*">
+            <AppForm row="0" col="0" v-if="tables.length > 0" action="Fetch" :fields="fields" :values="{ table:'epss_tblinfo' }" @submit="fetch" />
+            <ScrollView row="1" col="0">
                 <AppList v-if="result.length > 0" :source="result" :layout="layout" :limit="result.length" :key="table" :maxHeadContents="maxHCN" />
                 <TextBold v-else text="No Records" />
             </ScrollView>
-        </StackLayout>
+        </Gridlayout>
     </Page>
 </template>
 
