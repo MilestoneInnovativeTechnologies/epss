@@ -22,6 +22,7 @@
                 Two: 'Upload Logs',
                 Three: 'Download Logs',
                 Four: 'View Table Records',
+                Five: 'View Logs',
             }
         } },
         computed: {
