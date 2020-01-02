@@ -19,7 +19,7 @@
         props: ['fycode','fncode','store'],
         data(){ return {
             selectedItems: [],
-            updates: 0,
+            updates: 0, payment_type:'Credit'
         } },
         computed: {
             ...mapState('Menu',['content']),

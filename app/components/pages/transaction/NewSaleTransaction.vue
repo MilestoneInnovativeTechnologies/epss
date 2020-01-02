@@ -44,7 +44,7 @@
             fields(){ return this.appFormFields(HFields); },
             setHeader(data){ let hData = Object.assign({},data,{ date:this.toDateTime(data.date) }); this.TO_SetPropFromObj(hData); },
             pLayout(){ return this.taxEnabled ? PLayouts : _.omit(PLayouts,'tax') },
-            reloadComp(){ this.$navigateTo(NewSaleTransaction,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
+            reloadComp(){ this.$navigateTo(NewSaleTransaction.default,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
 
             saveTransaction(){
                 if(this.PS_items.length < 1) return alert('Please add products!!');
