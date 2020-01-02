@@ -29,7 +29,7 @@
         props: ['id','store','fycode'],
         data(){ return {
             selectedItems: [],
-            fncode: 'MT1',
+            fncode: 'MT1', payment_type: 'Credit',
             updates: 0,
         } },
         computed: {
