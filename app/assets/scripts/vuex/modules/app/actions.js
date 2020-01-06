@@ -54,13 +54,13 @@ export function setupTables({ dispatch }) {
         });
     });
 }
-export function createTables({ dispatch,commit },data) {
+export function createTables({ dispatch,commit },{ menu,db }) {
     dispatch('sLog','Create DB tables');
-    Promise.all([..._.map(data.db,(Ary,table) => createTable(table,Ary[0],Ary[3],getInformationInsertData(table,Ary)))]).then((insArray) => {
+    Promise.all([..._.map(db,(Ary,table) => createTable(table,Ary[0],Ary[3],getInformationInsertData(table,Ary)))]).then((insArray) => {
         DB.insert(table_information_db_table_name, insArray, function (dispatch,commit,menu) {
             dispatch('downloadTables');
             dispatch('Menu/setup',menu,{ root:true });
-        },dispatch,commit,data.menu);
+        },dispatch,commit,menu);
     });
 }
 
