@@ -1,16 +1,22 @@
 <template>
     <ScrollView>
         <WrapLayout>
-            <TRAItem :width="itemWidth" :height="itemHeight" :priceWidth="priceWidth" v-if="item" v-for="item in items" :item="item" :key="'list-product-'+item.id" :class="itemClass"></TRAItem>
+            <TRAItem :isUserInteractionEnabled="interaction" :width="itemWidth" :height="itemHeight" :priceWidth="priceWidth" v-if="item" v-for="item in items" :item="item" :key="'list-product-'+item.id" :class="itemClass"></TRAItem>
         </WrapLayout>
     </ScrollView>
 </template>
 
 <script>
     import { mapState } from 'vuex';
+    import {EventListeners} from "../../../assets/scripts/mixins/eventlisteners";
 
     export default {
         name: "TRAItems",
+        mixins: [EventListeners],
+        data(){ return {
+            events:['number-pad'],
+            interaction: true,
+        } },
         props: ['items','properties'],
         computed: {
             ...mapState('App',{ screenWidth: 'width' }),
@@ -25,6 +31,9 @@
             itemWidth(){ return _.floor((this.itemsWidth - (this.itemSpacing*this.itemsPerRow))/this.itemsPerRow); },
             itemHeight(){ return _.round(this.itemWidth * _.toNumber(this.properties.widthHeightRation)); },
             priceWidth(){ return _.floor(this.itemHeight - this.itemWidth) }
+        },
+        methods: {
+            listener0(data){ this.interaction = !data; },
         }
     }
 </script>
