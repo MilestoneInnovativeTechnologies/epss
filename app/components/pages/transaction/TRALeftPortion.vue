@@ -36,23 +36,23 @@
         },
         methods: {
             updateItem({ item,key,value }){
-                if(key === 'remove') this.PS_DeleteItem(item);
+                if(key === 'remove') this.setSelected(this.PS_DeleteItem(item) === null);
                 else this.PS_SetAndUpdate(item,key,value);
                 this.listUpdate++;
             },
             listener0({ id }){ this.addItem(id); },
-            setPicked(row){
-                this.selectedItem = Object.assign({},this.selectedItem,row[0]);
-            },
+            setPicked(row){ this.setSelected(row[0]); },
             addItem(pid){
                 let idx = this.PS_ProductIndex(pid);
                 if(idx === -1) this.PS_AddItem(pid,1);  else this.PS_UpdateQuantity({ pid,quantity:1 });
-                this.selectedItem = Object.assign({},this.selectedItem,this.PS_items[this.PS_items.length - 1]);
-                this.listUpdate++; this.scrollToBottom();
+                this.listUpdate++; setTimeout(this.scrollToBottom,250); this.setSelected();
+            },
+            setSelected(item){
+                this.selectedItem = Object.assign({},this.selectedItem,item || this.PS_items[this.PS_items.length - 1]);
             },
             scrollToBottom(){
                 let items_scroller = this.$refs['items_scroller'].nativeView;
-                items_scroller.scrollToVerticalOffset(items_scroller.scrollableHeight, false);
+                items_scroller.scrollToVerticalOffset(items_scroller.scrollableHeight, true);
             },
             saveTransaction(){
                 let items = this.PS_items;
