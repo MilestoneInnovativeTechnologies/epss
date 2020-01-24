@@ -5,15 +5,15 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex';
+    import {mapState,mapGetters} from 'vuex';
 
     export default {
         name: "DrawerMenu",
         computed: {
             ...mapState('Menu', ['content','sections', 'section_items', 'commons', 'common_items']),
-
-            all_section_items() { return [].concat(this.section_items, this.common_items) },
-            all_sections() { return [].concat(this.sections, this.commons) },
+            ...mapGetters('Menu', ['conditional', 'conditional_items']),
+            all_section_items() { return [].concat(this.section_items, this.conditional_items, this.common_items) },
+            all_sections() { return [].concat(this.sections, this.conditional, this.commons) },
         }
     }
 </script>

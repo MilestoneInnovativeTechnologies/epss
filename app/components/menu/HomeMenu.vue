@@ -1,18 +1,13 @@
 <template>
     <StackLayout class="m-t-12" v-if="content" :width="width" :key="'hm-lyt-'+uKey">
-        <StackLayout class="m-b-15" v-for="(section,idx) in sections" :key="['hmgs',idx].join('-')">
-            <TextTitleSub class="m-b-8 m-l-2">{{ section }}</TextTitleSub>
-            <GridMenuSectionItems :items="section_items[idx]" :height="height" :space="spacing"></GridMenuSectionItems>
-        </StackLayout>
-        <StackLayout class="m-b-15" v-for="(common,idx) in commons" :key="['hmgs-2',idx].join('-')">
-            <TextTitleSub class="m-b-8 m-l-2">{{ common }}</TextTitleSub>
-            <GridMenuSectionItems :items="common_items[idx]" :height="height" :space="spacing"></GridMenuSectionItems>
-        </StackLayout>
+        <GridMenuSection v-for="(title,idx) in sections" :key="['hmgs',1,idx].join('-')" :title="title" :items="section_items[idx]" :height="height" :space="spacing" />
+        <GridMenuSection class="m-b-15 m-y-15" v-for="(title,idx) in conditional" :key="['hmgs',2,idx].join('-')" :title="title" :items="conditional_items[idx]" :height="height" :space="spacing" />
+        <GridMenuSection v-for="(title,idx) in commons" :key="['hmgs',3,idx].join('-')" :title="title" :items="common_items[idx]" :height="height" :space="spacing" />
     </StackLayout>
 </template>
 
 <script>
-    import { mapState,mapActions,mapMutations } from 'vuex';
+    import { mapState,mapActions,mapMutations,mapGetters } from 'vuex';
     import {get_all_active_menu_in_order} from "../../assets/scripts/queries";
     import {set_state_data} from "../../assets/scripts/vuex/mutation-types";
 
@@ -27,6 +22,7 @@
         } },
         computed: {
             ...mapState('Menu',['content','sections','section_items','commons','common_items']), ...mapState('App',{ scrWidth:'width' }),
+            ...mapGetters('Menu',['conditional','conditional_items']),
             maxItems(){ return _.max(_.map(this.section_items,(sAry) => sAry.length)) },
             width(){ return (_.toSafeInteger(this.scrWidth) > this.maxWidth) ? this.maxWidth : '100%' }
         },

@@ -13,5 +13,13 @@ export default {
             { icon:'assignment',home_display:'Reserves',drawer_display:'Function Reserves',component:'ReservesIndex',props:'store',fncode:'' },
         ]
     ],
+    conditional: ['SHIFT'],
+    conditional_items: [
+        [
+            { icon:'control_point_duplicate',home_display:'Create',drawer_display:'Create Shift',component:'ShiftCreate',props:'',fncode:'' },
+            { icon:'all_out',home_display:'Status',drawer_display:'Shift Status',component:'ShiftStatus',props:'',fncode:'' },
+            { icon:'blur_off',home_display:'Close',drawer_display:'Close Shift',component:'ShiftClose',props:'',fncode:'' },
+        ]
+    ],
     drawerActiveStatus: false,
 }
