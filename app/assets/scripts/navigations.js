@@ -12,4 +12,6 @@ export const NewSaleTransactionAdvanced = require('../../components/pages/transa
 export const NewSalesOrder = require('../../components/pages/salesorder/NewSalesOrder');
 export const NewSalesOrderAdvanced = require('../../components/pages/salesorder/NewSalesOrderAdvanced');
 
+export const ShiftIndex = require('../../components/index/ShiftIndex');
+
 export const StockTransferInItems = require('../../components/pages/transfer/StockTransferInItems');

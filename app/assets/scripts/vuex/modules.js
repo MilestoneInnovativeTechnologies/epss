@@ -24,4 +24,5 @@ export default {
     'Stock': require('./modules/stock/index').default,
     'Transfer': require('./modules/transfer/index').default,
     'Download': require('./modules/download/index').default,
+    'Shift': require('./modules/shift/index').default,
 }
