@@ -1,8 +1,8 @@
 <template>
     <StackLayout class="m-t-12" v-if="content" :width="width" :key="'hm-lyt-'+uKey">
-        <GridMenuSection v-for="(title,idx) in sections" :key="['hmgs',1,idx].join('-')" :title="title" :items="section_items[idx]" :height="height" :space="spacing" />
-        <GridMenuSection class="m-b-15 m-y-15" v-for="(title,idx) in conditional" :key="['hmgs',2,idx].join('-')" :title="title" :items="conditional_items[idx]" :height="height" :space="spacing" />
-        <GridMenuSection v-for="(title,idx) in commons" :key="['hmgs',3,idx].join('-')" :title="title" :items="common_items[idx]" :height="height" :space="spacing" />
+        <GridMenuSection class="m-b-15" v-for="(title,idx) in sections" :key="['hmgs',1,idx].join('-')" :title="title" :items="section_items[idx]" :height="height" :space="spacing" />
+        <GridMenuSection class="m-b-15" v-for="(title,idx) in conditional" :key="['hmgs',2,idx].join('-')" :title="title" :items="conditional_items[idx]" :height="height" :space="spacing" />
+        <GridMenuSection class="m-b-15" v-for="(title,idx) in commons" :key="['hmgs',3,idx].join('-')" :title="title" :items="common_items[idx]" :height="height" :space="spacing" />
     </StackLayout>
 </template>
 
