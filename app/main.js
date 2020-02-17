@@ -3,7 +3,6 @@ import Home from './components/Home'
 import "./app.scss";
 
 require('./assets/scripts/globals');
-// require('./assets/scripts/debugs');
 require('./assets/scripts/fonticons');
 require('./assets/scripts/filters');
 
