@@ -34,7 +34,7 @@ export function discount02(state,{ getDiscount }){
 }
 export function saleItem(state,{ details,itemTax,discount01,discount02 },rootState,rootGetters){
     return (code,item,qty,extra) => {
-        let fnDetails = details(code), itemDetails = rootGetters["Product/product"](item),
+        let fnDetails = details(code), itemDetails = rootGetters["Product/product"](item), shift_docno = rootGetters["Shift/docno"],
             pid = itemDetails['id'], name = itemDetails['name'], narration = itemDetails['narration'], uom = itemDetails['uom']; extra = extra || {};
         let quantity = getNum(qty,1),rate,amount,dis01,tax,dis02,taxdisplay,disc,taxrate,total,taxrule = itemDetails['taxcode' + fnDetails.taxselection.substr(-2)];
         rate = (_.isNil(extra.rate)) ? getNum(itemDetails.price) : _.toNumber(extra.rate);
@@ -44,7 +44,7 @@ export function saleItem(state,{ details,itemTax,discount01,discount02 },rootSta
         tax = ((quantity * rate) - dis01) * taxrate; taxdisplay = tax + '@' + taxrate*100 + '%';
         dis02 = (fnDetails.discount02 !== 'NotRequired') ? discount02(code,(amount-dis01),getNum(extra.discount02,getNum(extra.discount,0))) : 0;
         disc = dis01 + dis02; total = amount + tax - disc;
-        return { item,product:pid,pid,name,narration,product_name:name,uom,quantity,rate,amount,discount01:dis01,taxrule,taxrate,tax,taxdisplay,discount02:dis02,discount:disc,total };
+        return { item,product:pid,pid,name,narration,product_name:name,uom,quantity,rate,amount,discount01:dis01,taxrule,taxrate,tax,taxdisplay,discount02:dis02,discount:disc,total,shift_docno };
     }
 }
 export function saleItemBasic(state,{ details,itemTax },rootState,rootGetters){
@@ -56,6 +56,9 @@ export function saleItemBasic(state,{ details,itemTax },rootState,rootGetters){
         taxrate = itemTax(code,item);
         return { item,product:pid,pid,name,narration,product_name:name,uom,rate,taxrule,taxrate };
     }
+}
+export function shiftActive({ dbTables,dbData }) {
+    return (code) => _.get(_.find(dbData[dbTables[0]],['code',code]),'shift_active') === 'Yes'
 }
 
 function getNum(num,def){
