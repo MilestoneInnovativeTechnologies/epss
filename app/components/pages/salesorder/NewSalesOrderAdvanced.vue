@@ -17,6 +17,7 @@
         fetch_product_list_for_advance_transaction
     } from "../../../assets/scripts/queries";
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
+    import {FnDocReserve} from "../../../assets/scripts/mixins/fndocreserves";
 
     const TRF = ['docno','date','user','customer','store','fycode','fncode','payment_type','progress','_ref','status'];
     const TDF = ['so','store','fycode','fncode','product','quantity','rate','taxrule','tax','discount01','discount02','_ref'];
@@ -31,7 +32,7 @@
 
     export default {
         name: "NewSalesOrderAdvanced",
-        mixins: [EventListeners,ThisObj,FnPrint],
+        mixins: [EventListeners,ThisObj,FnPrint,FnDocReserve],
         props: ['store','fycode','fncode','title'],
         data(){ return {
             customer: null, payment_type: null, date: null, so: null, progress: 'Incomplete', status: 'Active',
@@ -58,6 +59,7 @@
             listener0(data){ let hData = Object.assign({},data,{ date:this.toDateTime(data.date) }); this.setHeader(hData) },
 
             saveTransaction({ items,receipt }){
+                if(!this.FDR_ready) return alert('No any document reserved!!');
                 if(items.length < 1) return alert('Please add products!!');
                 let sales_order = this.TO_Get(TRF);
                 let sales_order_items = _.map(items,(item) => this.TO_Get(TDF,item));
@@ -68,7 +70,6 @@
             },
         },
         created(){
-            setTimeout(() => this.docno(),4000);
             if(this.productList.length === 0) this.doStockProduct(sql.format(fetch_product_list_for_advance_transaction),'list');
             if(this.productGroup.length === 0) this.doStockProduct(sql.format(fetch_product_group_for_advance_transaction),'group');
         }
