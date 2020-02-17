@@ -4,5 +4,7 @@ export default {
     table_modules: {},
     actionEvents: {},
 
-    default_fycode: null, default_store: null
+    default_fycode: null, default_store: null,
+
+    numberPad: false, absoluteForm: null
 };

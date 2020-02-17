@@ -33,19 +33,19 @@
             events: ['number-pad','absolute-form'],
             mainContentProps: ['action','scroll','width','center','actionProps'],
             navigationBusy: false,
-            absoluteForm: null,
-            numberPad: false,
         }},
         computed: {
             mainContentBind(){  return _(this.mainContentProps).mapKeys(i => i).mapValues(i => this[i]).value() },
+            absoluteForm(){ return this.$store.state.absoluteForm },
+            numberPad(){ return this.$store.state.numberPad },
             showNumberPad(){ return !!(this.numberPad) },
             numberPadProps(){ return this.numberPad },
             showAbsoluteForm(){ return !!(this.absoluteForm) },
             absoluteFormProps(){ return this.absoluteForm }
         },
         methods: {
-            listener0(data){ this.numberPad = data; this.ELOn('number-pad-cancelled',() => { this.numberPad = null; this.ELOff('number-pad-cancelled'); }) },
-            listener1(form){ this.absoluteForm = form; this.ELOn('absolute-form-close',() => { this.absoluteForm = null; this.ELOff('absolute-form-close'); }) },
+            listener0(data){ this.$store.state.numberPad = data; this.ELOn('number-pad-cancelled',() => { this.$store.state.numberPad = null; this.ELOff('number-pad-cancelled'); }) },
+            listener1(form){ this.$store.state.absoluteForm = form; this.ELOn('absolute-form-close',() => { this.$store.state.absoluteForm = null; this.ELOff('absolute-form-close'); }) },
         }
     }
 </script>
