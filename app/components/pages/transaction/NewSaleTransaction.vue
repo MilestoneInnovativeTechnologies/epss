@@ -16,17 +16,19 @@
     import {FloatFormProductSale} from "../../../assets/scripts/mixins/floatformproductsale";
     import {NewSaleTransaction} from "../../../assets/scripts/navigations";
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
+    import {FnShiftStatus} from "../../../assets/scripts/mixins/fnshiftstatus";
+    import {FnDocReserve} from "../../../assets/scripts/mixins/fndocreserves";
 
     const feMX = require('./../../../assets/scripts/mixins/formelement');
     const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type','status'];
-    const TDF = ['transaction','store','product','direction','quantity','rate','taxrule','tax','discount01','discount02','soi'];
+    const TDF = ['transaction','store','product','direction','quantity','rate','taxrule','tax','discount01','discount02','soi','shift_docno'];
     const HFields = { date:'DatePicker',customer: 'Customer',payment_type:'Payment' };
     const DFields = { product:'Product',quantity:'Quantity',rate:'Rate',discount:'Decimal' };
     const PLayouts = { Name:'narration',Quantity:'quantity',Total:'total',Rate:'rate',Tax:'taxdisplay',Discount:'discount' };
 
     export default {
         name: "NewSaleTransaction",
-        mixins: [ThisObj,FloatFormProductSale,FnPrint,feMX.common,feMX.datepicker,feMX.customer,feMX.payment,feMX.product,feMX.quantity,feMX.rate,feMX.decimal],
+        mixins: [ThisObj,FnShiftStatus,FnDocReserve,FloatFormProductSale,FnPrint,feMX.common,feMX.datepicker,feMX.customer,feMX.payment,feMX.product,feMX.quantity,feMX.rate,feMX.decimal],
         props: ['store','fycode','fncode','title'],
         data(){ return {
             customer: null, payment_type: null, status: 'Active', date: null, transaction: null, direction: 'Out',
@@ -47,13 +49,14 @@
             reloadComp(){ this.$navigateTo(NewSaleTransaction.default,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
 
             saveTransaction(){
+                if(!this.FDR_ready) return alert('No any document reserved!!');
+                if(!this.SS_ready) return alert('Shift required!!');
                 if(this.PS_items.length < 1) return alert('Please add products!!');
                 let transactions = this.TO_Get(TRF);
                 let transaction_details = _.map(this.PS_items,(item) => this.TO_Get(TDF,item));
                 this.saveSaleTransaction({ transactions,transaction_details })
                     .then(ref => this.FnPrint({ _ref:ref }).then(() => this.reloadComp()));
             },
-        },
-        created(){ setTimeout(() => this.docno(),4000) }
+        }
     }
 </script>

@@ -17,9 +17,11 @@
         fetch_product_list_for_advance_transaction
     } from "../../../assets/scripts/queries";
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
+    import {FnShiftStatus} from "../../../assets/scripts/mixins/fnshiftstatus";
+    import {FnDocReserve} from "../../../assets/scripts/mixins/fndocreserves";
 
     const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type','status'];
-    const TDF = ['transaction','store','product','direction','quantity','rate','taxrule','tax','discount01','discount02','soi'];
+    const TDF = ['transaction','store','product','direction','quantity','rate','taxrule','tax','discount01','discount02','soi','shift_docno'];
     const Layout = { Name:'narration',Quantity:'quantity',Total:'total',Rate:'rate',Tax:'taxdisplay',Discount:'discount' };
 
     const properties = {
@@ -31,7 +33,7 @@
 
     export default {
         name: "NewSaleTransactionAdvanced",
-        mixins: [EventListeners,ThisObj, FnPrint],
+        mixins: [EventListeners,ThisObj, FnPrint, FnShiftStatus, FnDocReserve],
         props: ['store','fycode','fncode','title'],
         data(){ return {
             customer: null, payment_type: null, date: null, transaction: null, direction: 'Out', status: 'Active', soi:null,
@@ -58,6 +60,8 @@
             reloadComp(){ this.$navigateTo(NewSaleTransactionAdvanced.default,{ props:this.TO_Get(['store','fycode','fncode','title']) }); },
 
             saveTransaction({ items,receipt }){
+                if(!this.FDR_ready) return alert('No any document reserved!!');
+                if(!this.SS_ready) return alert('Shift required!!');
                 if(items.length < 1) return alert('Please add products!!');
                 let transactions = this.TO_Get(TRF);
                 let transaction_details = _.map(items,item => this.TO_Get(TDF,item));
@@ -68,7 +72,6 @@
             },
         },
         created(){
-            setTimeout(() => this.docno(),4000);
             if(this.productList.length === 0) this.doStockProduct(sql.format(fetch_product_list_for_advance_transaction),'list');
             if(this.productGroup.length === 0) this.doStockProduct(sql.format(fetch_product_group_for_advance_transaction),'group');
         }
