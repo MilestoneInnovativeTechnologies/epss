@@ -12,11 +12,6 @@
 
     export default {
         name: "TRAItems",
-        mixins: [EventListeners],
-        data(){ return {
-            events:['number-pad'],
-            interaction: true,
-        } },
         props: ['items','properties'],
         computed: {
             ...mapState('App',{ screenWidth: 'width' }),
@@ -30,10 +25,8 @@
             itemsHeight(){ },
             itemWidth(){ return _.floor((this.itemsWidth - (this.itemSpacing*this.itemsPerRow))/this.itemsPerRow); },
             itemHeight(){ return _.round(this.itemWidth * _.toNumber(this.properties.widthHeightRation)); },
-            priceWidth(){ return _.floor(this.itemHeight - this.itemWidth) }
-        },
-        methods: {
-            listener0(data){ this.interaction = !data; },
+            priceWidth(){ return _.floor(this.itemHeight - this.itemWidth) },
+            interaction(){ return !(this.$store.state.numberPad); }
         }
     }
 </script>
