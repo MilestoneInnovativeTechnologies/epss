@@ -16,9 +16,8 @@ export default {
     conditional: ['SHIFT'],
     conditional_items: [
         [
-            { icon:'control_point_duplicate',home_display:'Create',drawer_display:'Create Shift',component:'ShiftCreate',props:'',fncode:'' },
-            { icon:'all_out',home_display:'Status',drawer_display:'Shift Status',component:'ShiftStatus',props:'',fncode:'' },
-            { icon:'blur_off',home_display:'Close',drawer_display:'Close Shift',component:'ShiftClose',props:'',fncode:'' },
+            { icon:'create_new_folder',home_display:'Create',drawer_display:'Create Shift',component:'ShiftIndex',props:'store,fycode,fncode',fncode:'SHF' },
+            { icon:'all_out',home_display:'Shift',drawer_display:'Shift Details',component:'ShiftIndex',props:'store,fycode,fncode',fncode:'SDRP' },
         ]
     ],
     drawerActiveStatus: false,
