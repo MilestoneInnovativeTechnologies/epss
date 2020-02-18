@@ -23,11 +23,11 @@
             title: String,
             back: { type: [String,Boolean], default: true },
             drawer: { type: [String,Boolean], default: true },
-            action: String,
+            action: null,
             scroll: { type: [Boolean,String], default: true },
             width: { type: [String,Number], default: '95%' },
             center: { type: [String,Boolean], default: false },
-            actionProps: { type: Object },
+            actionProps: null,
         },
         data(){ return {
             events: ['number-pad','absolute-form'],
