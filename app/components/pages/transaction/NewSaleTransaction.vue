@@ -18,6 +18,7 @@
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
     import {FnShiftStatus} from "../../../assets/scripts/mixins/fnshiftstatus";
     import {FnDocReserve} from "../../../assets/scripts/mixins/fndocreserves";
+    import {FiscalYearCheck} from "../../../assets/scripts/mixins/fiscalyearcheck";
 
     const feMX = require('./../../../assets/scripts/mixins/formelement');
     const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type','status'];
@@ -28,7 +29,7 @@
 
     export default {
         name: "NewSaleTransaction",
-        mixins: [ThisObj,FnShiftStatus,FnDocReserve,FloatFormProductSale,FnPrint,feMX.common,feMX.datepicker,feMX.customer,feMX.payment,feMX.product,feMX.quantity,feMX.rate,feMX.decimal],
+        mixins: [ThisObj,FnShiftStatus,FnDocReserve,FiscalYearCheck,FloatFormProductSale,FnPrint,feMX.common,feMX.datepicker,feMX.customer,feMX.payment,feMX.product,feMX.quantity,feMX.rate,feMX.decimal],
         props: ['store','fycode','fncode','title'],
         data(){ return {
             customer: null, payment_type: null, status: 'Active', date: null, transaction: null, direction: 'Out',
@@ -52,6 +53,7 @@
                 if(!this.FDR_ready) return alert('No any document reserved!!');
                 if(!this.SS_ready) return alert('Shift required!!');
                 if(this.PS_items.length < 1) return alert('Please add products!!');
+                if(!this.FYC_Okey(this.date)) return alert(this.FYC_msg1);
                 let transactions = this.TO_Get(TRF);
                 let transaction_details = _.map(this.PS_items,(item) => this.TO_Get(TDF,item));
                 this.saveSaleTransaction({ transactions,transaction_details })

@@ -18,6 +18,7 @@
     } from "../../../assets/scripts/queries";
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
     import {FnDocReserve} from "../../../assets/scripts/mixins/fndocreserves";
+    import {FiscalYearCheck} from "../../../assets/scripts/mixins/fiscalyearcheck";
 
     const TRF = ['docno','date','user','customer','store','fycode','fncode','payment_type','progress','_ref','status'];
     const TDF = ['so','store','fycode','fncode','product','quantity','rate','taxrule','tax','discount01','discount02','_ref'];
@@ -32,7 +33,7 @@
 
     export default {
         name: "NewSalesOrderAdvanced",
-        mixins: [EventListeners,ThisObj,FnPrint,FnDocReserve],
+        mixins: [EventListeners,ThisObj,FnPrint,FnDocReserve,FiscalYearCheck],
         props: ['store','fycode','fncode','title'],
         data(){ return {
             customer: null, payment_type: null, date: null, so: null, progress: 'Incomplete', status: 'Active',
@@ -61,6 +62,7 @@
             saveTransaction({ items,receipt }){
                 if(!this.FDR_ready) return alert('No any document reserved!!');
                 if(items.length < 1) return alert('Please add products!!');
+                if(!this.FYC_Okey(this.date)) return alert(this.FYC_msg1);
                 let sales_order = this.TO_Get(TRF);
                 let sales_order_items = _.map(items,(item) => this.TO_Get(TDF,item));
                 this.saveSalesOrderTransaction({ sales_order,sales_order_items }).then(ref => {

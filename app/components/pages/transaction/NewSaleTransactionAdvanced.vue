@@ -19,6 +19,7 @@
     import {FnPrint} from "../../../assets/scripts/mixins/fnprint";
     import {FnShiftStatus} from "../../../assets/scripts/mixins/fnshiftstatus";
     import {FnDocReserve} from "../../../assets/scripts/mixins/fndocreserves";
+    import {FiscalYearCheck} from "../../../assets/scripts/mixins/fiscalyearcheck";
 
     const TRF = ['_ref','user','store','docno','date','customer','fycode','fncode','payment_type','status'];
     const TDF = ['transaction','store','product','direction','quantity','rate','taxrule','tax','discount01','discount02','soi','shift_docno'];
@@ -33,7 +34,7 @@
 
     export default {
         name: "NewSaleTransactionAdvanced",
-        mixins: [EventListeners,ThisObj, FnPrint, FnShiftStatus, FnDocReserve],
+        mixins: [EventListeners,ThisObj, FnPrint, FnShiftStatus, FnDocReserve, FiscalYearCheck],
         props: ['store','fycode','fncode','title'],
         data(){ return {
             customer: null, payment_type: null, date: null, transaction: null, direction: 'Out', status: 'Active', soi:null,
@@ -63,6 +64,7 @@
                 if(!this.FDR_ready) return alert('No any document reserved!!');
                 if(!this.SS_ready) return alert('Shift required!!');
                 if(items.length < 1) return alert('Please add products!!');
+                if(!this.FYC_Okey(this.date)) return alert(this.FYC_msg1);
                 let transactions = this.TO_Get(TRF);
                 let transaction_details = _.map(items,item => this.TO_Get(TDF,item));
                 this.saveSaleTransaction({ transactions,transaction_details }).then(ref => {
