@@ -2,7 +2,7 @@
     <GridLayout :rows="rows">
         <ScrollView v-if="scroll !== 'false' && scroll !== false" row="0"><StackLayout :verticalAlignment="vAlign" class="p-t-10" :width="width"><slot></slot></StackLayout></ScrollView>
         <StackLayout v-else :verticalAlignment="vAlign" row="0" class="p-t-10" :width="width"><slot></slot></StackLayout>
-        <StackLayout row="1" orientation="horizontal"><AppButton class="c-white btn-active" v-bind="bindVars(btn)" :width="actWidth(btn)" v-for="(btn,idx) in actions" @tap.native="$emit(eventName(btn))" :key="['app',unique,'btn',idx].join('-')">{{ btn }}</AppButton></StackLayout>
+        <StackLayout row="1" orientation="horizontal" width="100%"><AppButton class="c-white btn-active" v-bind="bindVars(btn)" :width="actWidth(btn)" v-for="(btn,idx) in actions" @tap.native="$emit(eventName(btn))" :key="['app',unique,'btn',idx].join('-')">{{ btn }}</AppButton></StackLayout>
     </GridLayout>
 </template>
 
