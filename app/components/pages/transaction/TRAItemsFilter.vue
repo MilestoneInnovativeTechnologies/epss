@@ -1,5 +1,5 @@
 <template>
-    <AppForm :fields="{ filter:{ type:'Text', label:'Search' } }" @filter="setFilterText"></AppForm>
+    <TextField ref="txtFld" hint="Search" v-model="filter" class="m-y-10" />
 </template>
 
 <script>
@@ -7,10 +7,12 @@
 
     export default {
         name: "TRAItemsFilter",
-        methods: {
-            setFilterText(text){
-                emitText(this,text)
+        computed: {
+            filter: {
+                get(){ return '' },
+                set(value){ emitText(this,value) }
             }
-        }
+        },
+        mounted(){ setTimeout(() => this.$refs['txtFld'].nativeView.focus(),1000); }
     }
 </script>
