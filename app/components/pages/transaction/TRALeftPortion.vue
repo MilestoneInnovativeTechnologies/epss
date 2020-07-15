@@ -40,7 +40,7 @@
                 else this.PS_SetAndUpdate(item,key,value);
                 this.listUpdate++;
             },
-            listener0({ id }){ console.log('tra-item-selected',id); this.addItem(id); },
+            listener0({ id }){ this.addItem(id); },
             setPicked(row){ this.setSelected(row[0]); },
             addItem(pid){
                 let idx = this.PS_ProductIndex(pid);
