@@ -1,3 +1,4 @@
+import Vue from 'vue'
 export const ThisObj = {
     methods: {
         TO_Get(props,lookup,arg){
@@ -15,7 +16,7 @@ export const ThisObj = {
         },
         TO_SetPropFromObj(Obj){
             let vm = this;
-            _.forEach(Obj,(value,key) => vm[key] = value);
+            _.forEach(Obj,(value,key) => Vue.set(vm,key,value));
         }
     }
 };

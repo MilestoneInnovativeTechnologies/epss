@@ -16,6 +16,7 @@
             coloured: { default:false },
             size: { default:40 },
             detail: { default:null },
+            args: { default:null }
         },
         computed: {
             iconStyle(){ return { fontSize:(this.size-5)+'' } },
@@ -27,7 +28,7 @@
             navigate(){
                 if(!this.detail) return;
                 let component = require('../../pages/'+this.detail+'.vue').default;
-                this.$navigateTo(component)
+                this.$navigateTo(component,{ props:this.args })
             }
         }
     }

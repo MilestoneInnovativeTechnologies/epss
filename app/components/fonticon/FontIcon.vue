@@ -1,5 +1,5 @@
 <template>
-    <Label :text="icon | fonticon" :class="icnClass" />
+    <Label :text="icon | fonticon" :class="icnClass" v-bind="$attrs" />
 </template>
 
 <script>

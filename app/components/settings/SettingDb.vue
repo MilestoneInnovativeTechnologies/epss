@@ -16,6 +16,7 @@
         data(){ return {
             values: {}, display: false,
             initialized: false,
+            user_include_tables: ['user_settings']
         } },
         computed: {
             condition(){ return typeof this.row === 'object' ? this.row : { id:this.row } },
@@ -25,6 +26,7 @@
             saveFinal(obj){
                 if(!this.initialized) return this.initialized = true;
                 let data = _.zipObject([this.field],[obj[fieldName]]);
+                if(this.user_include_tables.includes(this.table)) data['user'] = this.$store.state['User'].id
                 DBUpdate(this,data);
             },
         },

@@ -1,5 +1,5 @@
 <template>
-    <Label class="fsb font-weight-bold c-black" :text="mText" ></Label>
+    <Label class="fsb font-weight-bold c-black" :text="mText" v-bind="$attrs" ></Label>
 </template>
 
 <script>

@@ -1,4 +1,4 @@
-import Vue from 'nativescript-vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import state from './state';

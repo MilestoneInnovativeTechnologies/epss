@@ -16,7 +16,7 @@
     import {NewSaleTransaction, NewSaleTransactionAdvanced} from "../../assets/scripts/navigations";
     import {CCacheDataMixin} from "../../assets/scripts/mixins/ccachedata";
 
-    const metricItemKeys = ['coloured','size','text','title'], metricSize = 25, metricColoured = true;
+    const metricItemKeys = ['coloured','size','text','title','detail','args'], metricSize = 25, metricColoured = true;
 
     export default {
         name: "SalesIndex",
@@ -32,12 +32,12 @@
             dailyMetric(){ return this.settings('daily_sales_total_amount_in_sales_index') !== 'No' },
             periodMetric(){ return this.settings('weekly_and_monthly_sales_total_amount_in_sales_index') === 'Yes' },
             dailyMetricItem(){
-                let vm = this; return [_.zipObject(metricItemKeys,[metricColoured,metricSize,vm.getTotalAfter(_.toSafeInteger(this.startOfDay)),'Sales Today'])]
+                let vm = this; return [_.zipObject(metricItemKeys,[metricColoured,metricSize,vm.getTotalAfter(_.toSafeInteger(this.startOfDay)),'Sales Today','sales/SalesDailyReport',{ fncode:this.fncode,from:this.startOfDay }])]
             },
             periodMetricItem(){
                 let vm = this;
                 return _.map({ 'week sales':this.startOfWeek, 'month sales':this.startOfMonth },(time,title) =>
-                    _.zipObject(metricItemKeys,[metricColoured,metricSize,vm.getTotalAfter(_.toSafeInteger(time)),title])
+                    _.zipObject(metricItemKeys,[metricColoured,metricSize,vm.getTotalAfter(_.toSafeInteger(time)),title,null,null])
                 );
             },
         },
@@ -51,7 +51,7 @@
             },
             createNew(){
                 let navComponent = this.WSC_isWide ? NewSaleTransactionAdvanced.default : NewSaleTransaction.default;
-                this.$navigateTo(navComponent,{ props:this.TO_Get(['store','fycode','fncode','title']) });
+                this.$navigateTo(navComponent,{ props:this.TO_Get(['store','fycode','fncode','title']),backstackVisible:false });
             }
         },
         created() {

@@ -14,6 +14,6 @@ export const FnPrint = {
         FnPrintPrintWidth(){ return this.$store.getters["App/get"]('print_width'); }
     },
     mounted(){
-        FNPrint = new Print(this.fncode);
+        FNPrint = new Print(this.print || this.printFncode || this.fncode);
     }
 };

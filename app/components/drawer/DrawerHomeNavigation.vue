@@ -1,9 +1,9 @@
 <template>
-    <GridLayout columns="*,auto" backgroundColor="#FFFFFF">
-        <Label col="0" text="||||||||||" class="c-white" @tap="$navigateTo(Debug)" />
-        <StackLayout col="1" class="bcp p-y-4 p-x-15" orientation="horizontal" style="border-bottom-width: 1px; border-bottom-color: #FFFFFF" @tap="$navigateTo(require('./../Home').default)">
-            <FontIcon class="c-white" name="home" size="20"></FontIcon>
-            <TextBold class="c-white m-l-4" style="color: #FFFFFF;">HOME</TextBold>
+    <GridLayout columns="*,auto" backgroundColor="#FFFFFF" style="color: #FFFFFF">
+        <Label col="0" text="||||||||||" @tap="$navigateTo(Debug)" />
+        <StackLayout col="1" class="bcp p-y-5 p-x-12 m-r-2" orientation="horizontal" style="border-bottom-width: 1px; border-bottom-color: #FFFFFF" @tap="$navigateTo(require('./../Home').default)">
+            <FontIcon class="m-r-5" name="home" size="18" />
+            <TextBold class="c-white" text="HOME" />
         </StackLayout>
     </GridLayout>
 </template>

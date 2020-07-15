@@ -2,7 +2,7 @@ const PrintTemplate = new (require('./PrintTemplate').PrintTemplate)();
 
 export class Print {
     constructor(id){
-        this.prop = []; this.query1_result = null; this.query2_result = null; this.query3_result = null; this.tObj_default = new Object({});
+        this.prop = {}; this.query1_result = null; this.query2_result = null; this.query3_result = null; this.tObj_default = new Object({});
         this.template_default = [
             { type:'raw', detail:'[company.print_line1]',align:'center',underline:true },
             { type:'line' },
@@ -76,6 +76,7 @@ export class Print {
     props(obj){
         if(obj === undefined) return Object.keys(this.prop);
         for(let x in obj) this.prop[x] = obj[x];
+        [1,2,3].forEach(n => this['query' + n + '_result'] = null);
         return this;
     }
 

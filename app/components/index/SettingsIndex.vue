@@ -8,12 +8,13 @@
 </template>
 
 <script>
+    import Home from "../Home";
     const feMX = require('./../../assets/scripts/mixins/formelement');
 
     export default {
         name: "SettingsIndex",
-        mixins: [feMX.common,feMX.text],
-        data(){ return { actionEnable:true,tag:'',tags:{},hd:null,hComp:require('./../Home').default } },
+        mixins: [feMX.common,feMX.text,feMX.number],
+        data(){ return { actionEnable:true,tag:'',tags:{},hd:null } },
         computed: {
             fields(){ return _.mapValues(this.appFormFields({ tag:'Text' }),obj => { obj.label = 'Search for settings'; return obj; }) },
             components(){
@@ -28,7 +29,7 @@
             }
         },
         methods: {
-            home(){ this.actionEnable = false; setTimeout(() => this.$navigateTo(this.hComp),2000) },
+            home(){ this.actionEnable = false; setTimeout(() => this.$navigateTo(Home),2000) },
             quitApp(){ confirm('Are you sure, quit app?').then(status => status ? android.os.Process.killProcess(android.os.Process.myPid()) : null) }
         }
     }

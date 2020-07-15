@@ -55,6 +55,9 @@ export const ProductSale = {
             if(idx > -1) return this.PS_items.splice(idx,1);
             return false;
         },
+        PS_DeleteAllItem(){
+            return this.PS_items.splice(0,this.PS_items.length);
+        },
     }
 };
 

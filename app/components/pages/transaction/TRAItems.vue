@@ -1,7 +1,7 @@
 <template>
     <ScrollView>
         <WrapLayout>
-            <TRAItem :isUserInteractionEnabled="interaction" :width="itemWidth" :height="itemHeight" :priceWidth="priceWidth" v-if="item" v-for="item in items" :item="item" :key="'list-product-'+item.id" :class="itemClass"></TRAItem>
+            <TRAItem :isUserInteractionEnabled="interaction" :width="itemWidth" :height="itemHeight" v-if="item" v-for="item in items" :item="item" :key="'list-product-'+item.id" :class="itemClass"></TRAItem>
         </WrapLayout>
     </ScrollView>
 </template>
@@ -24,8 +24,7 @@
             },
             itemsHeight(){ },
             itemWidth(){ return _.floor((this.itemsWidth - (this.itemSpacing*this.itemsPerRow))/this.itemsPerRow); },
-            itemHeight(){ return _.round(this.itemWidth * _.toNumber(this.properties.widthHeightRation)); },
-            priceWidth(){ return _.floor(this.itemHeight - this.itemWidth) },
+            itemHeight(){ return _.round(this.itemWidth * _.toNumber(this.properties.widthHeightRatio)); },
             interaction(){ return !(this.$store.state.numberPad); }
         }
     }

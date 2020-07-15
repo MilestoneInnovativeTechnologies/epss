@@ -6,7 +6,7 @@
             <DrawerProfileBar row="1" col="0"></DrawerProfileBar>
             <DrawerHomeNavigation row="2"></DrawerHomeNavigation>
             <ScrollView row="3" col="0"><DrawerMenu></DrawerMenu></ScrollView>
-            <TextBold row="4" col="0" @tap.native="userLogout" class="w-full text-center p-y-15 c-bg-white" verticalAlignment="center">LOGOUT</TextBold>
+            <TextBold row="4" col="0" @tap.native="userLogout" class="w-full text-center p-y-15 c-bg-white" verticalAlignment="center" text="LOGOUT" />
         </GridLayout>
         <StackLayout ~mainContent>
             <slot></slot>

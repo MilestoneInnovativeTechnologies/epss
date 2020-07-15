@@ -5,7 +5,7 @@
                 <TextHighlightBold class="text-center p-x-5" textWrap="true">All</TextHighlightBold>
             </StackLayout>
             <StackLayout width="110" :class="selected === l2Id ? 'bcg01' : ''" verticalAlignment="middle" v-for="(name,l2Id) in listNames" :key="'list02-'+l2Id" @tap="setSelected(l2Id)">
-                <TextHighlightBold class="text-center p-x-5" textWrap="true">{{ name }}</TextHighlightBold>
+                <TextHighlightBold class="text-center p-x-5" textWrap="true" :text="name" />
             </StackLayout>
         </FlexboxLayout>
     </ScrollView>
@@ -18,7 +18,7 @@
     export default {
         name: "TRAList02",
         mixins: [EventListeners],
-        props: ['list'],
+        props: ['list','seq'],
         data(){ return {
             list01: null,
             list01num: null,
@@ -33,15 +33,16 @@
         methods: {
             setSelected(idx){
                 this.selected = idx;
-                EB.$emit('tra-list02-changed',this.selected);
+                EB.$emit('tra-list02-changed',[this.list,this.selected]);
             },
             updateListChanges(list01,list01num){
                 this.list01 = list01;
                 this.list01num = list01num;
             },
-            listener0(data){ this.updateListChanges(data[0],data[1]) }
+            listener0(data){ this.updateListChanges(data[0],data[1]); setTimeout((vm) => vm.listIds.includes(vm.selected) ? null : vm.setSelected(0),1000,this) }
         },
-        created(){ this.setSelected(0); },
-
+        watch: {
+            seq: { immediate:true, handler:function(){ this.setSelected(0) } }
+        }
     }
 </script>

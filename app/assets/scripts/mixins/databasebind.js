@@ -83,6 +83,9 @@ export default {
         _tableDataByIdName(state,{ _tableDataByIdField }){
             return (table) => { return _tableDataByIdField(table,'name') }
         },
+        _tableDataByKeyField(state,{ _tableDataByField }){
+            return (table,key,field) => { return _.mapValues(_tableDataByField(table,key),field) }
+        },
         _tableDataItemByKey(state,{ _tableData }){
             return (table,key,value) => { return _.find(_tableData(table),mpkva(key,value)) }
         },
@@ -115,6 +118,9 @@ export default {
         },
         _stateDataByIdName(state,{ _stateDataByIdField }){
             return (path) => { return _stateDataByIdField(path,'name') }
+        },
+        _stateDataByKeyField(state,{ _stateDataByField }){
+            return (table,key,field) => { return _.mapValues(_stateDataByField(table,key),field) }
         },
         _stateDataItemByKey(state,{ _stateData }){
             return (path,key,value) => { return _.find(_stateData(path),mpkva(key,value)) }

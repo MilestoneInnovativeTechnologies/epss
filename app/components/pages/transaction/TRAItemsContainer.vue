@@ -1,7 +1,7 @@
 <template>
     <GridLayout rows="auto,*,auto" columns="*" :class="'bcg01 p-x-'+properties.containerPadding">
-        <TRAItemsFilter col="0" row="0" @filter="filterText"></TRAItemsFilter>
-        <TRAItems :properties="properties" col="0" row="1" v-if="CCacheDataReady && items.length" :items="items"></TRAItems>
+        <TRAItemsFilter col="0" row="0" @textChange="filter = $event" />
+        <TRAItems :properties="properties" col="0" row="1" v-if="CCacheDataReady && items.length" :items="items" />
         <HorizontallyMiddle col="0" row="2">
             <TRAItemsPagination :totPage="TotalPages" :curPage="curPage" @change-page-to="curPage = $event === '...' ? curPage : $event" class="m-t-5 bordercp" style="border-top: 1"></TRAItemsPagination>
         </HorizontallyMiddle>
@@ -16,9 +16,9 @@
     export default {
         name: "TRAItemsContainer",
         mixins: [EventListeners,CCacheDataMixin],
-        props: ['properties','list1','list2'],
+        props: ['properties','list1','list2','seq'],
         data(){ return {
-            filter: '', list01: 0, list02: 0, curPage: 1, update: 0,
+            filter: '', list01: 0, list02: 0, curPage: 1,
             events: ['tra-list01-changed','tra-list02-changed'],
         } },
         computed: {
@@ -40,10 +40,12 @@
             TotalPages(){ return Math.ceil(this.FilteredProductIDs.length/this.itemsPerPage) }
         },
         methods: {
-            filterText(text){ this.curPage = 1; this.filter = text; },
-            getProductsFiltered(text,ids){ return _.filter(ids,id => { let narration = this.products[id] ? _.trim(this.products[id].narration).toLowerCase() : ''; return narration.includes(text) }) },
-            listener0(data){ this.list01 = data; this.curPage = 1; },
-            listener1(data){ this.list02 = data; this.curPage = 1; },
+            getProductsFiltered(text,ids){ this.curPage = 1; return _.filter(ids,id => { let narration = this.products[id] ? _.trim(this.products[id].narration).toLowerCase() : ''; return narration.includes(text) }) },
+            listener0(data){ this.list01 = data[1]; this.curPage = 1 },
+            listener1(data){ this.list02 = data[1]; this.curPage = 1 },
+        },
+        watch: {
+            seq(val){ this.filter = ''; this.curPage = 1 }
         },
         created(){ this.CCacheDataPrepare({ table:'products',method:'dataById' }); }
     }

@@ -1,5 +1,5 @@
 import {no_image_file, product_image_cache_max_request} from "./constants";
-import {fromFile} from "tns-core-modules/image-source";
+import { ImageSource } from "@nativescript/core";
 import { Downloader } from 'nativescript-downloader';
 
 global._ = require('lodash');
@@ -13,7 +13,7 @@ global.DBCache = require('./services/DBCache').DBCache;
 global.CCache = {};
 
 global.ImageCache = new (require("tns-core-modules/ui/image-cache").Cache)();
-ImageCache.placeholder = fromFile(no_image_file); ImageCache.maxRequests = product_image_cache_max_request;
+ImageCache.placeholder = ImageSource.fromFileSync(no_image_file); ImageCache.maxRequests = product_image_cache_max_request;
 
 Downloader.init(); // Downloader.setTimeout(90);
 global.Downloader = new Downloader();

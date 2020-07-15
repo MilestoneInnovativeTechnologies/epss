@@ -1,6 +1,6 @@
 <template>
     <GridLayout rows="auto,*,auto,auto" columns="*">
-        <TRAHeader row="0"></TRAHeader>
+        <TRAHeader row="0" :seq="seq"></TRAHeader>
         <GridLayout row="1" rows="*,auto">
             <ScrollView row="0" ref="items_scroller">
                 <AppList title="Items" :layout="layout" :source="PS_items" :key="['nsta-al',PS_update,listUpdate].join('-')" class="m-t-20" action="pick" @collection="setPicked" :selected="selectedIndex"></AppList>
@@ -21,7 +21,7 @@
 
     export default {
         name: "TRALeftPortion",
-        props: ['fncode','layout'],
+        props: ['fncode','layout','seq'],
         mixins: [ProductSale,EventListeners],
         data(){ return {
             selectedItem: {},
@@ -40,7 +40,7 @@
                 else this.PS_SetAndUpdate(item,key,value);
                 this.listUpdate++;
             },
-            listener0({ id }){ this.addItem(id); },
+            listener0({ id }){ console.log('tra-item-selected',id); this.addItem(id); },
             setPicked(row){ this.setSelected(row[0]); },
             addItem(pid){
                 let idx = this.PS_ProductIndex(pid);
@@ -62,6 +62,9 @@
                 let items = this.PS_items;
                 this.$emit('save',{ items,receipt:true })
             }
+        },
+        watch: {
+            seq: 'PS_DeleteAllItem'
         }
     }
 </script>

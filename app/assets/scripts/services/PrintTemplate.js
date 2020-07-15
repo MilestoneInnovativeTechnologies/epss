@@ -23,7 +23,7 @@ export class PrintTemplate {
             RAW: { source:null, detail:null, bold:false, size:0, align:'left', underline:false, line_feed:false, on:true },
             LINE: { text:'-', bold:false, size:0, on:true },
             FEED: { amount:1, on:true },
-            TABLE: { source:null, columns:['No'], keys:['[AI]'], width:[1], size:0, on:true },
+            TABLE: { source:null, columns:['No'], keys:['[AI]'], width:[1], size:0, on:true, compact:true },
         };
     }
 
@@ -129,7 +129,7 @@ export class PrintTemplate {
 
     TABLE(options,object){
         let opts = this.options('TABLE',options);
-        let { source,columns,keys,width,size,on } = opts;
+        let { source,columns,keys,width,size,on,compact } = opts;
         if(!_.bind(function(company,exp){ return eval(exp) },object,this.print_lines)(on)) return [];
         if(!Array.isArray(source)){
             if(typeof source === 'object') source = [source];
@@ -147,7 +147,7 @@ export class PrintTemplate {
         columns = columns.map((col,idx) => this.toLength(col,column_length[idx],'R',' ',true));
 
         let rows = _.bind(this.tableRows,object,this.print_lines)(source,keys);
-        let normalized = this.tableRowsNormalize(rows,column_length);
+        let normalized = this.tableRowsNormalize(rows,column_length,compact);
 
         return [].concat(
             this.LINE({ bold:true }),
@@ -218,7 +218,7 @@ export class PrintTemplate {
         return rows;
     }
 
-    tableRowsNormalize(rows,column_length){
+    tableRowsNormalize(rows,column_length,compact){
         let normalized = [], lastRowIdx = rows.length-1;
 
         rows.forEach((cols,rowIdx) => {
@@ -244,7 +244,7 @@ export class PrintTemplate {
                 normalized.push("\n");
             }
 
-            if(lastRowIdx !== rowIdx) normalized.push("\n");
+            if(!compact && lastRowIdx !== rowIdx) normalized.push("\n");
         });
 
         return normalized;

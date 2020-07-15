@@ -1,5 +1,5 @@
 <template>
-    <TextBold :text="mText" class="fs20 text-uppercase" />
+    <TextBold :text="mText" class="fs20 text-uppercase" v-bind="$attrs" />
 </template>
 
 <script>

@@ -1,8 +1,8 @@
 <template>
     <GridLayout rows="auto,auto,auto" columns="*,auto">
-        <AppInfoWide row="0" col="0" title="Customer" :key="'trah-cus-'+uKey">{{ name }}</AppInfoWide>
-        <AppInfoWide row="1" col="0" title="Date" :key="'trah-dte-'+uKey">{{ docdate }}</AppInfoWide>
-        <AppInfoWide row="2" col="0" title="Payment Mode" :key="'trah-pym-'+uKey">{{ payment_type }}</AppInfoWide>
+        <AppInfoWide row="0" col="0" title="Customer" :text="name" />
+        <AppInfoWide row="1" col="0" title="Date" :text="docdate" />
+        <AppInfoWide row="2" col="0" title="Payment Mode" :text="payment_type" />
         <GridLayout row="0" col="1" rowSpan="3" rows="40,40" columns="140" class="m-l-15">
             <AppButton height="50" row="0" @tap.native="deleteHeader" class="c-white fs10">Cash Customer</AppButton>
             <AppButton height="50" row="1" @tap.native="changeHeader" class="c-white fs10">Change Customer</AppButton>
@@ -25,8 +25,9 @@
     export default {
         name: "TRAHeader",
         mixins: [EventListeners,ThisObj,feMX.common,feMX.customer,feMX.datepicker,feMX.payment],
+        props: ['seq'],
         data(){ return {
-            customer: values.customer, date:values.date, payment_type:values.payment_type, uKey:0
+            customer: values.customer, date:values.date, payment_type:values.payment_type,
         } },
         computed: {
             ...mapGetters({ detail:'Customer/_stateDataItem',user:'user' }), ...mapState('Customer',['list']),
@@ -34,13 +35,13 @@
             docdate(){ return __.docdate(this.date) },
         },
         methods: {
-            ...mapActions('Customer',{ stockCustomer:'Customer/_stockIfNot' }),
+            ...mapActions('Customer',{ stockCustomer:'_stockIfNot' }),
             changeHeader(){
                 this.ELOn('absolute-form-submit',this.setHeader); this.ELOn('absolute-form-close',this.closeRequest);
                 this.ELEmit('absolute-form',{ title,fields:this.appFormFields(fields),values,action:'Update' });
             },
             deleteHeader(){ this.setHeader(values);  },
-            setHeader(data){ this.ELEmit('tra-header',data); this.TO_SetPropFromObj(data); this.closeRequest(); this.uKey++; },
+            setHeader(data){ this.ELEmit('tra-header',data); this.TO_SetPropFromObj(data); this.closeRequest(); },
             closeRequest(){
                 this.ELEmit('absolute-form');
                 this.ELOff('absolute-form-submit',this.setHeader);
@@ -48,6 +49,8 @@
             }
         },
         created(){ if(this.list.length === 0) this.stockCustomer({ query:sql.format(login_user_area_customers,this.user),key:'list' }); },
-        mounted(){ this.deleteHeader() }
+        watch: {
+            seq: { immediate:true, handler:'deleteHeader' }
+        },
     }
 </script>

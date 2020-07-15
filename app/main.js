@@ -1,6 +1,8 @@
 import Vue from 'nativescript-vue'
 import Home from './components/Home'
-import "./app.scss";
+
+// import "./assets/scripts/debugs";
+import "./main.scss";
 
 require('./assets/scripts/globals');
 require('./assets/scripts/fonticons');
@@ -11,7 +13,7 @@ global.log = function(text,...texts){ VuexStore.commit('Log/addQueue',text); if(
 
 require('./components/index');
 
-new Vue({
+global.VueApp = new Vue({
     store: VuexStore,
     render: h => h('frame', [h(Home)]),
     mounted() {

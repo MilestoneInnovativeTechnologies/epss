@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import {
     add_module, bind_table_module, create_event_subscription, add_event_subscriber, remove_event_subscriber, set_state_data
 } from './mutation-types';
@@ -26,6 +27,6 @@ export default {
         state.actionEvents[event].splice(idx,1);
     },
     [set_state_data](state, Obj) {
-        _.forEach(Obj,(value, key) => { state[key] = value; })
+        _.forEach(Obj,(value, key) => Vue.set(state,key,value))
     },
 };
