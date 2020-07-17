@@ -2,14 +2,14 @@ export class SSSetup {
     constructor(records){
         let ignoreKeys = ['id','created_at','updated_at'];
         _.forEach(records,(record) => _.includes(ignoreKeys,record.name) ? '' : this.setValue(record.name,record.value) );
-        console.log('SETUP DONE');
+        log('SETUP DONE');
     }
     setValue(name,value){ this[name] = value; }
     correctedDateFormat(format){ return format.replace(/dd|yy/g,(x) => x.toUpperCase()) }
-    quantity(num){ return _.round(_.toNumber(num),this.QUANTITY_DECIMAL) }
-    rate(num){ return _.round(_.toNumber(num),this.RATE_DECIMAL) }
-    amount(num){ return _.round(_.toNumber(num),this.AMOUNT_DECIMAL) }
-    currency(num){ return _.round(_.toNumber(num),this.CURRENCY_DECIMAL) }
+    quantity(num,str){ let amt = this.fixed(num,this.QUANTITY_DECIMAL); return (str) ? amt : _.toNumber(amt) }
+    rate(num,str){ let amt = this.fixed(num,this.RATE_DECIMAL); return (str) ? amt : _.toNumber(amt) }
+    amount(num,str){ let amt = this.fixed(num,this.AMOUNT_DECIMAL); return (str) ? amt : _.toNumber(amt) }
+    currency(num,str){ let amt = this.fixed(num,this.CURRENCY_DECIMAL); return (str) ? amt : _.toNumber(amt) }
     docdate(date){ return moment(date).format(this.correctedDateFormat(this.DOCDATE_FORMAT)) }
     refdate(date){ return moment(date).format(this.correctedDateFormat(this.REFDATE_FORMAT)) }
     chqdate(date){ return moment(date).format(this.correctedDateFormat(this.CHQDATE_FORMAT)) }
@@ -24,4 +24,5 @@ export class SSSetup {
     now(){ return parseInt(new Date().getTime()/1000) }
     dtz(dt){ return parseInt(moment(dt).format('X')) }
     time(){ return moment().format('hh:mm:ss') }
+    fixed(n,p){ return _.toNumber(n).toFixed(p) }
 }
