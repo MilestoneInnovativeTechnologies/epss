@@ -1,5 +1,5 @@
 <template>
-    <App title="Transaction Detail" action="Print" @print="print">
+    <App title="Transaction Detail" action="Print" @print="printout">
         <StackLayout v-if="master">
             <TextTitle :text="master.docno"></TextTitle>
             <TextHeading :text="master.customer" class="m-b-20"></TextHeading>
@@ -33,7 +33,7 @@
             total(){ return _.sumBy(this.details,'amount') }
         },
         methods: {
-            print(){ this.FnPrint({ _ref:this.id }) },
+            printout(){ this.FnPrint({ _ref:this.id }) },
             getTotalCalculated({ quantity,rate,tax,discount01,discount02 }){
                 return _.toNumber(quantity) * _.toNumber(rate) + _.toNumber(tax) - _.toNumber(discount01) - _.toNumber(discount02);
             },

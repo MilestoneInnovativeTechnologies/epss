@@ -31,7 +31,7 @@ export class Print {
 
     setFromDB(db_array){
         if(!db_array) return;
-        let data = (Array.isArray(db_array) && db_array[0]) ? db_array[0] : db_array;
+        let data = (_.isArray(db_array) && !_.isEmpty(db_array)) ? _.last(db_array) : db_array;
         try { this['tObj'] = eval(data.object ? data.object.replace(/\\n/g,String.fromCharCode(10)) : null) || this.tObj_default; } catch (e) { log('Error in setting ThisObject from database table printing of column object'); this['tObj'] = new Object({}); }
         try { this['template'] = eval(data.template ? data.template.replace(/\\n/g,String.fromCharCode(10)) : null) || this.template_default; } catch (e) { log('Error in setting template for print',data.template); this['template'] = this.template_default; }
         [1,2,3].forEach(n => {

@@ -1,5 +1,5 @@
 <template>
-    <App title="Receipt Detail" action="Print" @print="print">
+    <App title="Receipt Detail" action="Print" @print="printout">
         <TextTitle :text="receipt.docno" class="m-b-30"></TextTitle>
         <AppInfoWide v-for="(field,title,idx) in infoWide" class="m-b-10" :title="title" :text="receipt[field]" :key="'rd-iw-'+idx"></AppInfoWide>
         <AppInfoHighlight title="AMOUNT" :text="receipt.amount | amount"></AppInfoHighlight>
@@ -27,7 +27,7 @@
             fncode(){ return this.receipt.fncode },
         },
         methods: {
-            print(){ this.FnPrint({ _ref:this.id }) },
+            printout(){ this.FnPrint({ _ref:this.id }) },
         },
         created(){ this.CCacheDataPrepare({ table:'receipts',method:'dataById' }) },
     }
