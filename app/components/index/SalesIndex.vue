@@ -22,7 +22,7 @@
         name: "SalesIndex",
         mixins: [ThisObj,WideScreenCheck,CCacheDataMixin],
         props: ['fycode','fncode','store'],
-        data(){ return { transactions: {} } },
+        data(){ return { transactions: [] } },
         computed: {
             ...mapState('Menu',['content']),
             ...mapGetters(['startOfDay','startOfWeek','startOfMonth','dateToSeconds']),
@@ -43,7 +43,7 @@
         },
         methods: {
             getTotalAfter(time){
-                let total = _.sumBy(this.fnTrans,({ date,quantity,rate,tax,discount01,discount02 }) => _.toSafeInteger(this.dateToSeconds(date)) >= time ? this.getTotalCalculated(quantity,rate,tax,discount01,discount02) : 0);
+                let total = _.sumBy(this.transactions,({ date,quantity,rate,tax,discount01,discount02 }) => _.toSafeInteger(this.dateToSeconds(date)) >= time ? this.getTotalCalculated(quantity,rate,tax,discount01,discount02) : 0);
                 return __.amount(total);
             },
             getTotalCalculated(qty,rate,tax,dis1,dis2){
