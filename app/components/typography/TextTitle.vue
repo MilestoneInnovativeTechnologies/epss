@@ -1,5 +1,5 @@
 <template>
-    <TextBold class="fs22 cp text-uppercase">{{ mText }}</TextBold>
+    <TextBold class="fs22 cp text-uppercase" :text="mText" />
 </template>
 
 <script>
