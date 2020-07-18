@@ -1,7 +1,7 @@
 import Vue from 'nativescript-vue'
 import Home from './components/Home'
 
-// import "./assets/scripts/debugs";
+import "./assets/scripts/debugs";
 import "./main.scss";
 
 require('./assets/scripts/globals');

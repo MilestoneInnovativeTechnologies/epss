@@ -1,20 +1,20 @@
 <template>
     <GridLayout columns="324" rows="auto,auto,auto,auto" backgroundColor="#FFFFFF">
-        <TextTitleSub row="0" class="p-y-15 bcp text-center" style="color: #FFFFFF">{{ title }}</TextTitleSub>
-        <TextTitle row="1" class="text-center fs24 c-bg-white bordercp p-y-15" style="border-width: 2" :key="number">{{ number }}</TextTitle>
+        <TextTitleSub row="0" class="p-y-15 bcp text-center" style="color: #FFFFFF" :text="title" />
+        <TextTitle row="1" class="text-center fs24 c-bg-white bordercp p-y-15" style="border-width: 2" :text="number" />
         <GridLayout row="2" rows="auto,auto" columns="3*,*" width="324" class="bordercp" style="border-width: 2">
             <WrapLayout row="0" col="0">
-                <NumberPadKey v-for="n in 9" :text="n" :key="'cal-key-'+n" @tap.native="app(n)" @doubleTap.native="app(n+''+n)"></NumberPadKey>
+                <NumberPadKey v-for="n in 9" :text="n" :key="'cal-key-'+n" @tap.native="app(n)" @doubleTap.native="app(n+''+n)" />
             </WrapLayout>
             <WrapLayout row="0" col="1">
-                <NumberPadKey icon="backspace" @tap.native="bks()"></NumberPadKey>
-                <NumberPadKey icon="clear_all" @tap.native="clr()"></NumberPadKey>
-                <NumberPadKey icon="exposure_plus_1" @tap.native="add(1)" @doubleTap.native="add(2)"></NumberPadKey>
+                <NumberPadKey icon="backspace" @tap.native="bks()" />
+                <NumberPadKey icon="clear_all" @tap.native="clr()" />
+                <NumberPadKey icon="exposure_plus_1" @tap.native="add(1)" @doubleTap.native="add(2)" />
             </WrapLayout>
             <WrapLayout row="1" col="0" colSpan="2">
-                <NumberPadKey icon="exposure" @tap.native="sign()"></NumberPadKey>
-                <NumberPadKey text="." @tap.native="dec()"></NumberPadKey>
-                <NumberPadKey text="0" width="156" @tap.native="app(0)"></NumberPadKey>
+                <NumberPadKey icon="exposure" @tap.native="sign()" />
+                <NumberPadKey text="." @tap.native="dec()" />
+                <NumberPadKey text="0" width="156" @tap.native="app(0)" />
             </WrapLayout>
         </GridLayout>
         <StackLayout row="3" orientation="horizontal" class="bcg01">
@@ -35,11 +35,11 @@
         },
         data(){ return {
             number: this.defaultText,
-            decimal: false
+            decimal: false, clear: true
         } },
         methods: {
-            setNum(n){ this.number = n.toString() },
-            app(n){ this.setNum(this.number + (this.decimal ? '.' : '') + n); if(this.decimal) this.decimal = false;  },
+            setNum(n){ this.$set(this,'number',n.toString()); if(this.clear) this.clear = false; },
+            app(n){ let C = this.clear ? '' : this.number; this.setNum(C + (this.decimal ? '.' : '') + n); if(this.decimal) this.decimal = false;  },
             bks(){ this.setNum(this.number.toString().substr(0,this.number.toString().length-1)) },
             sign(){ this.setNum(_.toNumber(this.number)*(-1)) },
             clr(){ this.setNum(0) },
