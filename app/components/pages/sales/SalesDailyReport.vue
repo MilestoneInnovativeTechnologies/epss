@@ -18,16 +18,14 @@
             transactions: {}, print:1, layout:Layout,
         } },
         computed: {
-            ...mapGetters(['total']),
             period(){ return _(this.transactions).filter(({ date }) => new Date(date).getTime() > parseInt(this.from) * 1000).groupBy('docno').value() },
             source(){ let vm = this, keys = ['id'].concat(_.values(Layout)); return _.map(this.period,trans => _.zipObject(keys,_.map(keys,key => _.get(_.first(trans),key,vm.exec(key,trans))))) }
         },
         methods: {
             exec(method,args){ return _.isFunction(this[method]) ? this[method](args) : '-' },
             amount(trans){
-                let amount = 0;
-                _.forEach(trans,({ quantity,rate,tax,discount }) => amount += this.total(rate,quantity,tax,discount) )
-                return amount;
+                let N = _.toNumber;
+                return _.sumBy(trans,(T) => (N(T.rate)*N(T.quantity))+N(T.tax)-N(T.discount01)-N(T.discount02))
             },
             time(trans){ return _.get(_.first(trans),'date').toString().split(" ")[1] },
             doPrint(){ this.FnPrint({}) },
