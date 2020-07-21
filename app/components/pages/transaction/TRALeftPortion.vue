@@ -3,14 +3,14 @@
         <TRAHeader row="0" :seq="seq"></TRAHeader>
         <GridLayout row="1" rows="*,auto">
             <ScrollView row="0" ref="items_scroller">
-                <AppList title="Items" :layout="layout" :source="PS_items" :key="['nsta-al',PS_update,listUpdate].join('-')" class="m-t-20" action="pick" @collection="setPicked" :selected="selectedIndex"></AppList>
+                <AppList :layout="layout" :source="PS_items" :key="['nsta-al',PS_update,listUpdate].join('-')" class="m-t-20" action="pick" @collection="setPicked" :selected="selectedIndex"></AppList>
             </ScrollView>
-            <PayableAmount row="1" class="m-t-10" :amount="PS_TotalAmount" :tax="PS_TotalTax" :discount="PS_TotalDiscount"></PayableAmount>
+            <PayableAmount row="1" class="m-t-5" :amount="PS_TotalAmount" :tax="PS_TotalTax" :discount="PS_TotalDiscount"></PayableAmount>
         </GridLayout>
         <TRAItemActions row="2" v-if="selectedItem.pid" :key="'TRAIA-'+selectedItem.pid" class="m-t-10" :item="selectedItem" @update="updateItem"></TRAItemActions>
-        <GridLayout row="3" columns="2*,3*" class="m-t-10">
-            <AppButton col="0" class="c-white btn-active" @tap.native="saveTransaction">SAVE</AppButton>
-            <AppButton col="1" class="c-white btn-active" @tap.native="saveAndPrintTransaction">SAVE AND PRINT</AppButton>
+        <GridLayout row="3" columns="2*,3*" class="m-t-0">
+            <AppButton col="0" class="c-white btn-active m-x-0" @tap.native="saveTransaction">SAVE</AppButton>
+            <AppButton col="1" class="c-white btn-active m-x-0" @tap.native="saveAndPrintTransaction">SAVE AND PRINT</AppButton>
         </GridLayout>
     </GridLayout>
 </template>

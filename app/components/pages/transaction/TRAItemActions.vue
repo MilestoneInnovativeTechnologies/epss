@@ -1,20 +1,20 @@
 <template>
-    <GridLayout rows="auto" columns="*,*,*,*">
-        <StackLayout @tap="quantity" row="0" col="0" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18 m-r-5" height="80">
-            <FontIcon class="m-t-12">edit</FontIcon>
-            <TextBold class="c-white" style="color: #FFFFFF">Quantity</TextBold>
+    <GridLayout rows="auto" columns="*,*,*,*" class="m-0 p-0">
+        <StackLayout @tap="quantity" row="0" col="0" borderRadius="5" class="bcp font-weight-bold text-center c-white m-x-2">
+            <FontIcon class="m-t-4" name="add_shopping_cart" />
+            <TextBold class="c-white fs10" style="color: #FFFFFF" text="Quantity" />
         </StackLayout>
-        <StackLayout @tap="discount" row="0" col="1" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18 m-r-5" height="80">
-            <FontIcon class="m-t-12">edit</FontIcon>
-            <TextBold class="c-white" style="color: #FFFFFF">Discount</TextBold>
+        <StackLayout @tap="discount" row="0" col="1" borderRadius="5" class="bcp font-weight-bold text-center c-white m-x-2">
+            <FontIcon class="m-t-4" name="thumb_up" />
+            <TextBold class="c-white fs10" style="color: #FFFFFF" text="Discount" />
         </StackLayout>
-        <StackLayout @tap="rate" row="0" col="2" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18 m-r-5" height="80">
-            <FontIcon class="m-t-12">edit</FontIcon>
-            <TextBold class="c-white" style="color: #FFFFFF">Rate</TextBold>
+        <StackLayout @tap="rate" row="0" col="2" borderRadius="5" class="bcp font-weight-bold text-center c-white m-x-2">
+            <FontIcon class="m-t-4" name="cached" />
+            <TextBold class="c-white fs10" style="color: #FFFFFF" text="Rate" />
         </StackLayout>
-        <StackLayout @tap="remove" row="0" col="3" borderRadius="5" class="bcp font-weight-bold text-center c-white fs18" height="80">
-            <FontIcon class="m-t-12">delete</FontIcon>
-            <TextBold class="c-white" style="color: #FFFFFF">Remove</TextBold>
+        <StackLayout @tap="remove" row="0" col="3" borderRadius="5" class="bcp font-weight-bold text-center c-white m-x-2">
+            <FontIcon class="m-t-4" name="delete" />
+            <TextBold class="c-white fs10" style="color: #FFFFFF" text="Remove" />
         </StackLayout>
     </GridLayout>
 </template>

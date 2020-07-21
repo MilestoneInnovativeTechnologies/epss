@@ -1,5 +1,5 @@
 <template>
-    <GridLayout rows="auto,auto,auto" columns="*,auto">
+    <!--<GridLayout rows="auto,auto,auto" columns="*,auto">
         <AppInfoWide row="0" col="0" title="Customer" :text="name" />
         <AppInfoWide row="1" col="0" title="Date" :text="docdate" />
         <AppInfoWide row="2" col="0" title="Payment Mode" :text="payment_type" />
@@ -7,7 +7,14 @@
             <AppButton height="50" row="0" @tap.native="deleteHeader" class="c-white fs10">Cash Customer</AppButton>
             <AppButton height="50" row="1" @tap.native="changeHeader" class="c-white fs10">Change Customer</AppButton>
         </GridLayout>
-    </GridLayout>
+    </GridLayout>-->
+    <FlexboxLayout>
+        <TextHeadingRowSub class="p-t-12" :text="name + ', '" justifyContent="center" />
+        <TextHeadingRowSub class="p-t-12 p-l-20" :text="docdate + ', '" />
+        <TextHeadingRowSub class="p-t-12 p-l-20" :text="payment_type" flexGrow="1" />
+        <AppButton height="40" @tap.native="changeHeader" class="c-white fs10">Change</AppButton>
+    </FlexboxLayout>
+
 </template>
 
 <script>

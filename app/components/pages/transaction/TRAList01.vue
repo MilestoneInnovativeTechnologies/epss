@@ -1,7 +1,7 @@
 <template>
     <ScrollView>
         <FlexboxLayout flexDirection="column" class="c-bg-white">
-            <StackLayout :class="selected === l1Id ? 'bcg01' : ''" height="110" verticalAlignment="middle" v-for="(name,l1Id) in listNames" :key="'list01-'+l1Id" @tap="setSelected(l1Id)">
+            <StackLayout :class="selected === l1Id ? 'bcg02' : ''" height="110" verticalAlignment="middle" v-for="(name,l1Id) in listNames" :key="'list01-'+l1Id" @tap="setSelected(l1Id)">
                 <TextHighlightBold class="text-center w-full" textWrap="true" :text="name" />
             </StackLayout>
         </FlexboxLayout>
