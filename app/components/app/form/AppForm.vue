@@ -35,6 +35,7 @@
                     : initValue;
             },
             submitForm() {
+                clickTune.play();
                 this.$refs['radDataForm'].nativeView.validateAndCommitAll().then(result => (result) ? this.$emit('submit', this.final) : null)
             },
             formPropsCommitted(data) {

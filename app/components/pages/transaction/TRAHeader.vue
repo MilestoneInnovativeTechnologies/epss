@@ -44,6 +44,7 @@
         methods: {
             ...mapActions('Customer',{ stockCustomer:'_stockIfNot' }),
             changeHeader(){
+                clickTune.play();
                 this.ELOn('absolute-form-submit',this.setHeader); this.ELOn('absolute-form-close',this.closeRequest);
                 this.ELEmit('absolute-form',{ title,fields:this.appFormFields(fields),values,action:'Update' });
             },

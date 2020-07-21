@@ -1,10 +1,12 @@
 <template>
-    <StackLayout>
-        <AppInfoWideNumerical title="Sub Total" :text="toAmount(amount)"></AppInfoWideNumerical>
-        <AppInfoWideNumerical title="Total Tax" :text="toRate(tax)"></AppInfoWideNumerical>
-        <AppInfoWideNumerical title="Total Discount" :text="toRate(discount)"></AppInfoWideNumerical>
-        <AppInfoHighlight title="AMOUNT PAYABLE" :text="toAmount(payable)"></AppInfoHighlight>
-    </StackLayout>
+    <GridLayout columns="*,*">
+        <StackLayout col="1">
+            <AppInfoWideNumerical title="Sub Total" :text="toAmount(amount)" />
+            <AppInfoWideNumerical title="Total Tax" :text="toRate(tax)" />
+            <AppInfoWideNumerical title="Total Discount" :text="toRate(discount)" />
+        </StackLayout>
+        <AppInfoHighlight col="0" title="AMOUNT PAYABLE" :text="toAmount(payable)" />
+    </GridLayout>
 </template>
 
 <script>

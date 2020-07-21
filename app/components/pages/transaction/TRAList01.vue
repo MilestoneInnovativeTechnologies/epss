@@ -24,7 +24,7 @@
         },
         methods: {
             setSelected(idx){
-                this.selected = idx;
+                clickTune.play(); this.selected = idx;
                 EB.$emit('tra-list01-changed',[this.list,this.selected])
             }
         },

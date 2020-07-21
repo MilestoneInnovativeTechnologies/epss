@@ -42,11 +42,13 @@
             discount(){ this.action = 'discount'; this.openPad('Discount',this.item.discount) },
             remove(){ this.action = 'remove'; this.updateData(null) },
             openPad(title,defaultText){
+                clickTune.play();
                 this.ELEmit('number-pad',{ title,defaultText,okButtonText:'Update '+title });
                 this.ELOn('number-pad-proceeded',this.updateData);
                 this.ELOn('number-pad-cancelled',this.closePad)
             },
             updateData(text){
+                clickTune.play();
                 this.$emit('update',{ key:this.action,item:this.item,value:text });
                 this.closePad();
             },
