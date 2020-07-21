@@ -1,7 +1,7 @@
 <template>
     <FlexBoxLayout flexDirection="column">
-        <TextDisplay class="text-center" :text="mText"></TextDisplay>
-        <TextTitleSubSmall class="text-center cp">{{ title }}</TextTitleSubSmall>
+        <TextDisplay class="text-center" :text="mText" />
+        <TextTitleSubSmall class="text-center cp" :text="title" />
     </FlexBoxLayout>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
     <GridLayout rows="auto" columns="2*,*">
-        <TextBold row="0" col="0" class="text-left" :text="mText"></TextBold>
-        <TextHeadingRowSub row="0" col="1" class="text-right" :text="title"></TextHeadingRowSub>
+        <TextBold row="0" col="0" class="text-left" :text="mText" />
+        <TextHeadingRowSub row="0" col="1" class="text-right" :text="title" />
     </GridLayout>
 </template>
 
