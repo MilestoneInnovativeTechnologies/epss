@@ -6,6 +6,7 @@ global._ = require('lodash');
 global.moment = require('moment');
 global.__ = {};
 global.sql = require('sqlstring');
+global.clickTune = require('nativescript-sound').create('~/assets/sounds/click.mp3');
 global.DB = require('./services/database').DB;
 global.EB = require('./services/EventBus').EventBus;
 global.doPrint = require('./services/Printer.js').print;

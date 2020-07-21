@@ -25,7 +25,7 @@
             cacheKey(){ return 'item-image-' + this.item.id }
         },
         methods: {
-            addItem(item){ EB.$emit('tra-item-selected',this.item) }
+            addItem(item){ clickTune.play(); EB.$emit('tra-item-selected',item) }
         },
         created(){
             let imgSrc = ImageCache.get(this.cacheKey);
