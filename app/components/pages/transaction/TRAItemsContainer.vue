@@ -1,5 +1,5 @@
 <template>
-    <GridLayout rows="auto,*,auto" columns="*" :class="'bcg01 p-x-'+properties.containerPadding">
+    <GridLayout rows="auto,*,auto" columns="*" :class="'bcg02 p-x-'+properties.containerPadding">
         <TRAItemsFilter col="0" row="0" @textChange="filter = $event" />
         <TRAItems :properties="properties" col="0" row="1" v-if="CCacheDataReady && items.length" :items="items" />
         <HorizontallyMiddle col="0" row="2">
