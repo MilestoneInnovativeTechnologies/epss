@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
     <GridLayout class="applist-thead-columns" :columns="columns">
         <TextBold v-for="(head,colNo) in headColumns" :col="colNo" class="applist-thead-column" :key="key(colNo)" :text="head" />
