@@ -3,9 +3,7 @@
         <Image row="0" col="0" colSpan="2" :decodeHeight="height" :decodeWidth="width" rowSpan="2" :src="src" loadMode="async" stretch="aspectFill" useCache="true" />
         <Label row="0" col="0" colSpan="2" :textWrap="true" />
         <Label row="1" col="0" :text="name" class="fsb p-l-10 p-y-4 label-grid cp" :class="fontSizeCls" :textWrap="true" />
-        <StackLayout row="1" col="1" class="c-bg-white">
-            <Label :text="rate" :textWrap="true" class="fsb fs16 text-center cp" />
-        </StackLayout>
+        <Label row="1" col="1" :text="rate" :textWrap="true" class="c-bg-white fsb fs16 text-center cp" />
     </GridLayout>
 </template>
 
