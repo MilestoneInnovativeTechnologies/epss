@@ -1,11 +1,11 @@
 <template>
     <GridLayout rows="auto,*,auto,auto" columns="*">
-        <TRAHeader row="0" :seq="seq"></TRAHeader>
+        <TRAHeader row="0" :seq="seq" />
         <GridLayout row="1" rows="*,auto">
             <ScrollView row="0" ref="items_scroller">
-                <AppList :layout="layout" :source="PS_items" :key="['nsta-al',PS_update,listUpdate].join('-')" class="m-t-20" action="pick" @collection="setPicked" :selected="selectedIndex"></AppList>
+                <AppList :layout="layout" :source="PS_items" :key="['nsta-al',PS_update,listUpdate].join('-')" class="m-0" action="pick" @collection="setPicked" :selected="selectedIndex"></AppList>
             </ScrollView>
-            <PayableAmount row="1" class="m-t-5" :amount="PS_TotalAmount" :tax="PS_TotalTax" :discount="PS_TotalDiscount"></PayableAmount>
+            <PayableAmount row="1" class="m-t-0" :amount="PS_TotalAmount" :tax="PS_TotalTax" :discount="PS_TotalDiscount" />
         </GridLayout>
         <TRAItemActions row="2" v-if="selectedItem.pid" :key="'TRAIA-'+selectedItem.pid" class="m-t-10" :item="selectedItem" @update="updateItem"></TRAItemActions>
         <GridLayout row="3" columns="2*,3*" class="m-t-0">
