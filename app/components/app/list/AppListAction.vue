@@ -1,10 +1,10 @@
 <!--suppress ALL -->
 <template>
     <StackLayout class="cp">
-        <AppListActionDetail v-if="link" class="applist-column-action-detail-icon" :link="link" :props="props"></AppListActionDetail>
-        <AppListActionRemove v-else-if="action === 'remove'" @tap.native="$emit('list-action',{ action:'remove',row:rowno })"></AppListActionRemove>
-        <AppListActionSelect v-else-if="action === 'select'" @tap.native="$emit('list-action',{ action:'select',row:rowno })" :status="status"></AppListActionSelect>
-        <AppListActionPick v-else-if="action === 'pick'" @tap.native="$emit('list-action',{ action:'pick',row:rowno })" :status="status"></AppListActionPick>
+        <AppListActionDetail v-if="link" class="applist-column-action-detail-icon" :link="link" :props="props" />
+        <AppListActionRemove v-else-if="action === 'remove'" @tap.native="$emit('list-action',{ action:'remove',row:rowno })" />
+        <AppListActionSelect v-else-if="action === 'select'" @tap.native="$emit('list-action',{ action:'select',row:rowno })" :status="status" />
+        <AppListActionPick v-else-if="action === 'pick'" @tap.native="$emit('list-action',{ action:'pick',row:rowno })" :status="status" />
         <TextRegular v-else> </TextRegular>
     </StackLayout>
 </template>

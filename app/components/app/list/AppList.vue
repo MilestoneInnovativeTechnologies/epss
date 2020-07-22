@@ -1,25 +1,23 @@
 <!--suppress ALL -->
 <template>
     <GridLayout :rows="rows" columns="*">
-        <FlexBoxLayout flexDirection="columns" row="0" col="0" class="applist-caption">
-            <TextTitleSubSmall>{{ title }}</TextTitleSubSmall>
-        </FlexBoxLayout>
+        <FlexBoxLayout flexDirection="columns" row="0" col="0" class="applist-caption"><TextTitleSubSmall :text="title" /></FlexBoxLayout>
         <FlexBoxLayout flexDirection="columns" row="1" col="0" class="applist-thead">
             <FlexBoxLayout class="applist-thead-row">
-                <TextBold class="applist-thead-column applist-column-no"> </TextBold>
-                <AppListHeadColumns :headColumns="headColumns"></AppListHeadColumns>
-                <AppListHeadAction v-if="hasAction" :action="action" class="applist-thead-column applist-column-action" @list-action="listAction" :collection="dataCollection" :items="dataItems.length"></AppListHeadAction>
+                <TextBold class="applist-thead-column applist-column-no" text=" " />
+                <AppListHeadColumns :headColumns="headColumns" />
+                <AppListHeadAction v-if="hasAction" :action="action" class="applist-thead-column applist-column-action" @list-action="listAction" :collection="dataCollection" :items="dataItems.length" />
             </FlexBoxLayout>
         </FlexBoxLayout>
         <FlexBoxLayout flexDirection="column" row="2" col="0" class="applist-tbody">
             <FlexBoxLayout class="applist-tbody-row" v-for="(item,rowNo) in items" :key="key(rowNo,item)">
-                <TextBold class="applist-tbody-column applist-column-no">{{ rowNo + 1 }}</TextBold>
-                <AppListBodyColumns :row="rowNo" :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :updates="mUpdates" :cast="cast"></AppListBodyColumns>
-                <AppListAction v-if="hasAction" class="applist-tbody-column applist-column-action" :action="action" :link="detail" :props="linkProps(item)" :rowno="rowNo" @list-action="listAction" :collection="dataCollection"></AppListAction>
+                <TextBold class="applist-tbody-column applist-column-no" :text="rowNo + 1" />
+                <AppListBodyColumns :row="rowNo" :item="item" :layout="dataLayout" :headColumnCount="headColumnCount" :links="links" :updates="mUpdates" :cast="cast" />
+                <AppListAction v-if="hasAction" class="applist-tbody-column applist-column-action" :action="action" :link="detail" :props="linkProps(item)" :rowno="rowNo" @list-action="listAction" :collection="dataCollection" />
             </FlexBoxLayout>
         </FlexBoxLayout>
         <FlexBoxLayout row="3" col="0" class="applist-tfoot">
-            <TextHighlight class="text-underline m-t-8 m-r-5 text-right" width="100%" @tap.native="loadMore">Load More</TextHighlight>
+            <TextHighlight class="text-underline m-t-8 m-r-5 text-right" width="100%" @tap.native="loadMore" text="Load More" />
         </FlexBoxLayout>
     </GridLayout>
 </template>

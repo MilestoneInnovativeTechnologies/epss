@@ -1,5 +1,5 @@
 <template>
-    <FontIcon :name="checks[iconIndex]"></FontIcon>
+    <FontIcon :name="checks[iconIndex]" />
 </template>
 
 <script>

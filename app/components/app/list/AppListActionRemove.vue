@@ -1,5 +1,5 @@
 <template>
-    <FontIcon size="22">clear</FontIcon>
+    <FontIcon size="22" name="clear" />
 </template>
 
 <script>

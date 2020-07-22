@@ -1,8 +1,8 @@
 <template>
     <GridLayout class="applist-tbody-sub-row" :columns="columns">
         <StackLayout v-for="(path,head,no) in layout" :col="no" class="applist-tbody-sub-row-columns" :key="key(no)">
-            <TextHeadingRowSub class="applist-tbody-sub-row-column applist-tbody-sub-row-column-head">{{ head }}</TextHeadingRowSub>
-            <AppListBodyColumnContent :idx="idx" class="applist-tbody-sub-row-column applist-tbody-sub-row-column-detail" :path="path" :item="item" :wrap="false" :links="links" :update="updates[path]" :text="content(path)"></AppListBodyColumnContent>
+            <TextHeadingRowSub class="applist-tbody-sub-row-column applist-tbody-sub-row-column-head" :text="head" />
+            <AppListBodyColumnContent :idx="idx" class="applist-tbody-sub-row-column applist-tbody-sub-row-column-detail" :path="path" :item="item" :wrap="false" :links="links" :update="updates[path]" :text="content(path)" />
         </StackLayout>
     </GridLayout>
 </template>

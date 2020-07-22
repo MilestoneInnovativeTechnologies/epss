@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-    <FontIcon size="24" @tap.native="$navigateTo(navComp,navProps)">keyboard_arrow_right</FontIcon>
+    <FontIcon size="24" @tap.native="$navigateTo(navComp,navProps)" name="keyboard_arrow_right" />
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-    <TextRegular :class="classes" @tap.native="tapped" :textWrap="wrap" :text="text"></TextRegular>
+    <TextRegular :class="classes" @tap.native="tapped" :textWrap="wrap" :text="text" />
 </template>
 
 <script>
