@@ -1,11 +1,11 @@
 <template>
-    <GridLayout columns="*,*">
-        <StackLayout col="1">
-            <AppInfoWideNumerical title="Sub Total" :text="toAmount(amount)" />
-            <AppInfoWideNumerical title="Total Tax" :text="toRate(tax)" />
-            <AppInfoWideNumerical title="Total Discount" :text="toRate(discount)" />
+    <GridLayout columns="2*,3*">
+        <StackLayout col="0">
+            <AppInfoWideNumerical title="Sub Total" :text="toAmount(amount,true)" />
+            <AppInfoWideNumerical title="Total Tax" :text="toRate(tax,true)" />
+            <AppInfoWideNumerical title="Total Discount" :text="toRate(discount,true)" />
         </StackLayout>
-        <AppInfoHighlight col="0" title="AMOUNT PAYABLE" :text="toAmount(payable)" />
+        <AppInfoHighlight col="1" :text="toAmount(payable,true)" />
     </GridLayout>
 </template>
 
@@ -17,8 +17,8 @@
             payable(){ return _.toNumber(this.amount) + _.toNumber(this.tax) - _.toNumber(this.discount) }
         },
         methods: {
-            toRate(number){ return __.rate(number); },
-            toAmount(number){ return __.amount(number); }
+            toRate(number,str){ return __.rate(number,str); },
+            toAmount(number,str){ return __.amount(number,str); }
         }
     }
 </script>
