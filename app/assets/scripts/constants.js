@@ -4,6 +4,7 @@ export const sse_monitor_path = 'sse/info';
 export const no_image_file = '~/assets/images/no-image.jpg';
 export const product_image_path = 'image/item';
 export const wide_screen_minimum_width = 720;
+export const autocomplete_minimum_items = 10;
 
 //Module Common
 export const stock_load_cache_refresh_on_each_nth_query = 0;
