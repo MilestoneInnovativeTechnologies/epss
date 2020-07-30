@@ -60,19 +60,20 @@ $ab-color: $black;
 .bordercg02 { border-color: #EEEEEE; }
 
 PropertyEditor {
-  margin-top: 6;
-  margin-bottom: 6;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 DataFormEditorLabel {
   color:#EF6D3B;
   font-family: "Fira Sans Italic", FiraSans-Italic;
-  font-size: 16;
+  font-size: 12;
 }
 
 DataFormEditorCore {
   font-family: "Fira Sans Regular", FiraSans-Regular;
-  font-size: 18;
+  font-size: 12;
+  margin-left: 25;
 }
 
 .metric-item {
