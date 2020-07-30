@@ -7,7 +7,7 @@
         name: "AppButton",
         mixins: [require('./../../assets/scripts/mixins/typography').default],
         props: {
-            height: { default:60 },
+            height: { default:50 },
             bcc: { default:'bcp' }
         },
         computed: {
