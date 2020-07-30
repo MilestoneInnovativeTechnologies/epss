@@ -11,7 +11,7 @@
         name: "MainContent",
         props: ['action','scroll','width','center','actionProps'],
         data(){ return {
-            fixHeight: 60,
+            fixHeight: 50,
         }},
         computed: {
             unique(){ return new Date().getTime() },
