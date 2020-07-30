@@ -24,16 +24,17 @@ export const FloatFormProductSale = {
             if(this.FFPS_CurrentProduct == product) return;
             this.FFPS_CurrentProduct = product;
             this.FFPS_CurrentItem = this.PS_GetProductDetail(product);
-            this.ELEmit('absolute-form-values',{ product,rate:this.FFPS_CurrentItem.rate });
+            setTimeout(() => this.ELEmit('absolute-form-values',{ product,rate:this.FFPS_CurrentItem.rate }),500);
         },
         FFPS_ProductAdd({ product,quantity,rate,discount }){
             this.PS_AddItem(product,quantity,rate,discount); let count = this.PS_items.length, amount = this.PS_Total;
             this.ELEmit('absolute-form-notify',`${quantity} quantity of ${this.FFPS_CurrentItem.name} added successfully!!\nTotal Items added: ${count}\nTotal Amount: ${amount}`);
-            this.ELEmit('absolute-form-values',values);
+            // this.ELEmit('absolute-form-values',values);
         },
         FFPS_Close(){
             this.ELOff('absolute-form-field-product',this.FFPS_ProductChanged);
             this.ELOff('absolute-form-submit',this.FFPS_ProductAdd);
+            this.$set(this,'FFPS_CurrentProduct',null); this.$set(this,'FFPS_CurrentItem',null);
         }
     }
 };
