@@ -2,10 +2,7 @@
     <App :title="title" action="Save Transaction" @save-transaction="saveTransaction">
         <AppForm :values="values" :fields="fields()" @final="setHeader"></AppForm>
         <AppList title="Products" action="remove" :source="PS_items" :layout="pLayout()" :key="'nst-al-'+PS_update" class="m-t-20" @remove="PS_DeleteItem"></AppList>
-        <GridLayout rows="auto" columns="*,140">
-            <Label col="0" text="" />
-            <AppButton col="1" @tap.native="FFPS_ShowForm">Add Products</AppButton>
-        </GridLayout>
+        <HorizontallyMiddle><AppButton width="140" height="40" @tap.native="FFPS_ShowForm" class="c-white fs10">Add Products</AppButton></HorizontallyMiddle>
         <PayableAmount class="m-t-10" :amount="PS_TotalAmount" :tax="PS_TotalTax" :discount="PS_TotalDiscount"></PayableAmount>
     </App>
 </template>
