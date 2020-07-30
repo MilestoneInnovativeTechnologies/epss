@@ -1,37 +1,38 @@
 <template>
     <StackLayout>
-        <TextTitleSub class="m-15 w-100 text-center" v-if="title">{{ title }}</TextTitleSub>
-        <RadDataForm :source="source" :metadata="metadata" @propertyCommitted="formPropsCommitted" ref="radDataForm"></RadDataForm>
-        <Button @tap="submitForm" class="bcp m-12 p-16 c-white fs15" v-if="action">{{ action }}</Button>
+        <TextTitleSub class="m-15 w-100 text-center" v-if="title" :text="title" />
+        <RadDataForm :source="source" :metadata="metadata" @propertyCommitted="formPropsCommitted" ref="radDataForm" :key="'rdf_update_' + uKey" />
+        <Button @tap="submitForm" class="bcp m-12 p-16 c-white fs15" v-if="action" :text="action" />
     </StackLayout>
 </template>
 
 <script>
     const PropertyAnnotationProvider = require("../../../assets/scripts/services/PropertyAnnotationProvider").PropertyAnnotationProvider;
+    let PropertyAnnotations = null;
 
     export default {
         name: "AppForm",
         props: ['fields', 'values', 'action', 'title'],
         data() {
             return {
-                source: {}, final: {},
+                source: {}, final: {}, uKey: 0,
             }
         },
         computed: {
-            metadata() { return this.propertyAnnotations.metadata; }
+            metadata() { return PropertyAnnotations.metadata; },
         },
         methods: {
             getInitValue(name) {
                 let values = this.values, initValue = '';
                 if (values && !_.isEmpty(values) && _.has(values, name) && !_.isNil(values[name])) initValue = values[name];
-                if(_.includes(this.propertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
-                    return this.propertyAnnotations.GetAnnotationNameConverted(name,initValue);
+                if(_.includes(PropertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
+                    return PropertyAnnotations.GetAnnotationNameConverted(name,initValue);
                 return _.isNil(initValue) ? '' : initValue;
             },
             getInitSourceValue(name) {
                 let initValue = this.source[name];
-                return (_.includes(this.propertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
-                    ? this.propertyAnnotations.GetAnnotationValueConverted(name, initValue)
+                return (_.includes(PropertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
+                    ? PropertyAnnotations.GetAnnotationValueConverted(name, initValue)
                     : initValue;
             },
             submitForm() {
@@ -40,21 +41,23 @@
             },
             formPropsCommitted(data) {
                 let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj, field);
-                if (_.includes(this.propertyAnnotations.valuesProviderTypeEditors, this.fields[field].type)) value = this.propertyAnnotations.GetAnnotationValueConverted(field, value);
+                if (_.includes(PropertyAnnotations.valuesProviderTypeEditors, this.fields[field].type)) value = PropertyAnnotations.GetAnnotationValueConverted(field, value);
                 this.$set(this.final,field,value); emitField(this,field); emitFinal(this);
             }
         },
-        created() {
-            this.propertyAnnotations = new PropertyAnnotationProvider(this.fields);
-            let nObj = Object.create({}), fields = _.keys(this.fields);
-            fields.map(field => this.$set(nObj,field,null));
-            this.source = Object.assign({},this.source,nObj);
-            this.final = Object.assign({},this.final,nObj);
-            fields.map(field => this.$set(this.source,field,this.getInitValue(field)));
-        },
-        mounted() {
-            //emitFinal = _.debounce(emitFinal,150,{ trailing:true }); emitField = _.debounce(emitField,150,{ trailing:true });
-            _.keys(this.fields).map(field => this.$set(this.final,field,this.getInitSourceValue(field))); emitFinal(this);
+        watch: {
+            values: {
+                deep: true, immediate: true,
+                handler(){
+                    PropertyAnnotations = new PropertyAnnotationProvider(this.fields);
+                    let vm = this;
+                    _.keys(this.fields).map(field => {
+                        vm.$set(vm.source,field,vm.getInitValue(field));
+                        vm.$set(vm.final,field,PropertyAnnotations.GetAnnotationValueConverted(field,vm.source[field]));
+                    });
+                    vm.uKey++; emitFinal(vm);
+                }
+            }
         }
     }
     function emitField(vm,field){ vm.$emit(field,vm.final[field]) }
