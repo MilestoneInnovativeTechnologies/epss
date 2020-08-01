@@ -6,6 +6,7 @@ import {
     create_event_subscription,
     add_event_subscriber,
 } from "./mutation-types";
+import {Printer} from "../services/Printer";
 
 export function init({ dispatch,commit },modulesMap){
     let initActions = [];
@@ -19,6 +20,7 @@ export function init({ dispatch,commit },modulesMap){
     });
     dispatch('addEventSubscribers',modulesMap).then(() => initActions.forEach(action => dispatch(action)) );
     dispatch('initRedrawData');
+    dispatch('setupPrinter');
 }
 
 export function redrawModules({state, commit, dispatch}, table) {
@@ -101,6 +103,13 @@ export function triggerEventSubscribers({state,dispatch},{ event,payload }) {
     if(_.has(state.actionEvents,event) && state.actionEvents[event].length !== 0){
         state.actionEvents[event].forEach(module => dispatch(module+'/'+event,payload,{ root:true }))
     }
+}
+
+export function setupPrinter({ rootGetters,dispatch }) {
+    if(rootGetters['Settings/setting']('print') === undefined) return setTimeout(dispatch => dispatch('setupPrinter'),90000,dispatch);
+    let uuid = rootGetters["Settings/setting"]('printer_uuid'), address = rootGetters["Settings/setting"]('printer_address');
+    global.printer = new Printer(uuid,address);
+    global.Print = require('../../scripts/services/Print').Print;
 }
 
 function getActivity(table, data, mode, primary_key) {

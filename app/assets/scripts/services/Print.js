@@ -1,4 +1,5 @@
 const PrintTemplate = new (require('./PrintTemplate').PrintTemplate)();
+const doPrint = require('./Printer.js').print;
 
 export class Print {
     constructor(id){

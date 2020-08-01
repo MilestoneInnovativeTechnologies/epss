@@ -88,9 +88,8 @@ export class Printer {
     }
 }
 
-global.printer = new Printer();
-
 export function print(data,tried){
+    if(VuexStore.getters['Settings/setting']('print') !== 'Yes') return;
     if(!printer.status){
         if(tried) return alert('Seems Bluetooth is not turned on OR Printer is not accessible!');
         global.printer = new Printer();
