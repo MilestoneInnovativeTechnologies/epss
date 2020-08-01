@@ -2,12 +2,12 @@
 <template>
     <App title="Login" :action="loginForm ? 'Login' : null" back="false" drawer="false" @login="authenticate" width="100%">
         <GridLayout rows="auto,auto,*" class="w-full">
-            <Organization row="0"></Organization>
-            <LoginForm row="1" width="85%" class="m-t-30" v-if="loginForm"></LoginForm>
+            <Organization row="0" />
+            <LoginForm row="1" width="85%" class="m-t-30" v-if="loginForm" @credentials="credentials = $event" />
             <StackLayout row="2" class="m-t-8 w-full">
-                <ActivityIndicator :busy="busy" class="m-t-10"></ActivityIndicator>
-                <TextHighlight class="w-full text-center" :text="pTexts[pTexts.length-1]" :key="'ull'+pTexts.length"></TextHighlight>
-                <TextHighlight class="m-t-20 w-full text-center" :key="percentage" v-if="waitNotification">{{ 'Synchronizing records. Completed: '+percentage+'%' }}</TextHighlight>
+                <ActivityIndicator :busy="busy" class="m-t-10" />
+                <TextHighlight class="w-full text-center" :text="pTexts[pTexts.length-1]" :key="'ull'+pTexts.length" />
+                <TextHighlight class="m-t-20 w-full text-center" :key="percentage" v-if="waitNotification" :text="'Synchronizing records. Completed: '+percentage+'%'" />
             </StackLayout>
         </GridLayout>
     </App>
@@ -29,6 +29,7 @@
             downloaded: 0,
             autoNavigate: null,
             autoNavigateDelay: 3000,
+            credentials: { login: '', password: '' }
         }},
         computed: {
             ...mapState('User',['message','validating','id']), ...mapState('Connection',{ connection:'status' }),...mapState('Download',['batch']),
@@ -41,6 +42,7 @@
             authenticate(){
                 if(!this.connection) return alert('No internet connection');
                 this.pTxt('Authenticating with server....');
+                this[set_state_data](this.credentials);
                 this.doLogin();
             },
             checkLogin(){
