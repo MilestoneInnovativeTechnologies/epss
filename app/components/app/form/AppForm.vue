@@ -8,7 +8,6 @@
 
 <script>
     const PropertyAnnotationProvider = require("../../../assets/scripts/services/PropertyAnnotationProvider").PropertyAnnotationProvider;
-    let PropertyAnnotations = null;
 
     export default {
         name: "AppForm",
@@ -19,20 +18,20 @@
             }
         },
         computed: {
-            metadata() { return PropertyAnnotations.metadata; },
+            metadata() { return this.PropertyAnnotations.metadata; },
         },
         methods: {
             getInitValue(name) {
                 let values = this.values, initValue = '';
                 if (values && !_.isEmpty(values) && _.has(values, name) && !_.isNil(values[name])) initValue = values[name];
-                if(_.includes(PropertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
-                    return PropertyAnnotations.GetAnnotationNameConverted(name,initValue);
+                if(_.includes(this.PropertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
+                    return this.PropertyAnnotations.GetAnnotationNameConverted(name,initValue);
                 return _.isNil(initValue) ? '' : initValue;
             },
             getInitSourceValue(name) {
                 let initValue = this.source[name];
-                return (_.includes(PropertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
-                    ? PropertyAnnotations.GetAnnotationValueConverted(name, initValue)
+                return (_.includes(this.PropertyAnnotations.valuesProviderTypeEditors, _.get(this.fields, [name, 'type'])))
+                    ? this.PropertyAnnotations.GetAnnotationValueConverted(name, initValue)
                     : initValue;
             },
             submitForm() {
@@ -41,7 +40,7 @@
             },
             formPropsCommitted(data) {
                 let field = data.propertyName, editedObj = JSON.parse(data.object.editedObject), value = _.get(editedObj, field);
-                if (_.includes(PropertyAnnotations.valuesProviderTypeEditors, this.fields[field].type)) value = PropertyAnnotations.GetAnnotationValueConverted(field, value);
+                if (_.includes(this.PropertyAnnotations.valuesProviderTypeEditors, this.fields[field].type)) value = this.PropertyAnnotations.GetAnnotationValueConverted(field, value);
                 this.$set(this.final,field,value); emitField(this,field); emitFinal(this);
             }
         },
@@ -49,11 +48,11 @@
             values: {
                 deep: true, immediate: true,
                 handler(){
-                    PropertyAnnotations = new PropertyAnnotationProvider(this.fields);
+                    this.PropertyAnnotations = new PropertyAnnotationProvider(this.fields);
                     let vm = this;
                     _.keys(this.fields).map(field => {
                         vm.$set(vm.source,field,vm.getInitValue(field));
-                        vm.$set(vm.final,field,PropertyAnnotations.GetAnnotationValueConverted(field,vm.source[field]));
+                        vm.$set(vm.final,field,this.PropertyAnnotations.GetAnnotationValueConverted(field,vm.source[field]));
                     });
                     vm.uKey++; emitFinal(vm);
                 }
