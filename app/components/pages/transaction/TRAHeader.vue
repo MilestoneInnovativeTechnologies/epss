@@ -24,7 +24,6 @@
     import {login_user_area_customers} from "../../../assets/scripts/queries";
 
     const feMX = require('./../../../assets/scripts/mixins/formelement');
-    const values = { customer:null,date:moment().format('YYYY-MM-DD'),payment_type:'Cash' };
 
     const title = 'Update Details';
     const fields = { customer:'Customer',date:'DatePicker',payment_type:'Payment' };
@@ -34,21 +33,22 @@
         mixins: [EventListeners,ThisObj,feMX.common,feMX.customer,feMX.datepicker,feMX.payment],
         props: ['seq'],
         data(){ return {
-            customer: values.customer, date:values.date, payment_type:values.payment_type,
+            customer: null, date:__.datez(), payment_type:'Cash',
         } },
         computed: {
             ...mapGetters({ detail:'Customer/_stateDataItem',user:'user' }), ...mapState('Customer',['list']),
             name(){ return this.customer ? (this.detail('list',this.customer) || { name:'Cash Customer' }).name : 'Cash Customer' },
             docdate(){ return __.docdate(this.date) },
+            values(){ return { customer: this.customer,date: this.date,payment_type: this.payment_type } }
         },
         methods: {
             ...mapActions('Customer',{ stockCustomer:'_stockIfNot' }),
             changeHeader(){
                 clickTune.play();
                 this.ELOn('absolute-form-submit',this.setHeader); this.ELOn('absolute-form-close',this.closeRequest);
-                this.ELEmit('absolute-form',{ title,fields:this.appFormFields(fields),values,action:'Update' });
+                this.ELEmit('absolute-form',{ title,fields:this.appFormFields(fields),values:this.values,action:'Update' });
             },
-            deleteHeader(){ this.setHeader(values);  },
+            deleteHeader(){ this.setHeader({ customer: null, date: this.date, payment_type: 'Cash' });  },
             setHeader(data){ this.ELEmit('tra-header',data); this.TO_SetPropFromObj(data); this.closeRequest(); },
             closeRequest(){
                 this.ELEmit('absolute-form');

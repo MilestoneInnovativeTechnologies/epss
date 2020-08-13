@@ -14,6 +14,7 @@ export class SSSetup {
     refdate(date){ return moment(date).format(this.correctedDateFormat(this.REFDATE_FORMAT)) }
     chqdate(date){ return moment(date).format(this.correctedDateFormat(this.CHQDATE_FORMAT)) }
     date(date){ return moment(date).format(this.correctedDateFormat(this.OTHDATE_FORMAT)) }
+    datez(date){ return moment(date).format('YYYY-MM-DD') }
     cast(Obj,rule){
         if(!_.isObject(Obj) && !_.isString(rule)) return this[rule](Obj);
         if(_.isEmpty(rule)) return Obj;
