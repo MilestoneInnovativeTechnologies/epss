@@ -48,7 +48,7 @@
                 this.ELOn('absolute-form-submit',this.setHeader); this.ELOn('absolute-form-close',this.closeRequest);
                 this.ELEmit('absolute-form',{ title,fields:this.appFormFields(fields),values:this.values,action:'Update' });
             },
-            deleteHeader(){ this.setHeader({ customer: null, date: this.date, payment_type: 'Cash' });  },
+            deleteHeader(){ this.setHeader({ customer: null, date: __.datez(new Date()), payment_type: 'Cash' });  },
             setHeader(data){ this.ELEmit('tra-header',data); this.TO_SetPropFromObj(data); this.closeRequest(); },
             closeRequest(){
                 this.ELEmit('absolute-form');
