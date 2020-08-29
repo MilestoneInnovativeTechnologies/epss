@@ -6,7 +6,7 @@ export const ProductSale = {
         PS_update: 0,
     } },
     computed: {
-        ...mapGetters({ PS_ProductDetail:'FN/saleItemBasic',PS_SaleItem:'FN/saleItem',reference:'_ref' }),
+        ...mapGetters({ PS_ProductDetail:'FN/saleItemBasic',PS_SaleItem:'FN/saleItem',PS_RateWithTax:'FN/rateWithTax',PS_ItemTax:'FN/itemTax',reference:'_ref' }),
         PS_TotalTax(){ let items = this.PS_items; return GetSumOfItemsKey(items,'tax'); },
         PS_TotalDiscount(){ let items = this.PS_items; return GetSumOfItemsKey(items,'discount'); },
         PS_TotalAmount(){ let items = this.PS_items; return GetSumOfItemsKey(items,'amount'); },
@@ -34,8 +34,8 @@ export const ProductSale = {
         PS_ProductIndex(code){ return _.findIndex(this.PS_items,(item) => item.pid == code); },
         PS_DoAddProduct(item) { this.PS_items.push(_.set(item,'_ref',this.reference())); },
         PS_SetAndUpdate(item,key,value){
-            let psItem = this.PS_items[this.PS_ProductIndex(_.isObject(item) ? item.pid : item)];
-            psItem[key] = value;
+            let pid = _.isObject(item) ? item.pid : item; let psItem = this.PS_items[this.PS_ProductIndex(pid)];
+            psItem[key] = (key === 'rate' && this.PS_RateWithTax[this.fncode] === 'Yes') ? (__.rate(_.toNumber(value)*100/(100+(this.PS_ItemTax(this.fncode,pid)*100)))) : value;
             let nItem = this.PS_GetAddProduct(psItem.pid,psItem.quantity,psItem.rate,psItem.discount);
             this.PS_ReplaceItem(nItem);
         },
