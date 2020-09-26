@@ -1,5 +1,4 @@
 import { mapActions,mapState } from "vuex";
-import {TransactionQueryBuilder} from "../../services/transactionquery";
 
 export const FormElementMixinCustomerSales = {
     computed: {
@@ -13,9 +12,5 @@ export const FormElementMixinCustomerSales = {
                 listArray = _.map(list,(sale) => _.zipObject([key,label],[sale[key],sale[label]+' - '+__.docdate(sale.date)]));
             return { items:listArray, key, label };
         }
-    },
-    created() {
-        let query = new TransactionQueryBuilder('SL').fields(['id','docno','date','total','cid']).where({ cid:this.customer }).max(15).query();
-        this._stock({ query,key:'customerSaleSummary',path:this.customer })
     }
 };
