@@ -59,13 +59,14 @@ export function doProcessQueue({ state,dispatch,commit }) {
 export function upload(ctx,data){
     clearTimeout(cancelTimeOut);
 
-    let task = Uploader.session('activity-upload-'+data['id']).multipartUpload(getParams(data),getRequest(data));
+    let uSession = Uploader.session('activity-upload-'+data['id']), params = getParams(data), options = getRequest(data);
+    let uTask = uSession.multipartUpload(params,options);
 
-    task.on('responded',response => TaskResponded(task,data,response));
-    task.on('error',response => TaskError(task,data,response));
-    task.on('cancel',response => TaskCancel(task,data,response));
+    uTask.on('responded',response => TaskResponded(uTask,data,response));
+    uTask.on('error',response => TaskError(uTask,data,response));
+    uTask.on('cancel',response => TaskCancel(uTask,data,response));
 
-    cancelTimeOut = setTimeout((task) => task.cancel(),times.far,task);
+    cancelTimeOut = setTimeout(task => task.cancel(),times.far,uTask);
 }
 
 export function clearCompleted({ state,dispatch }) {
@@ -92,9 +93,11 @@ function update(id,action){
     DB.update(table,id,data);
 }
 
-const method = 'post',headers = { "Content-Type": "application/octet-stream" }, androidDisplayNotificationProgress = false, androidAutoDeleteAfterUpload = true;
+const requestData = { method: 'post', headers: { "Content-Type": "application/octet-stream" },
+    androidDisplayNotificationProgress: true, androidAutoDeleteAfterUpload: true,
+    androidAutoClearNotification: true, androidNotificationTitle: 'Synchronizing' };
 function getRequest({ url,id }) {
-    return { url,method,headers,description:id,androidDisplayNotificationProgress,androidAutoDeleteAfterUpload }
+    return { url,description:id,...requestData }
 }
 const format = 'json', type = 'data', mimeType = "application/json";
 function getParams({ user,uuid,content }){
