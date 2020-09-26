@@ -59,14 +59,13 @@ export function doProcessQueue({ state,dispatch,commit }) {
 export function upload(ctx,data){
     clearTimeout(cancelTimeOut);
 
-    let uSession = Uploader.session('activity-upload-'+data['id']), params = getParams(data), options = getRequest(data);
-    let uTask = uSession.multipartUpload(params,options);
+    let task = Uploader.session('activity-upload-'+data['id']).multipartUpload(getParams(data),getRequest(data))
 
-    uTask.on('responded',response => TaskResponded(uTask,data,response));
-    uTask.on('error',response => TaskError(uTask,data,response));
-    uTask.on('cancel',response => TaskCancel(uTask,data,response));
+    task.on('responded',response => TaskResponded(task,data,response));
+    task.on('error',response => TaskError(task,data,response));
+    task.on('cancel',response => TaskCancel(task,data,response));
 
-    cancelTimeOut = setTimeout(task => task.cancel(),times.far,uTask);
+    cancelTimeOut = setTimeout(task => task.cancel(),times.far,task);
 }
 
 export function clearCompleted({ state,dispatch }) {
