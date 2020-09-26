@@ -1,5 +1,6 @@
 # JetBrains project files
 .idea
+.update_backup
 
 # NPM
 node_modules
