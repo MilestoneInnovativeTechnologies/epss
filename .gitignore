@@ -1,6 +1,8 @@
 # JetBrains project files
 .idea
 .update_backup
+.migration_backup
+builds
 
 # NPM
 node_modules
@@ -8,3 +10,5 @@ node_modules
 # NativeScript application
 hooks
 platforms
+
+epss.keystore
