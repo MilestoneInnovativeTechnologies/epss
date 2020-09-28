@@ -1,4 +1,5 @@
 # JetBrains project files
+.svn
 .idea
 .update_backup
 .migration_backup
