@@ -6,7 +6,7 @@ import Vue from 'nativescript-vue';
 // global.platform = require('tns-core-modules/platform');
 
 if(TNS_ENV !== 'production') {
-  Vue.use(VueDevtools,{ host:'192.168.10.101' });
+  Vue.use(VueDevtools,{ host:'192.168.10.102' });
   Vue.config.silent = false;
 }
 //

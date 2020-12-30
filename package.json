@@ -66,7 +66,7 @@
     "emulator@t2": "C:\\Users\\firos\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_T2 -netdelay none -netspeed full -gpu off",
     "emulator@t2mini": "C:\\Users\\firos\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_T2_Mini -netdelay none -netspeed full -gpu off",
     "devtool": "vue-devtools",
-    "debug": "tns debug android --hmr",
+    "debug": "tns debug android --hmr --force",
     "debug-clean": "tns debug android --hmr --clean",
     "db": "adb pull /data/user/0/net.milestoneit.epss/files/database/epss.db",
     "build": "tns build android --release --key-store-path epss.keystore --key-store-password metalic --key-store-alias epss --key-store-alias-password metalic"
