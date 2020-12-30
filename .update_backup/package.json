@@ -14,7 +14,7 @@
     "@vue/devtools": "^5.3.3",
     "axios": "^0.18.1",
     "debug": "^4.1.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "nativescript-background-http": "^4.2.1",
     "nativescript-downloader": "^2.1.5",
