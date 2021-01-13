@@ -1,6 +1,6 @@
-# NativeScript-Vue Application
+# ePlus Smart Sale
 
-> A native application built with NativeScript-Vue
+> ePlus Smart Sale Mobile Application
 
 ## Usage
 
@@ -8,16 +8,12 @@
 # Install dependencies
 npm install
 
-# Preview on device
-tns preview
-
-# Build, watch for changes and run the application
-tns run
+# Build for production
+tns build <platform> --bundle
 
 # Build, watch for changes and debug the application
-tns debug <platform>
+tns debug <platform> --bundle
 
-# Build for production
-tns build <platform> --env.production
-
+# Build, watch for changes and run the application
+tns run <platform> --bundle
 ```
