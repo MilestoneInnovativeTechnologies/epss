@@ -1,0 +1,1 @@
+export function pending(state){ return [].concat(state.batch.running).concat(state.batch.next) }

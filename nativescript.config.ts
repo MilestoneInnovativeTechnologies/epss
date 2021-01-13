@@ -2,10 +2,10 @@ import { NativeScriptConfig } from '@nativescript/core'
 
 export default {
   id: 'net.milestoneit.epss',
-  appResourcesPath: 'app/App_Resources',
+  appPath: 'src',
+  appResourcesPath: 'App_Resources',
   android: {
     v8Flags: '--expose_gc',
-    markingMode: 'none',
-  },
-  appPath: 'app',
+    markingMode: 'none'
+  }
 } as NativeScriptConfig
