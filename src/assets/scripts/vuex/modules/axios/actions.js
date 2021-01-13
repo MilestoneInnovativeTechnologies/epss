@@ -32,7 +32,7 @@ export const get = {
 export const post = {
     root:true,
     handler({ dispatch },{ url,params,success,fail }) {
-        let config = { url,params,method:'post' };
+        let config = { url,data:params,method:'post' };
         dispatch('queue',{ config,success,fail });
     }
 };
@@ -54,7 +54,8 @@ export function initProcessQueue({ commit,dispatch,getters }) {
 
 export function proceedProcessing({ commit,dispatch }) {
     commit(initiate_processing_transfer);
-    return dispatch('doHTTPRequest');
+    // return dispatch('doHTTPRequest');
+    return dispatch('doAxiosRequest');
 }
 
 export function doAxiosRequest({ state,dispatch }) {
@@ -69,7 +70,7 @@ export function doHTTPRequest({ state:{ processing },dispatch }) {
         let url = processing.url + '?' + content
         http.request({ url,method:'get' }).then(resp => dispatch('doHandleRequestResponse',{ data:resp.content.toJSON() }),err => dispatch('doHandleFailedResponse'))
     } else {
-        let url = processing.url, content = _.map(processing.params,(val,key) => [key,val].join('=')).join('&');
+        let url = processing.url, content = _.map(processing.data,(val,key) => [key,val].join('=')).join('&');
         http.request({ url,content,method:'post' }).then(resp => dispatch('doHandleRequestResponse',{ data:resp.content.toJSON() }),err => dispatch('doHandleFailedResponse'))
     }
 }
