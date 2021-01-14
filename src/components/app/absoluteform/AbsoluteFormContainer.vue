@@ -7,7 +7,7 @@
                     <FontIcon class="cp text-center w-full" size="28" name="cancel" />
                 </StackLayout>
             </GridLayout>
-            <AppForm :fields="fields" :values="formValues" @final="formData" />
+            <AppForm :fields="fields" :values="formValues" @final="formData" :key="'af-key-' + afk" />
             <TextItalic textWrap="true" v-if="notify" class="w-full text-center cp" :text="notification" />
             <Button @tap="formAction" class="bcp m-0 c-white fs12" v-if="action" :text="action" />
         </StackLayout>
@@ -29,6 +29,7 @@
             maxWidth: 300,
             formValues: {},
             formFinalData: {},
+            afk: 1,
             events: ['absolute-form-notify','absolute-form-values']
         } },
         computed: {
@@ -61,6 +62,7 @@
             formAction(){ this.ELEmit('absolute-form-submit',this.formFinalData); },
             updateFormValue(data){
                 _.intersection(_.keys(data),_.keys(this.formValues)).map(field => this.$set(this.formValues,field,data[field]));
+                this.afk++;
             },
             listener0(data){ this.setNotification(data) },
             listener1(data){ this.updateFormValue(data) },
