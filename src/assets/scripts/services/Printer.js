@@ -3,8 +3,8 @@ const BluetoothAdapter = android.bluetooth.BluetoothAdapter;
 
 export class Printer {
 
-    constructor(address,uuid){
-        this.PRINTER_UUID = uuid || UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    constructor(uuid,address){
+        this.PRINTER_UUID = UUID.fromString(uuid || "00001101-0000-1000-8000-00805F9B34FB");
         this.ADDRESS = address || "00:11:22:33:44:55";
         this.ALIGNMODE = { LEFT:0, CENTER:1, RIGHT:2 };
         this.btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -89,7 +89,6 @@ export class Printer {
 }
 
 export function print(data,tried){
-    if(VuexStore.getters['Settings/setting']('print') !== 'Yes') return;
     if(!printer.status){
         if(tried) return alert('Seems Bluetooth is not turned on OR Printer is not accessible!');
         global.printer = new Printer();
