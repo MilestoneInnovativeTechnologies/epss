@@ -14,6 +14,8 @@
 
 <script>
     import {EventListeners} from "../assets/scripts/mixins/eventlisteners";
+    import { mapMutations } from 'vuex'
+    import {set_state_data} from "../assets/scripts/vuex/mutation-types";
 
     export default {
         name: 'App',
@@ -43,8 +45,9 @@
             absoluteFormProps(){ return this.absoluteForm }
         },
         methods: {
+            ...mapMutations([set_state_data]),
             listener0(data){ this.$store.state.numberPad = data; this.ELOn('number-pad-cancelled',() => { this.$store.state.numberPad = null; this.ELOff('number-pad-cancelled'); }) },
-            listener1(form){ this.$store.state.absoluteForm = form; this.ELOn('absolute-form-close',() => { this.$store.state.absoluteForm = null; this.ELOff('absolute-form-close'); }) },
+            listener1(absoluteForm){ this[set_state_data]({ absoluteForm }); this.ELOn('absolute-form-close',() => { this[set_state_data]({ absoluteForm:null }); this.ELOff('absolute-form-close'); }) },
         }
     }
 </script>

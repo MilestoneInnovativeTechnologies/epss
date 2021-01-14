@@ -19,6 +19,7 @@ export const FloatFormProductSale = {
             this.ELOn('absolute-form-field-product',this.FFPS_ProductChanged);
             this.ELOn('absolute-form-submit',this.FFPS_ProductAdd);
             this.ELOn('absolute-form-close',this.FFPS_Close);
+            if(this.feValuesProduct.items && this.feValuesProduct.items[0]) values['product'] = _.get(this.feValuesProduct.items[0],this.feValuesProduct.key,null);
             this.ELEmit('absolute-form',{ title,fields:labelMorph(this.appFormFields(fields)),values,action:'Add',catch:['product'] });
         },
         FFPS_ProductChanged(product){
@@ -32,7 +33,7 @@ export const FloatFormProductSale = {
             this.FFPS_CurrentItem = this.PS_GetProductDetail(product);
             this.PS_AddItem(product,quantity,rate,discount); let count = this.PS_items.length, amount = this.PS_Total;
             this.ELEmit('absolute-form-notify',`${quantity} quantity of ${this.FFPS_CurrentItem.name} added successfully!!\nTotal Items added: ${count}\nTotal Amount: ${amount}`);
-            // this.ELEmit('absolute-form-values',values);
+            timer.setTimeout(this.ELEmit,300,'absolute-form-values',values);
         },
         FFPS_Close(){
             this.ELOff('absolute-form-field-product',this.FFPS_ProductChanged);
