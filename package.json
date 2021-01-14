@@ -42,7 +42,7 @@
   "scripts": {
     "emulator@v1s": "C:\\Users\\firos\\AppData\\Local\\Android\\Sdk\\emulator\\emulator @SUNMI_V1s -netdelay none -netspeed full -gpu off",
     "devtool": "vue-devtools",
-    "debug": "tns debug android --hmr --force",
+    "debug": "tns debug android --hmr",
     "debug-clean": "tns debug android --hmr --clean",
     "build": "tns build android --release --key-store-path epss.keystore --key-store-password metalic --key-store-alias epss --key-store-alias-password metalic"
   }
