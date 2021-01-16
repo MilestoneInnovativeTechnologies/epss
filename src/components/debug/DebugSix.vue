@@ -25,9 +25,7 @@
 
 <script>
     import {mapState} from "vuex";
-    import FontIcon from "../fonticon/FontIcon";
 
-    const permission = require('nativescript-permissions')
     const timer = require('@nativescript/core/timer')
     import { File,path } from '@nativescript/core/file-system'
     import {StoragePermission} from "../../assets/scripts/mixins/storagepermission";
