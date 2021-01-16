@@ -30,14 +30,14 @@
     const permission = require('nativescript-permissions')
     const timer = require('@nativescript/core/timer')
     import { File,path } from '@nativescript/core/file-system'
-    import AppButton from "../button/AppButton";
+    import {StoragePermission} from "../../assets/scripts/mixins/storagepermission";
 
     const progress = ['ADDED','CONSIDERED','RESPONDED'],
         layout = { Table:'table',Progress:'progress',Status:'status',Added:'added',Considered:'considered',Responded:'responded' };
 
     export default {
         name: "DebugSix",
-        components: {AppButton, FontIcon},
+        mixins: [StoragePermission],
         data(){ return {
             records: [], progress, layout, now: __.now()
         } },
@@ -55,22 +55,11 @@
                 }
             },
             async download({ content,table }){
-                if(!await this.perm()) return;
+                if(!await this.StoragePermission()) return;
                 let fileName = [__.datez(),__.time(),table,'json'].join('.'), destination = path.join(android.os.Environment.getExternalStorageDirectory().getAbsolutePath().toString(),'epss',fileName);
                 File.fromPath(content).readText().then(txt => File.fromPath(destination).writeText(txt).then(() => alert('Successfully saved file!!')).catch(() => alert('Saving file failed!!'))).catch(() => alert('Reading file failed!!'))
             },
             reSubmit({ id }){ this.$store.dispatch('Upload/reset',id,{ root:true }).then(() => timer.setTimeout(this.reload,250)) },
-            perm(){
-                return new Promise((resolve,reject) => {
-                    if(permission.hasPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) return resolve(true)
-                    permission.requestPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,'Required permission to save file into storage.. Please allow it!')
-                        .then(() => resolve(true))
-                        .catch(() => {
-                            alert('Write permission required to save file into storage.. Aborting operation');
-                            resolve(false);
-                        })
-                })
-            },
             reload(){
                 DB.get('epss_sync',{ status:this.enums.SUCCESS,operator:'<>' }).then(records => { this.records = records; this.now = __.now() });
             }
