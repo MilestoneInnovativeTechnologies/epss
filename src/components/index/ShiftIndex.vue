@@ -31,7 +31,7 @@
 <script>
     import { mapActions } from 'vuex';
     import { ShiftIndex,Home } from "../../assets/scripts/navigations";
-    const dialogs = require('tns-core-modules/ui/dialogs');
+    const dialogs = require('@nativescript/core/ui/dialogs');
 
     const feMX = require('./../../assets/scripts/mixins/formelement');
     const fields = { amount:'Amount' };

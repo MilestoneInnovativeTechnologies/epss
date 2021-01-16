@@ -1,4 +1,4 @@
-const fsm = require('tns-core-modules/file-system');
+const fsm = require('@nativescript/core/file-system');
 
 export class DBCache {
     constructor(table,data){

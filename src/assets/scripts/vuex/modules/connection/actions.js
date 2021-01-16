@@ -1,4 +1,4 @@
-import { connectionType,startMonitoring } from "tns-core-modules/connectivity";
+import { connectionType,startMonitoring } from "@nativescript/core/connectivity";
 import {set_connectivity_availability} from "../../mutation-types";
 
 
