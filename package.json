@@ -1,7 +1,7 @@
 {
   "name": "epss",
   "main": "main.js",
-  "version": "0.8.3",
+  "version": "0.8.5",
   "description": "ePlus Smart Sale Mobile Application",
   "author": "Milestone Innovative Technologies <info@milestoneit.net>",
   "license": "MIT",
